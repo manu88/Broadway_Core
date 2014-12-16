@@ -84,9 +84,10 @@ GpioState GpioEvent::read()
 
 /* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
 
-/*static*/ long GpioEvent::millis()
+/*static */long GpioEvent::millis()
 {
     struct timeval tv;
     gettimeofday(&tv, NULL);
     return (int) (tv.tv_sec) * 1000 + (tv.tv_usec)/1000;
 }
+

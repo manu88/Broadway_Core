@@ -15,22 +15,24 @@
 #include "../Internal/FileSystem.h"
 #include "../Log/Log.h"
 
-SerialInterface::SerialInterface( const std::string port ) :
+SerialEvent::SerialEvent( const std::string port ) :
 InterfaceEvent( Event_Serial ),
 
 _isOpen     ( false ),
 _port       ( port  ),
 _fd         ( -1    ),
-_hasChanged ( false )
+_hasChanged ( false ),
+
+_speed      ( Serial_9600 )
 {
     
 }
 
-SerialInterface::~SerialInterface()
+SerialEvent::~SerialEvent()
 {
     closePort();
 }
-bool SerialInterface::openPort()
+bool SerialEvent::openPort()
 {
     if ( _isOpen )
         return true;
@@ -53,7 +55,7 @@ bool SerialInterface::openPort()
     return true;
 }
 
-bool SerialInterface::closePort()
+bool SerialEvent::closePort()
 {
     if (_isOpen)
     {
@@ -74,21 +76,21 @@ bool SerialInterface::closePort()
 
 /* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
 
-bool SerialInterface::changed()
+bool SerialEvent::changed()
 {
     return _hasChanged =  fcntl( _fd, F_SETFL, FNDELAY) >0;
 }
 
 /* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
 
-const std::string SerialInterface::readDatas()
+const std::string SerialEvent::readDatas()
 {
-    
+    return "datas";
 }
 
 /* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
 
-bool SerialInterface::writeOnPort( const char* datas)
+bool SerialEvent::writeOnPort( const char* datas)
 {
     if ( !_isOpen )
         return false;
@@ -100,7 +102,7 @@ bool SerialInterface::writeOnPort( const char* datas)
 
 /* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
 
-/*static*/ const std::vector<std::string> SerialInterface::getSerialDevicesList()
+/*static*/ const std::vector<std::string> SerialEvent::getSerialDevicesList()
 {
 #ifdef __APPLE__
     

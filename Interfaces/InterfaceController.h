@@ -35,7 +35,7 @@ public:
 protected:
     InterfaceControllerDelegate(){}
     
-    virtual void inputChanged( const int pin , const GpioState state ) = 0;    
+    virtual void inputChanged( const InterfaceEvent *event ) = 0;
 };
 
 /* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
@@ -60,6 +60,7 @@ public:
     virtual bool start();
     virtual bool stop();
     
+    /* GPIO part */
     
     GpioEvent* addGpioInput(const int pinNumber , GPioInputType typeOfInput);
     bool removeGpioInput(const int pinNumber);
@@ -71,6 +72,11 @@ public:
     void sendGpo(const int pinNumber , const GpioState state);
     
     GpioEvent* getGpioEventByPin( const int pin);
+
+    /* Serial part */
+    
+    SerialEvent *addSerial( const std::string &port);
+    
     
     void listActivesInput();
     
@@ -85,7 +91,7 @@ private:
 
     InterfaceControllerDelegate *m_delegate;
     
-    std::unordered_set< GpioEvent* > m_inputs;
+    std::unordered_set< InterfaceEvent* > m_inputs;
     
 
 };

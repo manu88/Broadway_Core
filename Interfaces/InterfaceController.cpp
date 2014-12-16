@@ -27,7 +27,7 @@
 /* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
 
 // empty impl
-void InterfaceControllerDelegate::inputChanged(const int pin , const GpioState state)
+void InterfaceControllerDelegate::inputChanged( const InterfaceEvent *event )
 {
     /* base class 'inputChanged' called */
     assert(false);
@@ -107,9 +107,9 @@ GpioEvent* InterfaceController::getGpioEventByID( int _id)
 {
     for ( auto i : m_inputs )
     {        
-        if ( i->getElementId() == _id)
+        if ( i->isGpioEvent() && ( i->getElementId() == _id) )
         {
-            return  i ;
+            return  dynamic_cast< GpioEvent*>( i) ;
         }
         
     }
@@ -153,8 +153,13 @@ GpioEvent* InterfaceController::getGpioEventByPin( const int pin)
 {
     for ( auto i : m_inputs )
     {
-        if ( i->pin == pin )
-            return i;
+        if ( i->isGpioEvent() )
+        {
+            GpioEvent * gpio = dynamic_cast< GpioEvent*>( i );
+            
+            if ( gpio->pin == pin)
+                return gpio;
+        }
     }
     
     return nullptr;
@@ -164,18 +169,32 @@ GpioEvent* InterfaceController::getGpioEventByPin( const int pin)
 
 void InterfaceController::listActivesInput()
 {
+    /*
     printf("\n######## LIST (inputs) ########");
     for ( auto i = m_inputs.begin(); i != m_inputs.end(); ++i )
     {
         printf("\n GPI pin %i state %i" ,(*i)->pin , (*i)->state );
     }
-    
+    */
     printf("\n##############################");
 }
 
 void InterfaceController::sendGpo(const int pinNumber , const GpioState state)
 {
     GpioEvent::setGpio(pinNumber, state);
+}
+
+
+SerialEvent* InterfaceController::addSerial( const std::string &port)
+{
+    ThreadLock lock(this);
+    
+    SerialEvent* event = new SerialEvent( port );
+    m_inputs.insert( event );
+    
+    event->openPort();
+    
+    return event;
 }
 
 
@@ -195,10 +214,9 @@ void InterfaceController::mainLoop()
         for ( auto i : m_inputs )
         {
             
-            if ( i &&  i->changed() )
+            if ( i->changed() )
             {
-
-                m_delegate->inputChanged ( i->pin , i->state );
+                        m_delegate->inputChanged ( i );
 
             }
             

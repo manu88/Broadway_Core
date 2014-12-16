@@ -12,14 +12,33 @@
 #include <iostream>
 #include "InterfaceEvent.h"
 
-class SerialInterface : public InterfaceEvent
+typedef enum
+{
+    Serial_1200,
+    Serial_2400,
+    Serial_4800,
+    Serial_9600,
+    Serial_19200,
+    Serial_38400,
+    Serial_57600,
+    Serial_115200
+    
+} SerialSpeed;
+
+class SerialEvent : public InterfaceEvent
 {
 public:
-    SerialInterface( const std::string port );
-    ~SerialInterface();
+    SerialEvent( const std::string port );
+    ~SerialEvent();
     
     bool openPort();
     bool closePort();
+    
+    void setSpeed ( const SerialSpeed speed );
+    SerialSpeed getSpeed() const
+    {
+        return _speed;
+    }
     
     virtual bool changed();
     const std::string readDatas();
@@ -34,6 +53,8 @@ private:
     int         _fd;
     
     bool _hasChanged;
+    
+    SerialSpeed _speed;
     
 };
 
