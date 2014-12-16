@@ -183,7 +183,7 @@ void GpioPlateformImplementation::internalPinSetupInput( GPioInputType type )
     else if ( _inputType == InputDirect )
         bcm2835_gpio_fsel( _pin, BCM2835_GPIO_FSEL_INPT);
 
-    return true;
+    
 }
 
 /* **** **** **** **** **** **** */
@@ -291,7 +291,7 @@ void GpioPlateformImplementation::internalPinSetupInput( GPioInputType type )
 #ifdef TARGET_RASPBERRY_PI
 GpioState GpioPlateformImplementation::internalRead()
 {
-    return state = (GpioState) bcm2835_gpio_lev( pin );
+    return (GpioState) bcm2835_gpio_lev( _pin );
     
 }
 
