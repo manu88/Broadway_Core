@@ -61,23 +61,13 @@ InterfaceController::~InterfaceController()
 
 bool InterfaceController::init()
 {
-    bool ret = false;
-    
-#ifdef TARGET_RASPBERRY_PI
-    ret = bcm2835_init();
-#else
-    ret = true;
-#endif
-
-    return ret;
+    return GpioEvent::init();
 }
 
 
 void InterfaceController::deInit()
 {
-#ifdef TARGET_RASPBERRY_PI
-    bcm2835_close();
-#endif
+    return GpioEvent::deInit();
 }
 
 /* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
@@ -185,14 +175,7 @@ void InterfaceController::listActivesInput()
 
 void InterfaceController::sendGpo(const int pinNumber , const GpioState state)
 {
-#ifdef TARGET_RASPBERRY_PI
-     bcm2835_gpio_fsel( pinNumber , BCM2835_GPIO_FSEL_OUTP);
-     bcm2835_gpio_write( pinNumber, state);
-
-#else
-
-    printf("\n send GPIO value %i on pin %i" , state , pinNumber);
-#endif
+    GpioEvent::setGpio(pinNumber, state);
 }
 
 

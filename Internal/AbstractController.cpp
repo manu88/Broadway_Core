@@ -42,7 +42,7 @@ AbstractController::~AbstractController()
     int count = 0;
     for (auto i : s_controllers )
     {
-        if( i->isReady() )
+        if( i->isReady() || i->isInactive() )
 
             
             count++;
@@ -56,9 +56,9 @@ AbstractController::~AbstractController()
 
 /*static*/ bool AbstractController::allControllersUnReady()
 {
-    for (auto i = s_controllers.begin() ; i != s_controllers.end() ; i++ )
+    for (auto i : s_controllers )
     {
-        if( (*i)->isReady() )
+        if(  i->isReady() && i->isActive() )
             return false;
     }
     

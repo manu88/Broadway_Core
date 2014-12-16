@@ -8,9 +8,6 @@
 
 #include <sys/time.h>
 
-#ifdef TARGET_RASPBERRY_PI
-#include <bcm2835.h>
-#endif
 #include "GpioInterface.h"
 
 long GpioEvent::s_debounceDelay = 10;  // default value
@@ -18,6 +15,7 @@ long GpioEvent::s_debounceDelay = 10;  // default value
 
 GpioEvent::GpioEvent(int pinToUse , GPioInputType typeOfInput) :
 InterfaceEvent( Event_Gpio ),
+_impl( pinToUse , typeOfInput ),
 
 pin                ( pinToUse  ),
 state              ( undefined ),
@@ -26,17 +24,7 @@ m_lastDebounceTime (0          )
 {
     className = "GpioEvent";
     
-#ifdef TARGET_RASPBERRY_PI
-    if ( typeOfInput == InputPullUp )
-        
-        bcm2835_gpio_set_pud( pin, BCM2835_GPIO_PUD_UP);
-    
-    else if ( typeOfInput == InputPullDown )
-        bcm2835_gpio_fsel( pin, BCM2835_GPIO_PUD_DOWN );
-    
-    else if ( typeOfInput == InputDirect )
-        bcm2835_gpio_fsel( pin, BCM2835_GPIO_FSEL_INPT);
-#endif
+
 }
 
 /* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
@@ -48,15 +36,16 @@ GpioEvent::~GpioEvent()
 
 /* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
 
+/*static*/ void GpioEvent::setGpio( const int pin , const GpioState state)
+{
+    GpioPlateformImplementation::setGpio( pin, state);
+}
+
+/* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
+
 bool GpioEvent::changed()
 {
-    
-#ifdef TARGET_RASPBERRY_PI
-    GpioState newState = (GpioState) bcm2835_gpio_lev( pin );
-#else
-    GpioState newState = undefined;
-#endif
-    
+    GpioState newState = _impl.read();
     
     if (newState != m_lastState)
     {

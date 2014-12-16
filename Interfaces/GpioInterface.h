@@ -12,36 +12,30 @@
 #include "InterfaceEvent.h"
 
 #include "../Internal/Element.h"
-/* **** **** **** **** **** */
 
-typedef enum
-{
-    undefined = -1,
-    low       = 0,
-    high      = 1
-    
-}GpioState;
+#include "Impl/GpioPlateformImpl.h"
 
 
 
-/* **** **** **** **** **** */
-
-typedef enum
-{
-    InputDirect     = 0,
-    InputPullDown   = 1,
-    InputPullUp     = 2
-} GPioInputType;
-
-
-/* **** **** **** **** **** */
 
 class GpioEvent :  public InterfaceEvent
 {
-    public :
+public :
     GpioEvent(int pinToUse , GPioInputType typeOfInput);
     
     ~GpioEvent();
+    
+    static bool init()
+    {
+        return GpioPlateformImplementation::init();
+    }
+    
+    static void deInit()
+    {
+        GpioPlateformImplementation::deInit();
+    }
+    
+    
     
     virtual bool changed();
     GpioState read();
@@ -49,6 +43,7 @@ class GpioEvent :  public InterfaceEvent
     int pin;
     GpioState state;
     
+    static void setGpio( const int pin , const GpioState state);
     
     static void setDebounceTime( long delay )
     {
@@ -57,11 +52,15 @@ class GpioEvent :  public InterfaceEvent
     
 private:
     
-    GpioState m_lastState;
-    long      m_lastDebounceTime;
+    // actual plateform specific implementation
+    GpioPlateformImplementation _impl;
     
+    GpioState m_lastState;
+    
+    long      m_lastDebounceTime;
     static long s_debounceDelay;
     
+    // should use Schedulers's
     static long millis();
 };
 

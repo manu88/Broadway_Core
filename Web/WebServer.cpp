@@ -59,6 +59,9 @@ WebServer::WebServer( int portNum ) :
 {
     className = "Web server";
     
+    setInactive();
+    
+    
 }
 
 /* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
