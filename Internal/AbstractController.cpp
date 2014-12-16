@@ -97,7 +97,7 @@ AbstractController::~AbstractController()
         for ( auto i : s_controllers )
         {
             if( (!i->isReady() ) )
-                Log::log("\n %s is _NOT_ ready" , i->m_controllerName.c_str() );
+                Log::log("%s is _NOT_ ready" , i->m_controllerName.c_str() );
         }
     }
     
@@ -138,7 +138,7 @@ AbstractController::~AbstractController()
         for ( auto i : s_controllers )
         {
             if( (i->isReady() ) )
-                Log::log("\n %s is still ready" , i->m_controllerName.c_str() );
+                Log::log("%s is still ready" , i->m_controllerName.c_str() );
         }
         
     }
