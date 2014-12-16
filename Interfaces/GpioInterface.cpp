@@ -50,11 +50,14 @@ GpioEvent::~GpioEvent()
 
 bool GpioEvent::changed()
 {
+    
 #ifdef TARGET_RASPBERRY_PI
     GpioState newState = (GpioState) bcm2835_gpio_lev( pin );
 #else
     GpioState newState = undefined;
 #endif
+    
+    
     if (newState != m_lastState)
     {
         m_lastDebounceTime = millis();
