@@ -185,8 +185,31 @@ public:
     
     
     static std::unique_ptr<ArgumentsArray> getArgumentsFromJSArray( CScriptVar *vars);
+    
     static CScriptVar* getArgumentsAsJSArray( const ArgumentsArray &array );
+    
     static std::string getArgumentsAsJSArrayString( const ArgumentsArray &array );
+    
+    template<typename Type>
+    static CScriptVar* getJSArrayFromVector( const std::vector<Type> &vect)
+    {
+        if ( vect.empty() )
+            return nullptr;
+        
+        CScriptVar* ret = new CScriptVar();
+        
+        ret->setArray();
+        
+        int count = 0;
+        
+        for ( auto val : vect)
+        {
+            ret->setArrayIndex(count, new CScriptVar( val ));
+            count++;
+        }
+        
+        return ret;
+    }
 
 protected:
     

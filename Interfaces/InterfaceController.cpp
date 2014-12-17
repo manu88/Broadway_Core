@@ -51,7 +51,7 @@ InterfaceController::~InterfaceController()
 {
     stopThread();
     
-    removeAllGpioInputs();
+    removeAllInputs();
     
     deInit();
 
@@ -136,12 +136,12 @@ bool InterfaceController::removeGpioInput(const int pinNumber)
     return false;
 }
 
-void InterfaceController::removeAllGpioInputs()
+void InterfaceController::removeAllInputs()
 {
-    for ( auto i = m_inputs.begin(); i != m_inputs.end(); ++i )
+    for ( auto i : m_inputs )
     {
-        
-        delete (*i);
+        i->cleanup();
+        delete i;
     }
     
     m_inputs.clear();
@@ -184,6 +184,8 @@ void InterfaceController::sendGpo(const int pinNumber , const GpioState state)
     GpioEvent::setGpio(pinNumber, state);
 }
 
+/* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
+/* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
 
 SerialEvent* InterfaceController::addSerial( const std::string &port)
 {
@@ -195,6 +197,23 @@ SerialEvent* InterfaceController::addSerial( const std::string &port)
     event->openPort();
     
     return event;
+}
+
+/* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
+
+SerialEvent* InterfaceController::getSerialEventByPort( const std::string &port)
+{
+    for ( auto i : m_inputs)
+    {
+        if (i->isSerialEvent() )
+        {
+            SerialEvent *event = dynamic_cast<SerialEvent*>( i );
+            if ( event->getPort() == port )
+                return event;
+        }
+    }
+    
+    return nullptr;
 }
 
 

@@ -50,6 +50,11 @@ public :
         s_debounceDelay = delay;
     }
     
+    virtual void cleanup()
+    {
+        
+    }
+    
 private:
     
     // actual plateform specific implementation

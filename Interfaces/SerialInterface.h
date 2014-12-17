@@ -35,9 +35,15 @@ public:
     bool closePort();
     
     void setSpeed ( const SerialSpeed speed );
+    
     SerialSpeed getSpeed() const
     {
         return _speed;
+    }
+    
+    const std::string getPort() const
+    {
+        return _port;
     }
     
     virtual bool changed();
@@ -46,6 +52,11 @@ public:
     static const std::vector<std::string> getSerialDevicesList();
     
     bool writeOnPort( const char* datas);
+    
+    virtual void cleanup()
+    {
+        closePort();
+    }
     
 private:
     bool        _isOpen;

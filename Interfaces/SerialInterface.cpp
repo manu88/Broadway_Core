@@ -10,6 +10,9 @@
 #include <unistd.h>
 #include <cstring>
 
+#include <termios.h>
+#include <unistd.h>
+
 #include "SerialInterface.h"
 
 #include "../Internal/FileSystem.h"
@@ -55,6 +58,8 @@ bool SerialEvent::openPort()
     return true;
 }
 
+/* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
+
 bool SerialEvent::closePort()
 {
     if (_isOpen)
@@ -72,6 +77,32 @@ bool SerialEvent::closePort()
             
     }
     return true;
+}
+
+/* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
+
+void SerialEvent::setSpeed ( const SerialSpeed speed )
+{
+    if ( speed != _speed)
+    {
+        _speed = speed;
+        
+        struct termios options;
+    
+        tcgetattr( _fd, &options);
+        
+        /*
+         * Set the baud rates to 19200...
+         */
+        
+        cfsetispeed(&options, _speed);
+        cfsetospeed(&options, _speed);
+        
+        options.c_cflag |= (CLOCAL | CREAD);
+        
+        tcsetattr( _fd, TCSANOW, &options);
+
+    }
 }
 
 /* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */

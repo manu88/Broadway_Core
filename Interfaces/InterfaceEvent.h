@@ -32,7 +32,10 @@ public:
     
     // subclasses need to overide this
     virtual bool changed() = 0;
-    // and define a read() method they can call later 
+    // and define a read() method they can call later
+    
+    // this method will be called before destruction by InterfaceController instance
+    virtual void cleanup() = 0;
     
     /* **** */
     

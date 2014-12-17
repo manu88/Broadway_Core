@@ -67,7 +67,7 @@ public:
     
     GpioEvent* getGpioEventByID( int _id);
     
-    void removeAllGpioInputs();
+    void removeAllInputs();
     
     void sendGpo(const int pinNumber , const GpioState state);
     
@@ -76,7 +76,7 @@ public:
     /* Serial part */
     
     SerialEvent *addSerial( const std::string &port);
-    
+    SerialEvent *getSerialEventByPort( const std::string &port);
     
     void listActivesInput();
     
