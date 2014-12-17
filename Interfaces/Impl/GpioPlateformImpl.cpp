@@ -117,6 +117,14 @@ GpioState GpioPlateformImplementation::read()
 
 /* **** **** **** **** **** **** */
 
+#elif defined TARGET_BEAGLEBONE_BLACK
+/*static*/ bool GpioPlateformImplementation::init()
+{
+    
+}
+
+/* **** **** **** **** **** **** */
+
 #elif defined __APPLE__
 /*static*/ bool GpioPlateformImplementation::init()
 {
@@ -152,6 +160,14 @@ GpioState GpioPlateformImplementation::read()
     munmap((void*) s_gpio_map, PageSize*2);
     
 
+}
+
+/* **** **** **** **** **** **** */
+
+#elif defined TARGET_BEAGLEBONE_BLACK
+/*static*/ void GpioPlateformImplementation::deInit()
+{
+    
 }
 
 /* **** **** **** **** **** **** */
@@ -219,6 +235,14 @@ void GpioPlateformImplementation::internalPinSetupInput( GPioInputType type )
 
 /* **** **** **** **** **** **** */
 
+#elif defined TARGET_BEAGLEBONE_BLACK
+void GpioPlateformImplementation::internalPinSetupInput( GPioInputType type )
+{
+    
+}
+/* **** **** **** **** **** **** */
+
+
 #elif defined __APPLE__
 void GpioPlateformImplementation::internalPinSetupInput( GPioInputType type )
 {
@@ -273,6 +297,14 @@ void GpioPlateformImplementation::internalPinSetupInput( GPioInputType type )
 
 /* **** **** **** **** **** **** */
 
+#elif defined TARGET_BEAGLEBONE_BLACK
+/*static*/ void GpioPlateformImplementation::internalPinSetupOutput( const int pin )
+{
+    
+}
+
+/* **** **** **** **** **** **** */
+
 #elif defined __APPLE__
 /*static*/ void GpioPlateformImplementation::internalPinSetupOutput( const int pin )
 {
@@ -321,6 +353,14 @@ GpioState GpioPlateformImplementation::internalRead()
 
 /* **** **** **** **** **** **** */
 
+#elif defined TARGET_BEAGLEBONE_BLACK
+GpioState GpioPlateformImplementation::internalRead()
+{
+    
+}
+
+/* **** **** **** **** **** **** */
+
 #elif defined __APPLE__
 GpioState GpioPlateformImplementation::internalRead()
 {
@@ -362,6 +402,14 @@ GpioState GpioPlateformImplementation::internalRead()
         *(&pio->dat) &= ~(1 << num);
     
 
+    
+}
+
+/* **** **** **** **** **** **** */
+
+#elif defined TARGET_BEAGLEBONE_BLACK
+/*static*/ void GpioPlateformImplementation::internalSetOutput( const int pin , const GpioState state )
+{
     
 }
 
