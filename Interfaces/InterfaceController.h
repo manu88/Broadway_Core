@@ -93,6 +93,8 @@ private:
     
     std::unordered_set< InterfaceEvent* > m_inputs;
     
+    std::mutex _sync;
+    
 
 };
 

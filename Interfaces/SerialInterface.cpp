@@ -35,6 +35,9 @@ SerialEvent::~SerialEvent()
 {
     closePort();
 }
+
+/* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
+
 bool SerialEvent::openPort()
 {
     if ( _isOpen )
@@ -116,7 +119,21 @@ bool SerialEvent::changed()
 
 const std::string SerialEvent::readDatas()
 {
-    return "datas";
+    std::string ret;
+
+    char buf = '\0';
+    int  n = -1;
+
+  
+    char buffer[2];
+    n = read( _fd, buffer, sizeof(buffer));
+    
+    if ( n<=0 )
+        return "";
+  
+//    printf("size %i" , n);
+
+    return  std::string(buffer);// ret;
 }
 
 /* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */

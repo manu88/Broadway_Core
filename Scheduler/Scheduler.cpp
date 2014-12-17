@@ -21,8 +21,6 @@ Scheduler::Scheduler() :
     AbstractController( "Scheduler" ),
     Thread("Scheduler"),
 
-    m_mouseListener ( nullptr ),
-
     queue(comparator)
 {
 
@@ -33,14 +31,12 @@ Scheduler::~Scheduler()
 
     removeAllEvents();
     
-    if ( m_mouseListener )
-        delete m_mouseListener;
+
 }
 
 bool Scheduler::listenForMouseInput()
 {
-    if (m_mouseListener == nullptr)
-        m_mouseListener = new MouseListener();
+
     
     return true;
 }

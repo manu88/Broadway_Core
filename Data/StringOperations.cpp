@@ -5,7 +5,9 @@
 #include <memory>
 #include <stdarg.h>
 #include <cstring>
+#include <sys/signal.h>
 #include "StringOperations.h"
+
 
 
 bool StringOperations::beginWith( const std::string &stringToTest , const std::string &stringToFind)

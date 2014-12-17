@@ -32,8 +32,8 @@
 #include "Timecode.h"
 #include "Event.h"
 
-#include "InputEvent.h"
-#include "MouseInput.h"
+
+
 
 /* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
 
@@ -245,8 +245,7 @@ private:
     
     SchedulerDelegate *m_delegate;
     
-    // input events
-    MouseListener *m_mouseListener;
+
     
     std::mutex              m_sync;
     std::condition_variable m_wakeUp;

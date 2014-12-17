@@ -20,6 +20,9 @@
 #elif defined TARGET_CUBIE2
     #include "CubieBoard/CubieBoard.h"
 
+#elif defined TARGET_BEAGLEBONE_BLACK
+    #include "BeagleBoneBlack/BeagleBoneBlack.h"
+
 
 #endif
 

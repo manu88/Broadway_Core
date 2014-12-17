@@ -121,7 +121,8 @@ GpioEvent* InterfaceController::getGpioEventByID( int _id)
 
 bool InterfaceController::removeGpioInput(const int pinNumber)
 {
-    ThreadLock lock(this); // scopedLock    
+    ThreadLock lock(this); // scopedLock
+    
     GpioEvent *eventToRemove  = nullptr;
     
     if ( ( eventToRemove = getGpioEventByPin( pinNumber ) ) != nullptr )
@@ -138,6 +139,8 @@ bool InterfaceController::removeGpioInput(const int pinNumber)
 
 void InterfaceController::removeAllInputs()
 {
+    ScopedLock lock( _sync);
+    
     for ( auto i : m_inputs )
     {
         i->cleanup();
@@ -181,7 +184,10 @@ void InterfaceController::listActivesInput()
 
 void InterfaceController::sendGpo(const int pinNumber , const GpioState state)
 {
-    GpioEvent::setGpio(pinNumber, state);
+    if (getGpioEventByPin( pinNumber))
+        Log::log("WARNING : trying to use a GPIO Pin registered as input for output... DANGEROUS!");
+    else
+        GpioEvent::setGpio(pinNumber, state);
 }
 
 /* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
@@ -229,16 +235,17 @@ void InterfaceController::mainLoop()
 {
     while ( !threadShouldStop() )
     {
+        ScopedLock lock( _sync);
         
         for ( auto i : m_inputs )
         {
             
             if ( i->changed() )
             {
-                        m_delegate->inputChanged ( i );
-
+                
+                
+                m_delegate->inputChanged ( i );
             }
-            
         }
     }
 
