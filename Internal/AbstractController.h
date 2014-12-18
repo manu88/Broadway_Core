@@ -11,6 +11,7 @@
 
 #include <iostream>
 #include <unordered_set>
+#include "Thread.h"
 
 
 class AbstractController
@@ -62,6 +63,22 @@ protected:
         return !_isInactive;
     }
     
+    // use this mutex to lock thread to avoid race-conditions.
+    // exemple:
+    //
+    // void foo()
+    // {
+    //      ScopedLock( getControllerMutex() );
+    //
+    //      // access some vars
+    //
+    //  } // lock is auto-released with the scope
+    
+    std::mutex &getControllerMutex()
+    {
+        return _sync;
+    }
+    
 
 
 private:
@@ -77,6 +94,9 @@ private:
     bool _isInactive;
     
     std::string m_controllerName;
+    
+    std::mutex  _sync;
+    
 
     static std::unordered_set< AbstractController *> s_controllers;
     

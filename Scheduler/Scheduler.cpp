@@ -61,7 +61,7 @@ bool Scheduler::isAlreadyRegistered( TimedEvent* eventToFind )
 
 bool Scheduler::exists(int id) 
 {
-    ScopedLock lock(m_sync);
+    ScopedLock lock( getControllerMutex() );
     
     return active.find(id) != active.end();
 }
@@ -70,7 +70,7 @@ bool Scheduler::exists(int id)
 
 TimedEvent* Scheduler::getEventByID( int _id)
 {
-    ScopedLock lock(m_sync);
+    ScopedLock lock( getControllerMutex() );
     auto it = active.find( _id ) ;//!= active.end();
     
     if (it != active.end() )
@@ -128,7 +128,7 @@ void Scheduler::run()
     
     while ( !threadShouldStop() )
     {
-        ScopedLock lock( m_sync);
+        ScopedLock lock( getControllerMutex() );
 
         if (queue.empty() )
         {
@@ -204,7 +204,7 @@ void Scheduler::run()
 
 int Scheduler::createImpl( TimedEvent && item)
 {
-    ScopedLock lock( m_sync);
+    ScopedLock lock( getControllerMutex() );
 
     auto iter = active.emplace(item.getElementId(), std::move(item));
     queue.insert(iter.first->second);
@@ -214,7 +214,7 @@ int Scheduler::createImpl( TimedEvent && item)
 
 bool Scheduler::destroy( int id)
 {
-    ScopedLock lock( m_sync );
+    ScopedLock lock( getControllerMutex() );
     auto i = active.find(id);
     
     if (i == active.end())
@@ -238,7 +238,8 @@ bool Scheduler::destroy( int id)
 
 bool Scheduler::destroyAll()
 {
-    ScopedLock lock( m_sync );
+    ScopedLock lock( getControllerMutex() );
+    
     for ( auto &i : active )
     {
     

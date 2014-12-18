@@ -356,7 +356,7 @@ GpioState GpioPlateformImplementation::internalRead()
 #elif defined TARGET_BEAGLEBONE_BLACK
 GpioState GpioPlateformImplementation::internalRead()
 {
-    
+    return undefined;    
 }
 
 /* **** **** **** **** **** **** */

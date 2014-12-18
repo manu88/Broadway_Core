@@ -221,7 +221,8 @@ public:
     
     void setRunningTC( const Timecode tc  )
     {
-        ScopedLock lock(m_sync);
+        ScopedLock lock(  getControllerMutex() );
+        
         
         _deltaTC = tc;
     }
@@ -247,7 +248,7 @@ private:
     
 
     
-    std::mutex              m_sync;
+
     std::condition_variable m_wakeUp;
 
     std::unordered_map<int, TimedEvent > active;

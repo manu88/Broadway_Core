@@ -139,7 +139,7 @@ bool InterfaceController::removeGpioInput(const int pinNumber)
 
 void InterfaceController::removeAllInputs()
 {
-    ScopedLock lock( _sync);
+    ScopedLock lock( getControllerMutex() );
     
     for ( auto i : m_inputs )
     {
@@ -235,8 +235,8 @@ void InterfaceController::mainLoop()
 {
     while ( !threadShouldStop() )
     {
-        ScopedLock lock( _sync);
-        
+        ScopedLock lock( getControllerMutex()  );
+
         for ( auto i : m_inputs )
         {
             
