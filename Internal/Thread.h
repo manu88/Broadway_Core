@@ -14,8 +14,8 @@
 #include "Object.h"
 #include "../Scheduler/Timecode.h"
 
-typedef std::unique_lock<std::mutex>    ScopedLock;
 
+typedef std::unique_lock<std::mutex>    ScopedLock;
 
 class Thread : public virtual Object
 {

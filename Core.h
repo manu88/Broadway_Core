@@ -15,7 +15,7 @@
  
  Cubieboard2 : define TARGET_CUBIE2
  RaspberryPi : define TARGET_RASPBERRY_PI
- MacOs       : no define. will detect __APPLE__
+ MacOs       : no define. will auto detect __APPLE__
  
  
  */
@@ -54,7 +54,6 @@
 #include "Data/ArgumentsArray.h"
 #include "Data/Database.h"
 
-#include "Internal/Mutable.h"
 #include "Internal/FileSystem.h"
 
 #include "Scheduler/Scheduler.h"

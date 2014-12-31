@@ -21,10 +21,10 @@
 
 
 /* **** **** **** **** **** **** **** **** **** **** **** **** **** */
+std::vector<Log*> Log::s_logList = std::vector<Log*>();
 
-Log *Log::s_currentLogger = nullptr; // new LogDummy();
 
-Log::Log()
+Log::Log() 
 {
     className = "Log";
 }
@@ -36,33 +36,85 @@ Log::~Log()
 
 
 /* **** **** **** **** **** **** **** **** **** **** **** **** **** */
+/* **** **** **** **** **** **** **** **** **** **** **** **** **** */
 
-/*static*/ void Log::useLocalLogger()
+/*static*/ void Log::addLocalLogger()
 {
-    setLogger( new LogLocal() );
+    addLogger( new LogLocal() );
     
 }
 
 /*static*/ void Log::useNoLogger()
 {
-    setLogger( new LogDummy() );
+    cleanupLogger();
 }
 
-/*static */void Log::useFileLogger( const std::string filepath)
+/*static */void Log::addFileLogger( const std::string filepath)
 {
-    setLogger( new LogFile( filepath.c_str() ) );
+    addLogger( new LogFile( filepath.c_str() ) );
 }
 
-/*static*/ void Log::useUdpLogger(const std::string ip , int port)
+/*static*/ void Log::addUdpLogger(const std::string ip , int port)
 {
-    setLogger( new LogUdp(ip.c_str() , port ) );
+    addLogger( new LogUdp(ip.c_str() , port ) );
 }
 
+/* **** **** **** **** **** **** **** **** **** **** **** **** **** */
+
+/*static*/ void Log::addLogger( Log* logToUse)
+{
+    s_logList.push_back( logToUse );
+}
+
+/*static*/void Log::removeLogger( Log* logToUse )
+{
+    auto found = std::find(s_logList.begin(), s_logList.end(), logToUse);
+    
+    if ( found != s_logList.end() )
+    {
+        s_logList.erase( found);
+    }
+}
 
 /* **** **** **** **** **** **** **** **** **** **** **** **** **** */
 /* **** **** **** **** **** **** **** **** **** **** **** **** **** */
 
-LogFile::LogFile( const char *filename)
+/*static*/ void Log::log( const char * format , ... )
+{
+    char buffer[512];
+    va_list args;
+    va_start (args, format);
+    vsprintf (buffer,format, args);
+    
+    for (const Log* log : s_logList )
+        log->print( buffer );
+    
+    va_end (args);
+    /*
+    if ( s_currentLogger != nullptr )
+    {
+     
+    
+
+    }
+     */
+}
+
+/* **** **** **** **** **** **** **** **** **** **** **** **** **** */
+/* **** **** **** **** **** **** **** **** **** **** **** **** **** */
+
+/*static*/ void Log::cleanupLogger()
+{
+    for (auto log : s_logList)
+        delete log;
+    
+    s_logList.clear();
+}
+
+/* **** **** **** **** **** **** **** **** **** **** **** **** **** */
+/* **** **** **** **** **** **** **** **** **** **** **** **** **** */
+
+LogFile::LogFile( const char *filename) 
 {
     m_file = fopen( filename, "a");
     
@@ -82,7 +134,7 @@ LogFile::~LogFile()
 }
 
 
-void LogFile::print(const char * c)
+void LogFile::print(const char * c) const
 {
     fprintf(m_file, "\n%s" , c);
 }
@@ -125,7 +177,7 @@ LogUdp::~LogUdp()
 
 
 
-void LogUdp::print(const char * c)
+void LogUdp::print(const char * c) const
 {
     if (m_socket == -1 )
         return ;

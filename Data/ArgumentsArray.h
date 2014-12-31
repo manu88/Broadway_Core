@@ -97,9 +97,17 @@ public:
     ~ArgumentsArray()
     {
 
-        for (auto it = m_list.begin(); it != m_list.end(); ++it)
-            delete *it;
+        for (auto it : m_list )
+            delete it;
     }
+
+    ArgumentsArray& operator<<( float rhs )
+    {
+        addValue<float>( rhs );
+        
+        return *this;
+    }
+
     
 
     

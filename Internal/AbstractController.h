@@ -63,7 +63,8 @@ protected:
         return !_isInactive;
     }
     
-    // use this mutex to lock thread to avoid race-conditions.
+    // use this mutex to lock thread to avoid race-conditions
+    // in both controller's thread and accessing-var methods.
     // exemple:
     //
     // void foo()
@@ -95,6 +96,7 @@ private:
     
     std::string m_controllerName;
     
+    // data mutex. See getControllerMutex() above.
     std::mutex  _sync;
     
 

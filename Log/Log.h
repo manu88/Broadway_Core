@@ -11,11 +11,42 @@
 
 #include <iostream>
 #include <stdarg.h>
+#include <vector>
 
 #include <netinet/in.h>
 
 #include "../Internal/Object.h"
 
+/*
+ 
+ You can use as many loggers as you want, in the same time.
+ */
+
+/*
+typedef enum
+{
+    LOG_NONE            = 0,
+    
+    // will log on standard outupt
+    LOG_LOCAL           = ( 1 << 0 ),
+    
+    // will log on a text file
+    LOG_FILE            = ( 1 << 1 ),
+    
+    // will log using upd socket to (address/port)
+    LOG_UDP             = ( 1 << 2 ),
+    
+    // wil log on a special html file
+    // accessible if the Web server is running
+    LOG_WEB             = ( 1 << 3 ),
+    
+    LOG_PD              = ( 1 << 4 )
+    
+}
+ 
+
+LogMode;
+*/
 
 
 /* **** **** **** **** **** **** **** **** **** **** **** **** **** */
@@ -24,55 +55,40 @@ class Log : public Object
 {
 public:
     
-    // dirty...
-    static void cleanupLogger()
-    {
-        if (s_currentLogger != nullptr )
-        {
-            delete s_currentLogger;
-            s_currentLogger = nullptr;
-        }
-    }
+    static void log( const char * format , ... );
+    
+    static void cleanupLogger();
     
     
-    static void setLogger( Log* logToUse)
-    {
-        if (s_currentLogger != nullptr )
-            delete s_currentLogger;
-        
-        s_currentLogger = logToUse;
-    }
-    
-    static void useLocalLogger();
-    static void useNoLogger();
-    static void useFileLogger( const std::string filepath);
-    static void useUdpLogger(const std::string ip , int port);
-    
-    static void log( const char * format , ... )
-    {
-        if ( s_currentLogger != nullptr )
-        {            
-            char buffer[512];
-            va_list args;
-            va_start (args, format);
-            vsprintf (buffer,format, args);
-            s_currentLogger->print( buffer );
-            va_end (args);
-        }
-    }
+    /*
+     Conveniencies function to use predefined loggers. 
+     To pass a spectific one, use  addLogger() below.
+     */
 
+    // will clear add call delete on every log previously registered.
+    static void useNoLogger();
     
+    static void addLocalLogger();
+    static void addFileLogger( const std::string filepath);
+    static void addUdpLogger(const std::string ip , int port);
+
+    static void addLogger( Log* logToUse );
+    static void removeLogger( Log* logToUse );
 protected:
-    
-    virtual void print( const char * c  ) = 0;
-    
     // subclasses only
     Log();
     virtual ~Log();
     
+    virtual void print( const char * c  ) const = 0;
+
+
 private:
     
-    static Log *s_currentLogger;
+    
+
+    
+    
+    static std::vector<Log*> s_logList;
     
 };
 
@@ -93,7 +109,7 @@ public:
     
 protected:
     
-    virtual void print(const char * c)
+    virtual void print(const char * c) const
     {}
 };
 
@@ -102,7 +118,7 @@ protected:
 class LogLocal : public Log
 {
 public:
-    LogLocal()
+    LogLocal() 
     {}
     
     ~LogLocal()
@@ -110,9 +126,9 @@ public:
     
 protected:
     
-    virtual void print(const char * c)
+    virtual void print(const char * c) const
     {
-        printf("\nLog:> %s" , c );
+        printf("\nLog:>%s" , c );
     }
 };
 
@@ -126,7 +142,7 @@ public:
     ~LogFile();
     
 protected:
-    virtual void print(const char * c);
+    virtual void print(const char * c) const;
     
 private:
     FILE *m_file;
@@ -148,7 +164,7 @@ protected:
     struct sockaddr_in m_endPoint;
     
     
-    virtual void print(const char * c);
+    virtual void print(const char * c) const;
 };
 
 #endif /* defined(__Broadway_test__Log__) */

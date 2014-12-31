@@ -189,6 +189,7 @@ public:
     static CScriptVar* getArgumentsAsJSArray( const ArgumentsArray &array );
     
     static std::string getArgumentsAsJSArrayString( const ArgumentsArray &array );
+    static std::string getArgumentsAsStringList( const ArgumentsArray &array );
     
     template<typename Type>
     static CScriptVar* getJSArrayFromVector( const std::vector<Type> &vect)

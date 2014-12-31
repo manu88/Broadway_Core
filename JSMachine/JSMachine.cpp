@@ -206,26 +206,24 @@ std::string JSMachine::evaluateAsString(const std::string &buffer)
 {
     std::string ret = "undefined";
     
-   // if ( m_mutex.try_lock() )
-    {
+
     
-        try
-        {
-            ret =  m_machine.evaluate( buffer );
-        }
-        
-        catch (CScriptException *e)
-        {
-            Log::log("%s", e->text.c_str());
-        }
-        
-        catch (...)
-        {
-            
-        }
-        
-//        m_mutex.unlock();
+    try
+    {
+        ret =  m_machine.evaluate( buffer );
     }
+    
+    catch (CScriptException *e)
+    {
+        Log::log("%s", e->text.c_str());
+    }
+    
+    catch (...)
+    {
+        
+    }
+        
+
    
     return ret;
 }
@@ -488,7 +486,7 @@ void JSMachine::clearStack()
 
 /*static*/void JSMachine::js_print(CScriptVar *v, void *userdata)
 {
-    Log::log("> %s", v->getParameter("text")->getString().c_str());
+    Log::log("%s", v->getParameter("text")->getString().c_str());
 }
 
 /* **** **** **** **** **** **** **** **** **** **** **** **** **** */
@@ -811,13 +809,16 @@ bool has_suffix(const std::string &str, const std::string &suffix)
 
 /* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
 
-std::string JSMachine::getArgumentsAsJSArrayString( const ArgumentsArray &array )
+std::string JSMachine::getArgumentsAsStringList( const ArgumentsArray &array )
 {
     std::ostringstream stream;
     
-    stream << " [ ";
+
     for (int i =0; i<array.getSize() ; i++)
     {
+        if ( i>0)
+            stream << " , ";
+        
         if (array.isType<int>(i) )
         {
             const int val = array.getValueAtIndex<int>( i );
@@ -841,7 +842,50 @@ std::string JSMachine::getArgumentsAsJSArrayString( const ArgumentsArray &array 
             DEBUG_ASSERT(false);
         }
         
-        stream << " , ";
+
+    }
+    
+
+    
+    return stream.str();
+
+}
+
+/* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
+
+std::string JSMachine::getArgumentsAsJSArrayString( const ArgumentsArray &array )
+{
+    std::ostringstream stream;
+    
+    stream << " [ ";
+    for (int i =0; i<array.getSize() ; i++)
+    {
+        if ( i>0)
+            stream << " , ";
+        if (array.isType<int>(i) )
+        {
+            const int val = array.getValueAtIndex<int>( i );
+            stream << val;
+        }
+        else if (array.isType<float>(i) )
+        {
+            const float val = array.getValueAtIndex<float>( i );
+            stream << val;
+        }
+        
+        else if (array.isType<std::string>(i) )
+        {
+            const std::string val = array.getValueAtIndex<std::string>( i );
+            stream << "\"" << val << "\"" ;
+        }
+        
+        else
+        {
+            /* No parsing method for this type, to be added ...*/
+            DEBUG_ASSERT(false);
+        }
+        
+        
     }
     
     stream << " ] ";
