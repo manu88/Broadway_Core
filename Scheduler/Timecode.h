@@ -15,10 +15,7 @@
 #include <sys/time.h>
 
 #include "../Data/StringOperations.h"
-/*
-static bool operator==(const Timecode_t& lhs, const Timecode_t& rhs);
-static bool operator!=(const Timecode_t& lhs, const Timecode_t& rhs);
-*/
+
 
 
 

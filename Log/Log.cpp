@@ -16,6 +16,8 @@
 
 #include <unistd.h>
 
+#include "../Scheduler/TimeDefs.h"
+
 #define BUFLEN 512
 #define NPACK 10
 
@@ -87,7 +89,10 @@ Log::~Log()
     vsprintf (buffer,format, args);
     
     for (const Log* log : s_logList )
+    {
         log->print( buffer );
+    }
+    
     
     va_end (args);
     /*
@@ -114,29 +119,52 @@ Log::~Log()
 /* **** **** **** **** **** **** **** **** **** **** **** **** **** */
 /* **** **** **** **** **** **** **** **** **** **** **** **** **** */
 
-LogFile::LogFile( const char *filename) 
+LogFile::LogFile( const std::string &filename ):
+_filepath( filename )
 {
-    m_file = fopen( filename, "a");
+    FILE *file = fopen( _filepath.c_str(), "a");
     
-    if ( !m_file )
+    if ( !file )
     {
-        printf("\n ERROR while opening file %s" , filename);
-        m_file = nullptr;
+        printf("\n ERROR while opening file %s" , _filepath.c_str() );
+        _fileExists = false;
+
     }
-    
-    fprintf(m_file, "\n############ START ####################" );
+    else
+    {
+        _fileExists = true;
+        
+        fprintf( file, "\n############ START ####################" );
+        
+        Date now;
+        
+        fprintf( file, "\nDate : %s",now.toString().c_str() );
+        fclose( file );
+    }
 }
 
 LogFile::~LogFile()
 {
-    fprintf(m_file, "\n############ STOP ####################" );    
-    fclose( m_file );
+    FILE *file = fopen( _filepath.c_str() , "a");
+    
+    if (file)
+    {
+        fprintf( file, "\n############ STOP ####################" );
+        fclose( file );
+    }
 }
 
 
 void LogFile::print(const char * c) const
 {
-    fprintf(m_file, "\n%s" , c);
+    FILE *file = fopen( _filepath.c_str() , "a");
+    
+    if (file)
+    {
+        fprintf( file, "\n%s" , c);
+        fclose( file );
+    }
+
 }
 
 

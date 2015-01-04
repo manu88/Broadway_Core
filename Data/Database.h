@@ -41,7 +41,7 @@ public:
     
     /* **** **** **** **** **** **** **** **** **** **** **** **** **** */
     
-    bool parseFile(const std::string &fileName , char delim)
+    bool parseFile(const std::string &fileName , const char delim)
     {
 
         FILE* file = fopen(fileName.c_str() , "r");

@@ -11,6 +11,7 @@
 
 #include <iostream>
 #include <string>
+#include <vector>
 
 namespace StringOperations
 {
@@ -37,6 +38,9 @@ namespace StringOperations
         Write a formatted string like printf and others
      */
     std::string stringWithFormat(const std::string fmt_str, ...);
+    
+    std::vector<std::string> &split(const std::string &s, char delim, std::vector<std::string> &elems);
+    std::vector<std::string> split(const std::string &s, char delim);
     
 }
 #endif /* defined(__Broadway_core__StringOperations__) */

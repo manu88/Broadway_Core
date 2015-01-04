@@ -23,8 +23,10 @@ namespace FileSystem
     bool fileExists( const std::string &filepath);
     bool folderExists( const std::string &path);
     
-    bool isFile( const std::string path);
-    bool isFolder( const std::string path);
+    bool isFile( const std::string &path);
+    bool isFolder( const std::string &path);
+    
+    bool createFile( const std::string &path);
     
     // will return -1 if invalid (?)
     long long getFileSize( const std::string &filepath);

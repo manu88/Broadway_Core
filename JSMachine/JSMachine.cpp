@@ -119,12 +119,7 @@ void JSMachine::prepareEnvironment()
     
     m_machine.addNative( "function system( command )"           , &js_system, this );
     m_machine.addNative( "function getTime()"                   , &js_getTime,0);
-    
 
-
-    
-    
-    
     executeBuffer("var lets_quit = 0; function quit() { lets_quit = 1; }");
 }
 
@@ -146,6 +141,8 @@ void JSMachine::addRegisteredSelectors()
         }
     }
 }
+
+/* **** **** **** **** **** **** **** **** **** **** **** **** **** */
 
 void JSMachine::reset()
 {
@@ -435,8 +432,6 @@ void JSMachine::removeRegisteredFunctionWithSignature(const std::string &signatu
 {
     for (auto sel : m_registeredSelectors )
     {
-                
-        
         if (  signature == sel->signature  )
         {
             delete sel;
@@ -449,10 +444,10 @@ void JSMachine::removeRegisteredFunctionWithSignature(const std::string &signatu
 void JSMachine::removeAllRegisteredFunctions()
 {
 //    m_registeredSelectors.er
-    for (auto it = m_registeredSelectors.begin() ; it != m_registeredSelectors.end(); ++it)
+    for (auto it : m_registeredSelectors )
     {
 
-        delete *it;
+        delete it;
     }
     
     m_registeredSelectors.clear();
@@ -460,7 +455,11 @@ void JSMachine::removeAllRegisteredFunctions()
 
 void JSMachine::clearStack()
 {
-    delete m_machine.root;
+    
+    
+    //Log::log("root ref count is %i" ,m_machine.root->getRefs() );
+    m_machine.root->unref();
+    
     
     m_machine.root = new CScriptVar();
     m_machine.root->ref();

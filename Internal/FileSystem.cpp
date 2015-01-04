@@ -86,16 +86,35 @@ bool FileSystem::folderExists( const std::string &path)
 
 /* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
 
-bool FileSystem::isFile( const std::string path)
+bool FileSystem::isFile( const std::string &path)
 {
     return fileExists( path );
 }
 
 /* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
 
-bool FileSystem::isFolder( const std::string path)
+bool FileSystem::isFolder( const std::string &path)
 {
     return folderExists( path );
+}
+
+/* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
+
+bool FileSystem::createFile( const std::string &path)
+{
+    FILE *ifp = nullptr;
+    ifp = fopen( path.c_str() , "w");
+    
+    if (ifp)
+    {
+        fclose(ifp);
+        return true;
+    }
+    
+
+    
+    return false;
+    
 }
 
 /* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */

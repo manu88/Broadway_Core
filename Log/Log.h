@@ -137,7 +137,7 @@ protected:
 class LogFile : public Log
 {
 public:
-    LogFile( const char *filename);
+    LogFile( const std::string &filename);
     
     ~LogFile();
     
@@ -145,7 +145,9 @@ protected:
     virtual void print(const char * c) const;
     
 private:
-    FILE *m_file;
+    std::string _filepath;
+    bool        _fileExists;
+//    FILE *m_file;
 };
 
 
