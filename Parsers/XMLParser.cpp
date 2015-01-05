@@ -158,6 +158,14 @@ const std::string XMLParser::getAttributeForTag( const std::string &elementName 
 
 /* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
 
+/*static*/const std::string XMLParser::getAttributeForName( const XMLElement* element ,const std::string &attributeName)
+{
+    return XMLString::transcode( element->getAttribute(XMLString::transcode( attributeName.c_str() )) );
+    
+}
+
+/* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
+
 const XMLParser::AttributesList XMLParser::getAttributesForTag( const std::string &elementName ,const std::string &attributeName ) const
 {
     std::list<std::string> ret;
@@ -185,6 +193,35 @@ const XMLParser::AttributesList XMLParser::getAttributesForTag( const std::strin
         }
     }
 
+    
+    return ret;
+    
+}
+
+const XMLParser::XMLElementList XMLParser::getNodeListForName( const std::string &elementName ) const
+{
+    std::vector<XMLElement*> ret;
+    
+    const DOMDocument* xmlDoc = _parser->getDocument();
+    const DOMElement* elementRoot = xmlDoc->getDocumentElement();
+    
+    const DOMNodeList *list = elementRoot->getElementsByTagName( XMLString::transcode( elementName.c_str() ) );
+    
+    if (list)
+    {
+        for (XMLSize_t xx = 0; xx < list->getLength(); ++xx )
+        {
+            DOMNode* currentNode = list->item(xx);
+            
+            if( currentNode->getNodeType() && currentNode->getNodeType() == DOMNode::ELEMENT_NODE )
+            {
+                DOMElement* elem = dynamic_cast< xercesc::DOMElement* >( currentNode );
+                ret.push_back( elem );
+                
+            }
+        }
+    }
+    
     
     return ret;
     

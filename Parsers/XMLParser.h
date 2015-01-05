@@ -29,6 +29,14 @@ public:
     
     // conveniency typedef
     typedef std::list< std::string > AttributesList;
+    
+    // use this to access XML element list with
+    // methods getNodeListForName() to get a list
+    // and getAttributeForName( XMLElement* element ,const std::string &attributeName)
+    
+    typedef xercesc::DOMElement XMLElement;
+    typedef std::vector<XMLElement*> XMLElementList;
+    
 
     XMLParser();
     ~XMLParser();
@@ -46,13 +54,15 @@ public:
         use getAttributesForTag() bellow.
      */
     const std::string getAttributeForTag( const std::string &elementName ,const std::string &attributeName ) const;
+    
+    static const std::string getAttributeForName( const XMLElement* element ,const std::string &attributeName);
 
     /*
      return a list containing the named attributes associated with 'elementName'.
      */
     const AttributesList getAttributesForTag( const std::string &elementName ,const std::string &attributeName ) const;
     
-    
+    const XMLElementList getNodeListForName( const std::string &elementName ) const;
     
 
     
