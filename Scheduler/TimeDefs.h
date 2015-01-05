@@ -57,14 +57,27 @@ struct Date_t
         getCurrent();
     }
     
-    bool operator==(const Date_t & rhs)
+    bool operator==(const Date_t & rhs) const
     {
         return (dayNum == rhs.dayNum) && ( day == rhs.day );
     }
     
-    bool operator!=(const Date_t & rhs)
+    bool operator!=(const Date_t & rhs) const
     {
         return !(*this == rhs);
+        
+    }
+    
+    bool operator<(const Date_t & rhs) const
+    {
+//        01/04/1988 = 19 880 401 = jour + 100*mois + 10000*year
+//        27/12/2000 = 20001227
+//
+        const int r1 = this->year*1000 + this->month*100 + this->dayNum;
+        const int r2 = rhs.year*1000 + rhs.month*100 + rhs.dayNum;
+        
+        return r1 < r2;
+        
         
     }
     
