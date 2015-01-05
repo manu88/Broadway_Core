@@ -50,9 +50,11 @@ class TimedEvent : public Element
 {
 public:
     TimedEvent():
-    running(false)
+    running(false),
+    timerId ( ++s_nextId )
     {
         s_timerCount++;
+
     }
     
     ~TimedEvent()
@@ -60,16 +62,18 @@ public:
         s_timerCount--;
         
         if ( s_timerCount<=0 )
+        {
             s_timerCount = 0;
+           // s_nextId = 0;
+        }
     }
     
     TimedEvent(Timestamp next, Duration period ) noexcept :
     next    ( next     ),
     period  ( period   ),
     running ( false    ),
-    timerId ( s_nextId )
+    timerId ( ++s_nextId )
     {
-
     }
     
     TimedEvent( TimedEvent const& r) = delete;

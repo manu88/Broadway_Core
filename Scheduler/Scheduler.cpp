@@ -124,8 +124,6 @@ void Scheduler::run()
 {
     setReady();
     
-
-    
     while ( !threadShouldStop() )
     {
         ScopedLock lock( getControllerMutex() );
@@ -135,17 +133,10 @@ void Scheduler::run()
             // Wait (forever) for work
             m_wakeUp.wait(lock);
         }
-/*
-        if ( ( m_mouseListener != nullptr ) && m_mouseListener->pollInput() )
-            m_delegate->mouseEventReceived(m_mouseListener->getLastState() );
-  */      
+
         if ( !queue.empty() )
         {
          
-            
-
-
-          
             auto firstInstance = queue.begin();
             TimedEvent& instance = *firstInstance;
             auto now = Clock::now();
@@ -182,7 +173,10 @@ void Scheduler::run()
                     {
                         instance.next = instance.next + instance.period;
                         queue.insert(instance);
-                    } else {
+                    }
+                    
+                    else
+                    {
                         active.erase(instance.getElementId() );
                     }
                 }
@@ -190,7 +184,7 @@ void Scheduler::run()
             else
             {
                 // Wait until the timer is ready or a timer creation notifies
-             //   m_wakeUp.wait_until(lock, instance.next);
+                m_wakeUp.wait_until(lock, instance.next);
             }
         }
     }
@@ -206,10 +200,10 @@ int Scheduler::createImpl( TimedEvent && item)
 {
     ScopedLock lock( getControllerMutex() );
 
-    auto iter = active.emplace(item.getElementId(), std::move(item));
+    auto iter = active.emplace(item.timerId, std::move(item));
     queue.insert(iter.first->second);
     m_wakeUp.notify_all();
-    return item.getElementId();
+    return item.timerId; //getElementId();
 }
 
 bool Scheduler::destroy( int id)
@@ -228,8 +222,8 @@ bool Scheduler::destroy( int id)
     }
     else
     {
-        queue.erase(std::ref(i->second));
-        active.erase(i);
+        queue.erase( std::ref( i->second ) );
+        active.erase( i );
     }
     
     m_wakeUp.notify_all();

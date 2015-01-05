@@ -70,15 +70,10 @@ struct Date_t
     
     bool operator<(const Date_t & rhs) const
     {
-//        01/04/1988 = 19 880 401 = jour + 100*mois + 10000*year
-//        27/12/2000 = 20001227
-//
         const int r1 = this->year*1000 + this->month*100 + this->dayNum;
         const int r2 = rhs.year*1000 + rhs.month*100 + rhs.dayNum;
         
         return r1 < r2;
-        
-        
     }
     
     std::string toString() const
@@ -226,7 +221,6 @@ static Day dayFromExplicitFrench( const std::string &text)
 {
     const std::string day = StringOperations::toLowerCase( text);
     
-    printf("\n DAY = '%s' ", day.c_str() );
     
     if ( day == "lundi")
         return Monday;
