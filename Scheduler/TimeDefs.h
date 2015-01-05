@@ -28,18 +28,18 @@ typedef enum
 
 typedef enum
 {
-    January    = 0,
-    February   = 1,
-    March      = 2,
-    April      = 3,
-    May        = 4,
-    June       = 5,
-    July       = 6,
-    August     = 7,
-    September  = 8,
-    October    = 9,
-    November   = 10,
-    December   = 11
+    January    = 1,
+    February   = 2,
+    March      = 3,
+    April      = 4,
+    May        = 5,
+    June       = 6,
+    July       = 7,
+    August     = 8,
+    September  = 9,
+    October    = 10,
+    November   = 11,
+    December   = 12
     
 } Month ;
 
@@ -74,8 +74,8 @@ struct Date_t
         
         if (day == Monday)
             ret += "Monday";
-        else if (day == Thursday)
-            ret += "Thursday";
+        else if (day == Tuesday)
+            ret += "Tuesday";
         else if (day == Wednesday)
             ret += "Wednesday";
         else if (day == Thursday)
@@ -209,6 +209,48 @@ typedef struct Date_t Date;
 /* *** **** **** **** **** **** **** **** **** */
 
 
+static Day dayFromExplicitFrench( const std::string &text)
+{
+    const std::string day = StringOperations::toLowerCase( text);
+    
+    printf("\n DAY = '%s' ", day.c_str() );
+    
+    if ( day == "lundi")
+        return Monday;
+    
+    else if ( day == "mardi" )
+        return Tuesday;
+    
+    else if ( day == "mercredi")
+        return Wednesday;
+    
+    else if ( day == "jeudi")
+        return Thursday;
+    
+    else if ( day == "vendredi")
+        return Friday;
+    
+    else if ( day == "samedi")
+        return Saturday;
+
+    return Sunday;
+    
+}
+
+static Date dateFromStringWithDelimiter( const std::string &string , const char delim)
+{
+    Date date;
+    
+    auto list = StringOperations::split( string , delim);
+    
+    date.dayNum =         atoi( list.at(0).c_str() );
+    date.month  = (Month) atoi( list.at(1).c_str() );
+    date.year   =         atoi( list.at(2).c_str() );
+    
+    
+    return date;
+    
+}
 
 
 

@@ -9,6 +9,7 @@
 #ifndef __Broadway_core__StringOperations__
 #define __Broadway_core__StringOperations__
 
+#include <algorithm>
 #include <iostream>
 #include <string>
 #include <vector>
@@ -41,6 +42,16 @@ namespace StringOperations
     
     std::vector<std::string> &split(const std::string &s, char delim, std::vector<std::string> &elems);
     std::vector<std::string> split(const std::string &s, char delim);
+    
+    
+    inline std::string toLowerCase(const std::string &string )
+    {
+        std::string ret = string;
+        
+        std::transform( ret.begin(), ret.end(), ret.begin(), ::tolower);
+        
+        return ret;
+    }
     
 }
 #endif /* defined(__Broadway_core__StringOperations__) */
