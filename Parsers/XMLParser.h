@@ -22,6 +22,57 @@
 
 XERCES_CPP_NAMESPACE_USE // beurk...
 
+/* **** **** **** **** **** **** **** **** **** **** **** **** **** */
+
+class ScopedXMLString : public Object
+{
+public:
+    ScopedXMLString( const std::string &str)
+    {
+        _release = true;
+
+        _str = XMLString::transcode( str.c_str() );
+    }
+    
+    ScopedXMLString( const XMLCh* str)
+    {
+        _release = false;
+
+        _str = const_cast<XMLCh*>( str );
+    }
+
+    ~ScopedXMLString()
+    {
+        if ( _release )
+            XMLString::release( &_str);
+    }
+    
+    // will automaticaly work with Xerces parser
+    operator XMLCh*() const
+    {
+        return _str;
+    }
+    
+    operator std::string() const
+    {
+        auto tmp = XMLString::transcode( _str);
+        
+        const std::string ret = tmp;
+        
+        XMLString::release( &tmp);
+        return ret;
+        
+    }
+    
+
+    
+private:
+    bool   _release;
+    XMLCh* _str;
+    
+};
+
+/* **** **** **** **** **** **** **** **** **** **** **** **** **** */
 
 class XMLParser : public Object , private XMLErrorHandler
 {

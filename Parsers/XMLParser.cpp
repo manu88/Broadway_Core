@@ -48,15 +48,10 @@ _hasErrors ( false )
     
     s_refCount++;
     
-    //_parser.setValidationScheme(gValScheme);
-    //_parser.setDoNamespaces(gDoNamespaces);
-    //_parser.setDoSchema(gDoSchema);
-    //_parser.setHandleMultipleImports (true);
-    //_parser.setValidationSchemaFullChecking(gSchemaFullChecking);
-    
-    //_parser.setCreateEntityReferenceNodes(gDoCreate);
     
     _parser = new XercesDOMParser();
+    
+
 
     _parser->setErrorHandler(  this );
 
@@ -133,7 +128,12 @@ const std::string XMLParser::getAttributeForTag( const std::string &elementName 
     const DOMDocument* xmlDoc = _parser->getDocument();
     const DOMElement* elementRoot = xmlDoc->getDocumentElement();
     
-    const DOMNodeList *list = elementRoot->getElementsByTagName( XMLString::transcode( elementName.c_str() ) );
+
+    
+    const DOMNodeList *list = elementRoot->getElementsByTagName( ScopedXMLString( elementName )  );
+    
+
+    
     
     if (list)
     {
@@ -144,7 +144,7 @@ const std::string XMLParser::getAttributeForTag( const std::string &elementName 
             if( currentNode->getNodeType() && currentNode->getNodeType() == DOMNode::ELEMENT_NODE )
             {
                 const DOMElement* currentElement = dynamic_cast< xercesc::DOMElement* >( currentNode );
-                return  XMLString::transcode( currentElement->getAttribute(XMLString::transcode( attributeName.c_str() )) ) ;
+                return  ScopedXMLString(  currentElement->getAttribute( ScopedXMLString( attributeName ) ) ) ;
 
                 
             }
@@ -160,7 +160,8 @@ const std::string XMLParser::getAttributeForTag( const std::string &elementName 
 
 /*static*/const std::string XMLParser::getAttributeForName( const XMLElement* element ,const std::string &attributeName)
 {
-    return XMLString::transcode( element->getAttribute(XMLString::transcode( attributeName.c_str() )) );
+
+    return ScopedXMLString( element->getAttribute( ScopedXMLString( attributeName )) );
     
 }
 
@@ -173,7 +174,7 @@ const XMLParser::AttributesList XMLParser::getAttributesForTag( const std::strin
     const DOMDocument* xmlDoc = _parser->getDocument();
     const DOMElement* elementRoot = xmlDoc->getDocumentElement();
     
-    const DOMNodeList *list = elementRoot->getElementsByTagName( XMLString::transcode( elementName.c_str() ) );
+    const DOMNodeList *list = elementRoot->getElementsByTagName( ScopedXMLString( elementName ) );
     
     if (list)
     {
@@ -184,7 +185,7 @@ const XMLParser::AttributesList XMLParser::getAttributesForTag( const std::strin
             if( currentNode->getNodeType() && currentNode->getNodeType() == DOMNode::ELEMENT_NODE )
             {
                 const DOMElement* currentElement = dynamic_cast< xercesc::DOMElement* >( currentNode );
-                ret.push_back( XMLString::transcode( currentElement->getAttribute(XMLString::transcode( attributeName.c_str() )) ) );
+                ret.push_back( ScopedXMLString(  currentElement->getAttribute( ScopedXMLString(  attributeName )) ) );
                 
                 
             }
@@ -205,7 +206,7 @@ const XMLParser::XMLElementList XMLParser::getNodeListForName( const std::string
     const DOMDocument* xmlDoc = _parser->getDocument();
     const DOMElement* elementRoot = xmlDoc->getDocumentElement();
     
-    const DOMNodeList *list = elementRoot->getElementsByTagName( XMLString::transcode( elementName.c_str() ) );
+    const DOMNodeList *list = elementRoot->getElementsByTagName( ScopedXMLString(  elementName ) );
     
     if (list)
     {
@@ -239,11 +240,11 @@ const XMLParser::XMLElementList XMLParser::getNodeListForName( const std::string
     
     catch(const XMLException& toCatch)
     {
-        char *pMsg = XMLString::transcode(toCatch.getMessage());
-        Log::log("Error during Xerces-c Initialization. Exception message: %s" , pMsg );
+        const std::string pMsg = ScopedXMLString( toCatch.getMessage() );
+        Log::log("Error during Xerces-c Initialization. Exception message: %s" , pMsg.c_str() );
         
         
-        XMLString::release(&pMsg);
+
         return s_initOk = false;
     }
     

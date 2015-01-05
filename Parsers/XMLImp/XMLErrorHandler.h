@@ -17,6 +17,8 @@
 XERCES_CPP_NAMESPACE_USE
 
 
+
+
 class XMLErrorHandler : public ErrorHandler
 {
 public:
