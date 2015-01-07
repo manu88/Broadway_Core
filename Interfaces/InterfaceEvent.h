@@ -20,7 +20,8 @@ typedef enum
     Event_Gpio,   // GPIO HIGH/LOW state
     Event_I2C,    // I2C device
     Event_SPI,    // SPI device
-    Event_Serial  // Serial Interface
+    Event_Serial,  // Serial Interface
+    Event_CAN
     
 } InterfaceEventType;
 
@@ -54,6 +55,11 @@ public:
     bool isSerialEvent() const
     {
         return _type == Event_Serial;
+    }
+    
+    bool isCanEvent() const
+    {
+        return _type == Event_CAN;
     }
     
 protected:

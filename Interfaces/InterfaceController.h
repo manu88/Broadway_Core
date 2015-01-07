@@ -41,7 +41,7 @@ protected:
 /* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
 
 class InterfaceController :  public AbstractController ,
-                        public Thread
+                             public Thread
 {
 public:
 
