@@ -223,6 +223,21 @@ SerialEvent* InterfaceController::getSerialEventByPort( const std::string &port)
     return nullptr;
 }
 
+/* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
+/* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
+
+CanEvent* InterfaceController::addCanConnexion( const std::string &interface)
+{
+    ThreadLock lock(this);
+    
+    CanEvent* event = new CanEvent( interface );
+    m_inputs.insert( event );
+    
+    event->connect();
+    
+    return event;
+}
+
 
 /* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
 /*

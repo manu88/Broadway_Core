@@ -20,6 +20,7 @@
 #include "SerialInterface.h"
 #include "InterfaceEvent.h"
 #include "GpioInterface.h"
+#include "CanEvent.h"
 
 
 /* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
@@ -77,6 +78,11 @@ public:
     
     SerialEvent *addSerial( const std::string &port);
     SerialEvent *getSerialEventByPort( const std::string &port);
+    
+    /* Can connections */
+    
+    CanEvent *addCanConnexion( const std::string &interface);
+
     
     void listActivesInput();
     

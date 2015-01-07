@@ -7,12 +7,12 @@
 //
 
 #include "CanEvent.h"
-
+#include "../Log/Log.h"
 
 CanEvent::CanEvent( const std::string &interface ):
 InterfaceEvent( Event_CAN ),
 
-_interfName ( interface )
+_impl( interface )
 {
     
 }
@@ -20,4 +20,34 @@ _interfName ( interface )
 CanEvent::~CanEvent()
 {
     
+}
+
+bool CanEvent::connect()
+{
+    if ( _impl.createSocket() )
+    {
+        if (!_impl.bind() )
+        {
+            Log::log("Unable to bind soket for interface '%s'" , _impl._interfName.c_str() );
+        }
+    }
+    else
+        Log::log("Unable to create soket for interface '%s'" , _impl._interfName.c_str() );
+    
+    return _impl._isConnected;
+}
+
+bool CanEvent::close()
+{
+    return _impl.closeSocket();
+}
+
+bool CanEvent::changed()
+{
+    return false;
+}
+
+void CanEvent::cleanup()
+{
+    close();
 }

@@ -12,6 +12,12 @@
 #include <iostream>
 
 #include "InterfaceEvent.h"
+#include "Impl/CanPlateformImpl.h"
+
+/*
+    The actual implementation is in Impl/CanPlateformImpl.cpp and relies
+    on linux-can for unix system
+ */
 
 class CanEvent : public InterfaceEvent
 {
@@ -20,11 +26,33 @@ public:
     CanEvent( const std::string &interface );
     ~CanEvent();
     
+    const std::string &getInterfaceName() const noexcept
+    {
+        return _impl._interfName;
+    }
+    
+    bool isConnected() const noexcept
+    {
+        return _impl._isConnected;
+    }
+    
+    bool connect();
+    bool close();
+    
+    bool sendFrame( unsigned int frameID , int length, const unsigned char* frameData)
+    {
+        return _impl.sendFrame( frameID, length , frameData );
+    }
+    
 protected:
+    bool changed();
+    void cleanup();
+    
     
 private:
-    
-    std::string _interfName;
+    // actual implementation
+    CanPlateformImpl _impl;
+
     
 };
 
