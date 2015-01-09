@@ -10,6 +10,7 @@
 #define __Broadway_core__JSONParser__
 
 #include <iostream>
+#include <memory>
 
 #include "../Internal/Object.h"
 
@@ -41,7 +42,7 @@ public:
         
     public:
         
-        Node( cJSON *node = nullptr ):
+        Node( cJSON *node  ):
         _node ( node )
         {
             if ( _node != nullptr)
@@ -49,12 +50,12 @@ public:
             else
                 _type = Node_NULL;
         }
-        
+        /*
         Node( const Node &other):
         _node ( other._node ),
         _type ( other._type )
         {}
-        
+        */
         ~Node() {}
         
         operator bool() const
@@ -62,11 +63,16 @@ public:
             return _node != nullptr;
         }
         
-        /* typecheck */
+        /* ---- typecheck ----  */
         
         NodeType getType() const
         {
             return _type;
+        }
+        
+        bool isObject() const
+        {
+            return _type == Node_Object;
         }
         
         bool isString() const
@@ -84,22 +90,60 @@ public:
             return _type == Node_NULL;
         }
         
-        /* get vals */
+        bool isArray() const
+        {
+            return _type == Node_Array;
+        }
+        
+        /* ----  get vals ---- */
         
         const std::string getString() const
         {
             return _node->valuestring;
         }
         
+        // numeric values
+        /*
+            Warning : there's no way to tell if a numeric value type is integer or floatting point.
+            If getInt() is called on a float, the returned value will be truncated.
+            In doubt, better call Saul, heuu no,  better call getDouble()
+         */
         double getDouble() const
         {
             return _node->valuedouble;
         }
         
+        int getInt() const
+        {
+            return _node->valueint;
+        }
+        
+        // array
+        
+        int getArraySize() const
+        {
+            return cJSON_GetArraySize( _node );
+        }
+        
+        std::unique_ptr<Node> getArrayItem( int index ) const
+        {
+            return std::auto_ptr<JSONParser::Node>( new Node( cJSON_GetArrayItem(_node, index ) ) );
+        }
+        
+        // child
+        
+        bool hasChild() const
+        {
+            return _node->child != nullptr;
+        }
+        
+        std::unique_ptr<Node> getChild() const
+        {
+            return std::auto_ptr<JSONParser::Node>( new Node( _node->child ) );
+        }
+        
     private:
 
-        
-        // attribs
         cJSON *_node;
         NodeType _type;
         
@@ -117,13 +161,14 @@ public:
     
     bool traverseNode( cJSON *node);
     
-    const Node getRoot() const
+    // return the root of the JSON database. can be NULL!!
+    std::unique_ptr<Node> getRootNode() const
     {
-        return Node(_json);
+        return std::auto_ptr<JSONParser::Node>( new Node( _json ) );
     }
     
     // will return nullptr if not found
-    const Node getNode( const std::string &name) const;
+    std::unique_ptr<Node> getNode( const std::string &name) const;
     
     
     

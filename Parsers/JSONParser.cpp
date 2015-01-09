@@ -156,14 +156,14 @@ bool JSONParser::traverseNode( cJSON *node)
 }
 
 
-const JSONParser::Node JSONParser::getNode( const std::string &name) const
+std::unique_ptr<JSONParser::Node> JSONParser::getNode( const std::string &name) const
 {
     cJSON* currentNode = _json;
     
     while ( currentNode != nullptr)
     {
         if ( currentNode->string && ( strcmp(name.c_str(), currentNode->string) == 0 ) )
-            return Node( currentNode );
+            return std::auto_ptr<JSONParser::Node>( new Node( currentNode ) );
         
         if ( currentNode->child)
         {
@@ -180,7 +180,7 @@ const JSONParser::Node JSONParser::getNode( const std::string &name) const
     }
     
     
-    return Node(nullptr);
+    return nullptr;
 }
 
 
