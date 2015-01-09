@@ -28,11 +28,11 @@ bool CanEvent::connect()
     {
         if (!_impl.bind() )
         {
-            Log::log("Unable to bind soket for interface '%s'" , _impl._interfName.c_str() );
+            Log::log("Unable to bind soket for CAN interface '%s'" , _impl._interfName.c_str() );
         }
     }
     else
-        Log::log("Unable to create soket for interface '%s'" , _impl._interfName.c_str() );
+        Log::log("Unable to create soket for CAN interface '%s'" , _impl._interfName.c_str() );
     
     return _impl._isConnected;
 }

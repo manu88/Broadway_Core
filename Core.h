@@ -60,6 +60,15 @@
 
 #include "Log/Log.h"
 
+/* JSON Parser*/
+/*
+    This module uses cJSON code
+    http://cjson.sourceforge.net/
+ */
+#ifdef USE_JSON_PARSER
+#include "Parsers/JSONParser.h"
+#endif
+
 /* XML parser*/
 /*
     This module needs xerces lib to be installed in standard include + lib paths
