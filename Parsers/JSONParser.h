@@ -50,17 +50,22 @@ public:
             else
                 _type = Node_NULL;
         }
-        /*
-        Node( const Node &other):
-        _node ( other._node ),
-        _type ( other._type )
-        {}
-        */
+
         ~Node() {}
         
         operator bool() const
         {
             return _node != nullptr;
+        }
+        
+        const std::string getName() const
+        {
+            return _node->string;
+        }
+        
+        const int getAttribsSize() const
+        {
+            return getArraySize();
         }
         
         /* ---- typecheck ----  */
@@ -102,12 +107,15 @@ public:
             return _node->valuestring;
         }
         
-        // numeric values
+
         /*
+            numeric values:
+         
             Warning : there's no way to tell if a numeric value type is integer or floatting point.
             If getInt() is called on a float, the returned value will be truncated.
             In doubt, better call Saul, heuu no,  better call getDouble()
          */
+        
         double getDouble() const
         {
             return _node->valuedouble;
@@ -142,10 +150,30 @@ public:
             return std::auto_ptr<JSONParser::Node>( new Node( _node->child ) );
         }
         
+        // next sibling
+        
+        bool hasNext() const
+        {
+            return _node->next != nullptr;
+        }
+        
+        std::unique_ptr<Node> getNext() const
+        {
+            return std::auto_ptr<JSONParser::Node>( new Node( _node->next ) );
+        }
+        
+        std::unique_ptr<Node> getObjectItem( const std::string &attribName ) const
+        {
+            return std::auto_ptr<JSONParser::Node>( new Node( cJSON_GetObjectItem( _node, attribName.c_str() ) ) );
+        }
+        
+        
+        
     private:
 
         cJSON *_node;
         NodeType _type;
+        
         
     };
     
