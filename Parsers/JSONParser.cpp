@@ -63,7 +63,7 @@ bool JSONParser::parseFile( const std::string &file )
     
     if (! _json )
     {
-        printf("Error before: [%s]\n",cJSON_GetErrorPtr());
+//        printf("Error before: [%s]\n",cJSON_GetErrorPtr());
         
         ret = false;
     }

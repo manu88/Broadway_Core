@@ -27,9 +27,17 @@ struct Timecode_t
     unsigned int milli;
     
 public:
+    
+    static Timecode_t getCurrent()
+    {
+        Timecode_t t;
+        t.setToCurrentTime();
+        
+        return t;
+    }
 
     
-    Timecode_t(unsigned int heures = 0 , unsigned int minutes =0 , unsigned int secondes = 0 , unsigned int milliSecs = 0) :
+    Timecode_t ( unsigned int heures = 0 , unsigned int minutes =0 , unsigned int secondes = 0 , unsigned int milliSecs = 0 ) :
         h    ( heures    ),
         min  ( minutes   ),
         sec  ( secondes  ),
@@ -38,8 +46,43 @@ public:
         reconstruct();
     }
     
+    Timecode_t ( const std::string &string /*separated by ':' -> HH:MM:SS:MSS */ ) :
+    h    ( 0 ),
+    min  ( 0 ),
+    sec  ( 0 ),
+    milli( 0 )
+    {
+        auto list = StringOperations::split( string , ':' );
+
+        if ( list.size() >= 1)
+            h     = atoi( list.at(0).c_str() );
+        
+        if ( list.size() >= 2)
+            min   = atoi( list.at(1).c_str() );
+        
+        if ( list.size() >= 3)
+            sec   = atoi( list.at(2).c_str() );
+        
+        if ( list.size() >= 4)
+            milli = atoi( list.at(3).c_str() );
+
+        reconstruct();
+    }
+    
     void setToCurrentTime()
     {
+        time_t rawtime;
+        struct tm * timeinfo;
+        
+        time (&rawtime);
+        timeinfo = localtime (&rawtime);
+        
+        h     = timeinfo->tm_hour;
+        min   = timeinfo->tm_min;
+        sec   = timeinfo->tm_sec;
+        milli = 0;
+        /*
+        
         struct timeval t;
         
         gettimeofday( &t, 0 );
@@ -47,9 +90,10 @@ public:
         h = 0;
         min = 0;
         sec = 0;
-        milli = ((double)t.tv_sec*1000.) + ((double)t.tv_usec / 1000.);
+        milli = ((double)t.tv_sec*1000.);// + ((double)t.tv_usec / 1000.);
+        
         reconstruct();
-
+         */
     }
 
     

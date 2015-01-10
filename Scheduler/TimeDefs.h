@@ -68,6 +68,15 @@ struct Date_t
         
     }
     
+    bool operator>(const Date_t & rhs) const
+    {
+        return    ( dayNum > rhs.dayNum  )
+               || ( month  > rhs.month   );
+        
+    }
+    
+    
+    
     bool operator<(const Date_t & rhs) const
     {
         const int r1 = this->year*1000 + this->month*100 + this->dayNum;
@@ -151,10 +160,11 @@ private:
         const std::string formated = ctime(&mytime);
         
         auto list = StringOperations::split(formated, ' ');
+        
         /*
          0 -> day
          1 -> month
-         2 -> NULL
+         2 -> NULL ??
          3 -> daynum
          4 -> time
          5 -> year
@@ -206,8 +216,8 @@ private:
         else
             assert(false);
         
-        dayNum = atoi( list.at(3).c_str() );
-        year = atoi( list.at(5).c_str() );
+        dayNum = atoi( list.at(2).c_str() );
+        year = atoi( list.at(4).c_str() );
     }
     
 };
