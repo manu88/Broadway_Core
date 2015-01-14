@@ -46,6 +46,8 @@ typedef std::chrono::time_point<Clock>  Timestamp;
 typedef std::chrono::milliseconds       Duration;
 
 
+
+
 class TimedEvent : public Element
 {
 public:
@@ -237,12 +239,13 @@ public:
     // block for a certain duration
     static long long blockThreadFor(const Timecode & duration );
     static long long blockThreadFor(const unsigned int ms );
-    virtual bool start();
-    virtual bool stop();
+    
+    bool start();
+    bool stop();
     
 private:
     
-    virtual void run();
+    void run();
     
     bool destroy(int id);
     bool destroyAll();
@@ -250,11 +253,7 @@ private:
     int createImpl( TimedEvent && item);
     
     SchedulerDelegate *m_delegate;
-    
 
-    
-
-    std::condition_variable m_wakeUp;
 
     std::unordered_map<int, TimedEvent > active;
     

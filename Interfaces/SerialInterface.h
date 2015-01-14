@@ -46,14 +46,14 @@ public:
         return _port;
     }
     
-    virtual bool changed();
+    bool changed();
     const std::string readDatas();
     
     static const std::vector<std::string> getSerialDevicesList();
     
     bool writeOnPort( const char* datas);
     
-    virtual void cleanup()
+    void cleanup()
     {
         closePort();
     }

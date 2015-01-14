@@ -16,6 +16,7 @@
 #include "Impl/GpioPlateformImpl.h"
 
 
+typedef unsigned int GPioPin;
 
 
 class GpioEvent :  public InterfaceEvent
@@ -37,7 +38,7 @@ public :
     
     
     
-    virtual bool changed();
+    bool changed();
     GpioState read();
     
     int pin;
@@ -45,14 +46,18 @@ public :
     
     static void setGpio( const int pin , const GpioState state);
     
-    static void setDebounceTime( long delay )
+    void setDebounceTime( long delay )
     {
-        s_debounceDelay = delay;
+        _debounceDelay = delay;
     }
     
-    virtual void cleanup()
+    long getDebounceTime() const
     {
-        
+        return _debounceDelay;
+    }
+    
+    void cleanup()
+    {
     }
     
 private:
@@ -60,13 +65,11 @@ private:
     // actual plateform specific implementation
     GpioPlateformImplementation _impl;
     
-    GpioState m_lastState;
+    GpioState _lastState;
     
-    long      m_lastDebounceTime;
-    static long s_debounceDelay;
+    long      _lastDebounceTime;
+    long      _debounceDelay;
     
-    // should use Schedulers's
-    static long millis();
 };
 
 

@@ -58,8 +58,8 @@ public:
     }
     
     //! Starts the internal thread.
-    virtual bool start();
-    virtual bool stop();
+    bool start();
+    bool stop();
 
     bool setWorkingDirectory( const std::string &dir);
 
@@ -81,7 +81,7 @@ private:
     std::string getHtmlFile( const std::string & filename);
     
     // thread's entry point
-    virtual void run();
+    void run();
     
     void send_reply(struct mg_connection *conn);
     

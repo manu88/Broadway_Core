@@ -51,6 +51,7 @@ typedef enum
     Arc_Open  = 0,
     Arc_Chord = 1,
     Arc_Pie   =2
+    
 } GXArcType;
 
 /* **** **** **** **** **** */
@@ -60,6 +61,7 @@ typedef enum
     Cap_Butt   = 0, // def in openVG
     Cap_Round  = 1,
     Cap_Square = 2
+    
 } GXCapStyle ;
 
 /* **** **** **** **** **** */ 
@@ -69,6 +71,7 @@ typedef enum
     Join_Miter = 0, // def in openVG
     Join_Round = 1,
     Join_Bevel = 2
+    
 } GXJoinStyle;
 
 /* **** **** **** **** **** */

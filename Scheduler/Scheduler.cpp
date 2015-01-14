@@ -113,7 +113,8 @@ bool Scheduler::start()
 bool Scheduler::stop()
 {
 
-    m_wakeUp.notify_all();
+//    _wakeUp.notify_all();
+    wakeUpThread();
     
     return stopThread();
 }
@@ -131,7 +132,9 @@ void Scheduler::run()
         if (queue.empty() )
         {
             // Wait (forever) for work
-            m_wakeUp.wait(lock);
+
+            wait( lock );
+            
         }
 
         if ( !queue.empty() )
@@ -184,7 +187,9 @@ void Scheduler::run()
             else
             {
                 // Wait until the timer is ready or a timer creation notifies
-                m_wakeUp.wait_until(lock, instance.next);
+//                _wakeUp.wait_until(lock, instance.next);
+                waitUntil( lock, instance.next );
+                
             }
         }
     }
@@ -202,7 +207,10 @@ int Scheduler::createImpl( TimedEvent && item)
 
     auto iter = active.emplace(item.timerId, std::move(item));
     queue.insert(iter.first->second);
-    m_wakeUp.notify_all();
+    
+//    _wakeUp.notify_all();
+    wakeUpThread();
+    
     return item.timerId; //getElementId();
 }
 
@@ -226,7 +234,8 @@ bool Scheduler::destroy( int id)
         active.erase( i );
     }
     
-    m_wakeUp.notify_all();
+    wakeUpThread();
+    
     return true;
 }
 
@@ -245,14 +254,15 @@ bool Scheduler::destroyAll()
         }
         else
         {
-            queue.erase(std::ref(i.second));
+            queue.erase(std::ref( i.second ) );
             
         }
     }
     
     active.clear();
         
-    m_wakeUp.notify_all();
+    wakeUpThread();
+    
     return true;
 }
 

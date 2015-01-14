@@ -125,8 +125,8 @@ public:
 
     
     //! Starts the internal thread.
-    virtual bool start();
-    virtual bool stop();
+    bool start();
+    bool stop();
     
     bool sendOSC( const std::string &ip , const int port , const std::string &address , const ArgumentsArray &vars  );
     
@@ -135,7 +135,7 @@ public:
     
     void removeAllSockets();
     
-    virtual void ProcessMessage( const osc::ReceivedMessage& m, const IpEndpointName& remoteEndpoint );
+    void ProcessMessage( const osc::ReceivedMessage& m, const IpEndpointName& remoteEndpoint );
 
     
 private:
@@ -158,7 +158,9 @@ private:
         m_lockThread = false;
     }
     
-    virtual void run();
+    void run();
+    
+    
     volatile bool m_lockThread;
 
     

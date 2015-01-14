@@ -9,8 +9,9 @@
 #include <sys/time.h>
 
 #include "GpioInterface.h"
+#include "../Scheduler/Scheduler.h"
 
-long GpioEvent::s_debounceDelay = 10;  // default value
+
 
 
 GpioEvent::GpioEvent(int pinToUse , GPioInputType typeOfInput) :
@@ -19,8 +20,10 @@ _impl( pinToUse , typeOfInput ),
 
 pin                ( pinToUse  ),
 state              ( undefined ),
-m_lastState        ( undefined ),
-m_lastDebounceTime (0          )
+_lastState        ( undefined ),
+
+_debounceDelay     ( 10        ), // default val
+_lastDebounceTime (0          )
 {
     className = "GpioEvent";
     
@@ -47,17 +50,17 @@ bool GpioEvent::changed()
 {
     GpioState newState = _impl.read();
     
-    if (newState != m_lastState)
+    if (newState != _lastState)
     {
-        m_lastDebounceTime = millis();
+        _lastDebounceTime = Scheduler::getTimeInMs();
     }
     
-    if ( (millis() - m_lastDebounceTime) > s_debounceDelay)
+    if ( ( Scheduler::getTimeInMs() - _lastDebounceTime) > _debounceDelay)
     {
         if (newState != state)
         {
             state = newState;
-            m_lastState = newState;
+            _lastState = newState;
             /*
              if (    (               m_transition == Changed )
              || ( state == 0 && m_transition == Falling )
@@ -69,7 +72,7 @@ bool GpioEvent::changed()
         }
     }
     
-    m_lastState = newState;
+    _lastState = newState;
     
     
     return false;
@@ -82,12 +85,4 @@ GpioState GpioEvent::read()
     return state;
 }
 
-/* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
-
-/*static */long GpioEvent::millis()
-{
-    struct timeval tv;
-    gettimeofday(&tv, NULL);
-    return (int) (tv.tv_sec) * 1000 + (tv.tv_usec)/1000;
-}
 

@@ -10,6 +10,7 @@
 #define __Broadway_test__Thread__
 
 #include <thread>
+#include <condition_variable>
 
 #include "Object.h"
 #include "../Scheduler/Timecode.h"
@@ -30,6 +31,27 @@ public:
 
     void Lock();
     void UnLock();
+    
+    /* **** **** **** **** */
+    
+    inline void wakeUpThread() noexcept
+    {
+        _wakeUp.notify_all();
+        
+    }
+    
+    inline void wait ( ScopedLock &lock)
+    {
+        _wakeUp.wait( lock );
+        
+    }
+    
+    inline void waitUntil( ScopedLock &lock , std::chrono::time_point<std::chrono::steady_clock> timestamp )
+    {
+        _wakeUp.wait_until( lock , timestamp );
+    }
+
+    /* **** **** **** **** */    
     
     bool calledFromThisThread() const;
     
@@ -57,17 +79,7 @@ protected:
     
     void waitForCreation();
     
-    /*
-    std::thread *getThreadByID( std::thread::id  id)
-    {
-        for (auto &i : s_threadsPool )
-        {
-            if (i.get_id() == id )
-                return &i;
-        }
-        return nullptr;
-    }
-     */
+    
     
 
     
@@ -78,6 +90,9 @@ private:
 
     volatile bool       m_isRunning;
     volatile bool       m_shouldStop;
+    
+    std::condition_variable _wakeUp;
+    
     std::string         m_threadName;
     
     /* thread pool */

@@ -81,8 +81,8 @@ public:
 
 
     
-    virtual bool start();
-    virtual bool stop();
+    bool start();
+    bool stop();
     
     float getFrameRate() const
     {

@@ -14,7 +14,9 @@
 
 #include "../Internal/Thread.h"
 #include "../Scheduler/Event.h"
+
 #include "../Internal/AbstractController.h"
+
 
 
 #include "SerialInterface.h"
@@ -58,8 +60,8 @@ public:
     bool init();
     void deInit();
     
-    virtual bool start();
-    virtual bool stop();
+    bool start();
+    bool stop();
     
     /* GPIO part */
     
@@ -90,7 +92,7 @@ public:
     
 private:
     
-    virtual void run();
+    void run();
     
 
     void mainLoop();

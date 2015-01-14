@@ -56,7 +56,7 @@ public:
 
     virtual ~Painter();
     
-    PainterType getType() const
+    PainterType getType() const noexcept
     {
         return m_type;
     }
@@ -81,7 +81,7 @@ public:
     PainterRect( const GXRect &rect);
     ~PainterRect();
     
-    GXRect getRect() const
+    GXRect getRect() const noexcept
     {
         return m_rect;
     }
@@ -100,17 +100,17 @@ public:
     PainterRoundedRect( const GXRect &rect , float arcW , float arcH);
     ~PainterRoundedRect();
     
-    GXRect getRect() const
+    GXRect getRect() const noexcept
     {
         return m_rect;
     }
     
-    float getArcW() const
+    float getArcW() const noexcept
     {
         return m_arcW;
     }
     
-    float getArcH() const
+    float getArcH() const noexcept
     {
         return m_arcH;
     }
@@ -131,7 +131,7 @@ public:
     PainterEllipse( const GXRect &rect);
     ~PainterEllipse();
     
-    GXRect getRect() const
+    GXRect getRect() const noexcept
     {
         return m_rect;
     }
@@ -151,27 +151,27 @@ public:
     ~PainterArc();
     
 
-    GXPoint getCenter() const
+    GXPoint getCenter() const noexcept
     {
         return m_center;
     }
     
-    GXSize getSize() const
+    GXSize getSize() const noexcept
     {
         return m_size;
     }
     
-    float getStartAngle() const
+    float getStartAngle() const noexcept
     {
         return m_startAngle;
     }
     
-    float getAngleExtent() const
+    float getAngleExtent() const noexcept
     {
         return m_angleExtent;
     }
     
-    GXArcType getType() const
+    GXArcType getType() const noexcept
     {
         return m_type;
     }
@@ -196,7 +196,7 @@ public:
     PainterLine( const GXLine &line);
     ~PainterLine();
     
-    GXLine getLine() const
+    GXLine getLine() const noexcept
     {
         return m_line;
     }
@@ -218,7 +218,7 @@ public:
     PainterMoveTo( const GXPoint &point);
     ~PainterMoveTo();
     
-    GXPoint getPoint() const
+    GXPoint getPoint() const noexcept
     {
         return m_point;
     }
@@ -238,7 +238,7 @@ public:
     PainterLineTo( const GXPoint &point );
     ~PainterLineTo();
     
-    GXPoint getPoint() const
+    GXPoint getPoint() const noexcept
     {
         return m_point;
     }
@@ -258,17 +258,17 @@ public:
     PainterCubicCurveTo( const GXPoint &controlPoint0 ,const GXPoint &controlPoint1 , const GXPoint &endPoint );
     ~PainterCubicCurveTo();
     
-    GXPoint getCp0() const
+    GXPoint getCp0() const noexcept
     {
         return m_cp0;
     }
     
-    GXPoint getCp1() const
+    GXPoint getCp1() const noexcept
     {
         return m_cp1;
     }
     
-    GXPoint getEndPoint() const
+    GXPoint getEndPoint() const noexcept
     {
         return m_endPoint;
     }
@@ -288,12 +288,12 @@ public:
     PainterQuadCurveTo( const GXPoint &controlPoint , const GXPoint &endPoint);
     ~PainterQuadCurveTo();
     
-    GXPoint getCp() const
+    GXPoint getCp() const noexcept
     {
         return m_cp;
     }
     
-    GXPoint getEndPoint() const
+    GXPoint getEndPoint() const noexcept
     {
         return m_endPoint;
     }
@@ -386,7 +386,7 @@ public:
     PainterStrokeWidth( float width );
     ~PainterStrokeWidth();
     
-    float getWidth() const 
+    float getWidth() const noexcept
     {
         return m_width;
     }
