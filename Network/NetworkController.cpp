@@ -86,10 +86,10 @@ bool NetworkController::start()
 
 bool NetworkController::stop()
 {
-    m_lockThread = false;
+    _lockThread = false;
     sendAsyncStop();
     
-    m_multiplexer.AsynchronousBreak();
+    _multiplexer.AsynchronousBreak();
 
     Log::log(" Network Thread Stopped");
     return stopThread();
@@ -106,7 +106,7 @@ void NetworkController::run()
         
         // doesn't return until m_multiplexer.AsynchronousBreak(); is called
         // see NetworkControllerLock 
-        m_multiplexer.Run();
+        _multiplexer.Run();
 
         
         if ( threadShouldStop() )
@@ -115,7 +115,7 @@ void NetworkController::run()
         }
         
 
-        while ( m_lockThread )
+        while ( _lockThread )
         {
         
         }
@@ -141,12 +141,12 @@ bool NetworkController::addPort(int port)
     try
     {
         SocketUdpIn *socket = new SocketUdpIn( port );
-        m_socketList.insert( socket );
+        _socketList.insert( socket );
         
 
         
         socket->Bind( IpEndpointName( IpEndpointName::ANY_ADDRESS, port ) );
-        m_multiplexer.AttachSocketListener( socket, this );
+        _multiplexer.AttachSocketListener( socket, this );
     }
     catch (...)
     {
@@ -181,7 +181,7 @@ void NetworkController::removePort ( int port )
 
 void NetworkController::internalDeleteSocket( SocketUdpIn* socket )
 {
-    m_multiplexer.DetachSocketListener( socket , this );
+    _multiplexer.DetachSocketListener( socket , this );
     
 
     
@@ -193,12 +193,12 @@ void NetworkController::internalDeleteSocket( SocketUdpIn* socket )
 void NetworkController::removeAllSockets()
 {
     NetworkControllerLock l(this);
-    for (auto i : m_socketList )
+    for (auto i : _socketList )
     {
         internalDeleteSocket( i );
     }
     
-    m_socketList.clear();
+    _socketList.clear();
     
 
 }
@@ -208,7 +208,7 @@ void NetworkController::removeAllSockets()
 
 SocketUdpIn* NetworkController::getSocketForPort( int port )
 {
-    for (auto i : m_socketList )
+    for (auto i : _socketList )
     {
         if ( i->getPort() == port )
             return  i;

@@ -104,7 +104,7 @@ public:
     
     void allowSystemCalls( bool shouldI )
     {
-        m_allowSystemCall = shouldI;
+        _allowSystemCall = shouldI;
     }
     
 
@@ -116,7 +116,7 @@ public:
      */
     void setDelegate( JSMachineDelegate *delegate )
     {
-        m_delegate = delegate;
+        _delegate = delegate;
     }
 
     //! Add and register a JS function to the look-up table
@@ -140,7 +140,7 @@ public:
      */
     int getRegisteredFunctionsCount() const
     {
-        return ( int ) m_registeredSelectors.size();
+        return ( int ) _registeredSelectors.size();
     }
     
     //! Objective-C style test method.
@@ -250,15 +250,15 @@ protected:
 private:
     bool findSelectorBySignature( const std::string &signature );
     
-    bool m_allowSystemCall;
+    bool _allowSystemCall;
     
-    JSMachineDelegate *m_delegate;
+    JSMachineDelegate *_delegate;
     
-    CTinyJS m_machine;
+    CTinyJS _machine;
     
-    std::vector<Selector*> m_registeredSelectors;
+    std::vector< Selector* > _registeredSelectors;
     
-    std::vector<std::string> m_importedHeaders;
+    std::vector< std::string > _importedHeaders;
 
 };
 

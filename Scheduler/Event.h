@@ -55,18 +55,18 @@ public:
 
     void setTransition( const Transition transition)
     {
-        m_transition = transition;
+        _transition = transition;
     }
 
     Transition getTypeOfTransition() const
     {
-        return m_transition;
+        return _transition;
     }
 
 
     
 protected:
-    Transition  m_transition;
+    Transition  _transition;
 private:
 
     

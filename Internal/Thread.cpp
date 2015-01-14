@@ -20,13 +20,13 @@ int Thread::s_threadCount = 0;
 std::vector< Thread*  > Thread::s_threadsPool = std::vector< Thread* >();
 
 Thread::Thread( const std::string threadName ) :
-    m_isRunning  ( false ),
-    m_shouldStop ( false ),
-    m_thread     ( nullptr )
+    _isRunning  ( false ),
+    _shouldStop ( false ),
+    _thread     ( nullptr )
 {
     className = "Thread";
     
-    m_threadName = threadName;
+    _threadName = threadName;
     
     s_threadsPool.push_back(this);
     
@@ -38,7 +38,7 @@ Thread::~Thread()
 
     DEBUG_ASSERT( m_thread == nullptr );
     
-    auto iter = std::find(s_threadsPool.begin(), s_threadsPool.end(), this);
+    auto iter = std::find( s_threadsPool.begin(), s_threadsPool.end(), this);
     
     if (iter != s_threadsPool.end())
         s_threadsPool.erase(iter);
@@ -59,15 +59,15 @@ Thread::~Thread()
 bool Thread::startThread()
 {
 
-    if (!m_isRunning)
+    if (!_isRunning)
     {
         
-        m_thread = new std::thread(  std::thread ( [](Thread *self)
+        _thread = new std::thread(  std::thread ( [](Thread *self)
                                                {
                                                    // flag as ok
-                                                   self->m_isRunning = true;
-//                                                   self->m_threadID = std::this_thread::get_id();
-                                                   self->m_shouldStop = false;
+                                                   self->_isRunning = true;
+
+                                                   self->_shouldStop = false;
                                                    
                                                    self->run();
                                                    
@@ -86,14 +86,14 @@ bool Thread::startThread()
 bool Thread::stopThread()
 {
     
-    if ( m_thread )
+    if ( _thread )
     {
-        m_shouldStop = true;
-//        getThreadByID( m_threadID )->join();
-        m_thread->join();
+        _shouldStop = true;
+
+        _thread->join();
         
-        delete m_thread;
-        m_thread = nullptr;
+        delete _thread;
+        _thread = nullptr;
         
         return true;
     }
@@ -109,7 +109,7 @@ bool Thread::stopThread()
 void Thread::waitForCreation()
 {
 
-    while (m_isRunning == false)
+    while ( _isRunning == false)
     {
      
     }
@@ -118,14 +118,14 @@ void Thread::waitForCreation()
 
 bool Thread::isRunning() const
 {
-    return m_isRunning;
+    return  _isRunning;
 }
 
 /* **** **** **** **** **** **** **** **** **** **** **** **** */
 
 void Thread::Lock()
 {
-    if( !m_isRunning)
+    if( !_isRunning)
     {
         
         return;
@@ -137,7 +137,7 @@ void Thread::Lock()
 
 void Thread::UnLock()
 {
-    if( !m_isRunning)
+    if( !_isRunning)
     {
 
         return;
@@ -148,14 +148,14 @@ void Thread::UnLock()
 
 void Thread::threadEnded()
 {
-    m_isRunning = false;
+    _isRunning = false;
 }
 
 /* **** **** **** **** **** **** **** **** **** **** **** **** */
 
-bool Thread::calledFromThisThread() const
+bool Thread::calledFromThisThread() const noexcept
 {
-    return std::this_thread::get_id() == m_thread->get_id();
+    return std::this_thread::get_id() == _thread->get_id();
 }
 
 /*static*/ void Thread::sleepFor( const Timecode &tc)

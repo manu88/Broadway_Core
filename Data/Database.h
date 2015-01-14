@@ -134,9 +134,9 @@ public:
                             auto pos = findItemPosition( item );
                             std::string oldVal = getValueForItemName<std::string>(item);
 
-                            if ( pos != m_dataList.end() )
+                            if ( pos != _dataList.end() )
                             {
-                                m_dataList.erase( pos);
+                                _dataList.erase( pos);
                                 count--;
                                 
                                 if (!overwrite) // on écrase la valeur
@@ -162,7 +162,7 @@ public:
             
         }
         
-        if ( count != (int) m_dataList.size() )
+        if ( count != (int) _dataList.size() )
         {
             /*list size and iter count don't match */
             DEBUG_ASSERT( false );
@@ -178,7 +178,7 @@ public:
     
     std::string getItemNameAtIndex( const int index) const
     {
-        return m_dataList[index].first;
+        return _dataList[index].first;
     }
     
     /* **** **** **** **** **** **** **** **** **** **** **** **** **** */
@@ -186,7 +186,7 @@ public:
     template<typename T>
     T getValueAtIndex(const int index) const
     {
-        return m_dataList[index].second;
+        return _dataList[index].second;
     }
     
     /* **** **** **** **** **** **** **** **** **** **** **** **** **** */
@@ -196,7 +196,7 @@ public:
     T getValueForItemName(const std::string &item) const
     {
 
-        for (const auto i : m_dataList)
+        for (const auto i : _dataList)
         {
             if ( i.first == item)
                 return i.second;
@@ -243,7 +243,7 @@ public:
     bool itemExists(const std::string &item) const
     {
 
-        for (const auto i : m_dataList)
+        for (const auto i : _dataList)
         {
             if ( i.first == item)
                 return true;
@@ -257,12 +257,12 @@ public:
     
     int getSize() const
     {
-        return (int) m_dataList.size();
+        return (int) _dataList.size();
     }
     
     void clear()
     {
-        m_dataList.clear();
+        _dataList.clear();
         
     }
     
@@ -296,7 +296,7 @@ private:
     
     typename std::vector< std::pair<std::string , T1> >::iterator findItemPosition( const std::string &item )
     {
-        return std::find_if( m_dataList.begin(), m_dataList.end(),  FindItemPredicate(item) );
+        return std::find_if( _dataList.begin(), _dataList.end(),  FindItemPredicate(item) );
     }
     
     
@@ -314,7 +314,7 @@ private:
     };
 
     
-    std::vector< std::pair<std::string , T1> > m_dataList;
+    std::vector< std::pair<std::string , T1> > _dataList;
     
     
 };

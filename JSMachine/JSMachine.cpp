@@ -88,8 +88,8 @@ bool Selector::operator==( const Selector& rhs )
 /* **** **** **** **** **** **** **** **** **** **** **** **** **** */
 
 JSMachine::JSMachine() :
-    m_allowSystemCall ( false   ),
-    m_delegate        ( nullptr )
+    _allowSystemCall ( false   ),
+    _delegate        ( nullptr )
 {
     className = "JSMachine";
     
@@ -109,17 +109,17 @@ JSMachine::~JSMachine()
 
 void JSMachine::prepareEnvironment()
 {
-    registerFunctions( &m_machine );
-    registerMathFunctions( &m_machine );
+    registerFunctions( &_machine );
+    registerMathFunctions( &_machine );
     
-    m_machine.addNative( "function dump()"                      , &js_dumpStack, this);
-    m_machine.addNative( "function print(text)"                 , &js_print, 0);
-    m_machine.addNative( "function getIP() "                    , &js_getIP,0);
-    m_machine.addNative( "function readDataFile( filePath )"    , &js_readDataFile, 0);
-    m_machine.addNative( "function readDir( directoryPath , extensions )"    , &js_readDir,0);
+    _machine.addNative( "function dump()"                      , &js_dumpStack, this);
+    _machine.addNative( "function print(text)"                 , &js_print, 0);
+    _machine.addNative( "function getIP() "                    , &js_getIP,0);
+    _machine.addNative( "function readDataFile( filePath )"    , &js_readDataFile, 0);
+    _machine.addNative( "function readDir( directoryPath , extensions )"    , &js_readDir,0);
     
-    m_machine.addNative( "function system( command )"           , &js_system, this );
-    m_machine.addNative( "function getTime()"                   , &js_getTime,0);
+    _machine.addNative( "function system( command )"           , &js_system, this );
+    _machine.addNative( "function getTime()"                   , &js_getTime,0);
 
     executeBuffer("var lets_quit = 0; function quit() { lets_quit = 1; }");
 }
@@ -128,11 +128,11 @@ void JSMachine::prepareEnvironment()
 
 void JSMachine::addRegisteredSelectors()
 {
-    for (auto sel : m_registeredSelectors )
+    for (auto sel : _registeredSelectors )
     {
         try
         {
-            m_machine.addNative("function " + sel->signature, js_nativeFunctWithID, sel );
+            _machine.addNative("function " + sel->signature, js_nativeFunctWithID, sel );
         }
         
         catch (CScriptException *e)
@@ -149,7 +149,7 @@ void JSMachine::reset()
 {
     clearStack();
     
-    m_importedHeaders.clear();
+    _importedHeaders.clear();
     
     prepareEnvironment();
     addRegisteredSelectors();
@@ -167,12 +167,12 @@ bool JSMachine::executeBuffer( const std::string &buffer )
     try
     {
 
-        m_machine.execute(buffer);
+        _machine.execute(buffer);
 
         return true;
     }
     
-    catch (CScriptException *e)
+    catch ( CScriptException *e )
     {
         Log::log("ERROR: %s", e->text.c_str());
         
@@ -208,7 +208,7 @@ std::string JSMachine::evaluateAsString(const std::string &buffer)
     
     try
     {
-        ret =  m_machine.evaluate( buffer );
+        ret =  _machine.evaluate( buffer );
     }
     
     catch (CScriptException *e)
@@ -291,14 +291,14 @@ bool JSMachine::parseScriptFile( const std::string &filename )
 
 bool JSMachine::importScriptFile( const std::string &filename  )
 {
-    for ( auto i : m_importedHeaders )
+    for ( auto i : _importedHeaders )
     {
         if ( i == filename)
 
             return true;
     }
     
-    m_importedHeaders.push_back( filename );
+    _importedHeaders.push_back( filename );
     
 
     if ( !FileSystem::fileExists( filename ))
@@ -370,7 +370,7 @@ void JSMachine::run( bool withLiveParser )
 void JSMachine::registerFunctionWithSignature(const std::string &signature )
 {
 
-    Selector* sel = new Selector( signature , m_delegate);
+    Selector* sel = new Selector( signature , _delegate);
     
     if ( findSelectorBySignature( sel->signature ) )
     {
@@ -382,7 +382,7 @@ void JSMachine::registerFunctionWithSignature(const std::string &signature )
     {
         try
         {
-            m_machine.addNative("function " + signature, js_nativeFunctWithID, sel );
+            _machine.addNative("function " + signature, js_nativeFunctWithID, sel );
         }
         
         catch (CScriptException *e)
@@ -391,7 +391,7 @@ void JSMachine::registerFunctionWithSignature(const std::string &signature )
             return;
         }
         
-        m_registeredSelectors.push_back(sel);
+        _registeredSelectors.push_back(sel);
         
 
 //        Log::log("selector '%s' added" , sel->signature.c_str());
@@ -405,7 +405,7 @@ void JSMachine::registerFunctionWithSignature(const std::string &signature )
 bool JSMachine::findSelectorBySignature( const std::string &signature )
 {
 
-    for (auto sel : m_registeredSelectors )
+    for (auto sel : _registeredSelectors )
     {
         
         if (  signature == sel->signature  )
@@ -431,7 +431,7 @@ bool JSMachine::respondsToSelector(const std::string &signature)
 
 void JSMachine::removeRegisteredFunctionWithSignature(const std::string &signature)
 {
-    for (auto sel : m_registeredSelectors )
+    for (auto sel : _registeredSelectors )
     {
         if (  signature == sel->signature  )
         {
@@ -445,13 +445,13 @@ void JSMachine::removeRegisteredFunctionWithSignature(const std::string &signatu
 void JSMachine::removeAllRegisteredFunctions()
 {
 //    m_registeredSelectors.er
-    for (auto it : m_registeredSelectors )
+    for (auto it : _registeredSelectors )
     {
 
         delete it;
     }
     
-    m_registeredSelectors.clear();
+    _registeredSelectors.clear();
 }
 
 void JSMachine::clearStack()
@@ -459,11 +459,11 @@ void JSMachine::clearStack()
     
     
     //Log::log("root ref count is %i" ,m_machine.root->getRefs() );
-    m_machine.root->unref();
+    _machine.root->unref();
     
     
-    m_machine.root = new CScriptVar();
-    m_machine.root->ref();
+    _machine.root = new CScriptVar();
+    _machine.root->ref();
 }
 
 /* **** **** **** **** **** **** **** **** **** **** **** **** **** */
@@ -497,7 +497,7 @@ void JSMachine::clearStack()
     
     if (self)
     {
-        self->m_machine.root->trace(">  ");
+        self->_machine.root->trace(">  ");
         
     }
 }
@@ -715,7 +715,7 @@ void JSMachine::clearStack()
 {
     JSMachine* self = reinterpret_cast<JSMachine*>(userdata);
     
-    if ( self->m_allowSystemCall )
+    if ( self->_allowSystemCall )
         system( v->getParameter("command")->getString().c_str() );
     
     else

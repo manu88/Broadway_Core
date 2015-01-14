@@ -14,7 +14,7 @@ int Element::s_elementsCount  = 0;
 
 
 Element::Element() :
-    m_id( s_elementIDCounter++ )
+_id( s_elementIDCounter++ )
 {
     
     className = "Element";    

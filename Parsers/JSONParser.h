@@ -171,7 +171,7 @@ public:
         
     private:
 
-        cJSON *_node;
+        cJSON   *_node;
         NodeType _type;
         
         

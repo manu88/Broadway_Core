@@ -47,14 +47,14 @@ public:
     
     void setDelegate(WebServerDelegate *delegate)
     {
-        m_delegate = delegate;
+        _delegate = delegate;
     }
     
     void setPort( int port);
     
     int getPort() const
     {
-        return m_port;
+        return _port;
     }
     
     //! Starts the internal thread.
@@ -90,9 +90,9 @@ private:
     // main static event handler from mongoose' server
     static int ev_handler(struct mg_connection *conn, enum mg_event ev);
     
-    WebServerDelegate  *m_delegate;
-    struct mg_server   *m_server;
-    int                 m_port;
+    WebServerDelegate  *_delegate;
+    struct mg_server   *_server;
+    int                 _port;
     
     std::string m_defaultContent; // index.html in working dir
     

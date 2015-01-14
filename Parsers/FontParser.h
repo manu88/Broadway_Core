@@ -34,8 +34,8 @@ public:
     
     
 private:
-    FT_Outline_Funcs m_functions;
-    FT_Library m_library;
+    FT_Outline_Funcs _functions;
+    FT_Library       _library;
     
 
     

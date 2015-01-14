@@ -37,7 +37,7 @@ public:
      */
     int getElementId() const
     {
-        return m_id;
+        return _id;
     }
 
     //! Returns the highest Element ID.
@@ -53,7 +53,7 @@ protected:
     Element();    
     
 private:
-    int m_id;
+    int _id;
     
     static int s_elementsCount;
     static int s_elementIDCounter;

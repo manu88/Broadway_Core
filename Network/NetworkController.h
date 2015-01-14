@@ -143,31 +143,32 @@ private:
     enum { Output_Buffer_Size = 1024  };
 
     
-    NetworkControllerDelegate   *_delegate;
+    
     
     SocketUdpIn* getSocketForPort( int port );
     void internalDeleteSocket( SocketUdpIn* socket );
     
     void lockThread()
     {
-        m_lockThread = true;
+        _lockThread = true;
     }
     
     void unlockThread()
     {
-        m_lockThread = false;
+        _lockThread = false;
     }
     
     void run();
     
+    NetworkControllerDelegate   *_delegate;
     
-    volatile bool m_lockThread;
+    volatile bool _lockThread;
 
     
-    SocketReceiveMultiplexer m_multiplexer;
+    SocketReceiveMultiplexer _multiplexer;
 
 
-    std::unordered_set<SocketUdpIn*> m_socketList;
+    std::unordered_set<SocketUdpIn*> _socketList;
     
 
 };
@@ -207,18 +208,18 @@ class NetworkControllerLock
 {
 public:
     NetworkControllerLock( NetworkController *controller ):
-    m_controller ( controller )
+    _controller ( controller )
     {
-        m_controller->lockThread();
-        m_controller->m_multiplexer.AsynchronousBreak();
+        _controller->lockThread();
+        _controller->_multiplexer.AsynchronousBreak();
     }
     
     ~NetworkControllerLock()
     {
-        m_controller->unlockThread();
+        _controller->unlockThread();
     }
 private:
-    NetworkController* m_controller;
+    NetworkController* _controller;
 };
 
 

@@ -17,7 +17,7 @@ std::unordered_set< AbstractController *> AbstractController::s_controllers;
 
 AbstractController::AbstractController( const std::string &name ) :
 _isReady ( false ),
-m_controllerName( name )
+_controllerName( name )
 {
     s_controllers.insert( this );
 }
@@ -97,7 +97,7 @@ AbstractController::~AbstractController()
         for ( auto i : s_controllers )
         {
             if( (!i->isReady() ) )
-                Log::log("%s is _NOT_ ready" , i->m_controllerName.c_str() );
+                Log::log("%s is _NOT_ ready" , i->_controllerName.c_str() );
         }
     }
     
@@ -138,7 +138,7 @@ AbstractController::~AbstractController()
         for ( auto i : s_controllers )
         {
             if( (i->isReady() ) )
-                Log::log("%s is still ready" , i->m_controllerName.c_str() );
+                Log::log("%s is still ready" , i->_controllerName.c_str() );
         }
         
     }

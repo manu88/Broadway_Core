@@ -53,9 +53,9 @@ WebServer::WebServer( int portNum ) :
     AbstractController ( "webServer" ),
 
     m_workingDirectory ( "" ),
-    m_delegate         ( nullptr     ),
-    m_server           ( nullptr     ),
-    m_port             ( portNum     )
+    _delegate         ( nullptr     ),
+    _server           ( nullptr     ),
+    _port             ( portNum     )
 {
     className = "Web server";
     
@@ -70,7 +70,7 @@ WebServer::~WebServer()
 {
 
 
-    mg_destroy_server(&m_server);
+    mg_destroy_server( &_server );
     
 
 }
@@ -83,7 +83,7 @@ bool WebServer::start()
     
     m_defaultContent = getHtmlFile( m_workingDirectory+ "index.html");
     
-    m_server = mg_create_server(this, ev_handler);
+    _server = mg_create_server(this, ev_handler);
     return startThread();
 }
 
@@ -121,9 +121,9 @@ void WebServer::settingsChanged()
 
 void WebServer::setPort( int port)
 {
-    if ( m_port != port )
+    if ( _port != port )
     {
-        m_port = port;
+        _port = port;
         
         settingsChanged();
     }
@@ -133,18 +133,18 @@ void WebServer::setPort( int port)
 void WebServer::run()
 {
 
-   const std::string port = std::to_string( m_port );
+   const std::string port = std::to_string( _port );
     
     
-    mg_set_option(m_server, "listening_port", port.c_str() );
+    mg_set_option( _server, "listening_port", port.c_str() );
     
-    Log::log("Starting Web Server on port %s\n", mg_get_option(m_server, "listening_port"));
+    Log::log("Starting Web Server on port %s\n", mg_get_option( _server, "listening_port"));
     
     setReady();
     
     while (!threadShouldStop())
     {
-        mg_poll_server(m_server, 1000);
+        mg_poll_server( _server, 1000);
     }
     
     setUnReady();
@@ -264,7 +264,7 @@ void WebServer::send_reply(struct mg_connection *conn)
         array.addValue<std::string>( conn->content );
         
         
-        std::string ret = m_delegate->getRequest( conn->remote_ip  , m_port , uri.c_str() , array);
+        std::string ret = _delegate->getRequest( conn->remote_ip  , _port , uri.c_str() , array);
         
         
         if ( !ret.empty())

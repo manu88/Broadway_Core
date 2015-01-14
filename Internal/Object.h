@@ -63,9 +63,6 @@ protected:
     
     //std::mutex m_mutex;
 private:
-
-
-
     
     static int s_count;
     

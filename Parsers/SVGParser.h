@@ -37,8 +37,8 @@ public:
     
 private:
     
-    NSVGimage *m_image;
-    float      m_dpiRes;
+    NSVGimage *_image;
+    float      _dpiRes;
 };
 
 #endif /* defined(__Broadway_test__SVGParser__) */

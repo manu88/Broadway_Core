@@ -53,7 +53,7 @@ public:
 
     /* **** **** **** **** */    
     
-    bool calledFromThisThread() const;
+    bool calledFromThisThread() const noexcept;
     
     static int getThreadCount()
     {
@@ -68,12 +68,12 @@ protected:
     
     bool threadShouldStop() const
     {
-        return m_shouldStop;
+        return _shouldStop;
     }
     
     void sendAsyncStop()
     {
-        m_shouldStop = true;
+        _shouldStop = true;
     }
 
     
@@ -88,15 +88,15 @@ private:
     void threadEnded();
 
 
-    volatile bool       m_isRunning;
-    volatile bool       m_shouldStop;
+    volatile bool       _isRunning;
+    volatile bool       _shouldStop;
     
     std::condition_variable _wakeUp;
     
-    std::string         m_threadName;
+    std::string         _threadName;
     
     /* thread pool */
-    std::thread *m_thread;
+    std::thread *_thread;
     
     static  std::vector< Thread* > s_threadsPool ;
     

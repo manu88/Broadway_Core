@@ -97,7 +97,7 @@ public:
     ~ArgumentsArray()
     {
 
-        for (auto it : m_list )
+        for (auto it : _list )
             delete it;
     }
 
@@ -114,18 +114,18 @@ public:
     template<typename Type>
     void addValue(Type value)
     {
-        m_list.push_back( new Argument<Type>( value ) );
+        _list.push_back( new Argument<Type>( value ) );
     }
     
     int getSize() const
     {
-        return ( int ) m_list.size();
+        return ( int ) _list.size();
     }
     
     template<typename Type>
     Type getValueAtIndex(const int index) const
     {
-        Argument<Type> *val = dynamic_cast< Argument<Type>* >( m_list[index] );
+        Argument<Type> *val = dynamic_cast< Argument<Type>* >( _list[index] );
         
         return val->getValue();
 
@@ -171,7 +171,7 @@ public:
     bool isType(const int index) const
     {
         // cast will fail if not from tested type
-        return ( dynamic_cast< Argument<Type>* >( m_list[index] ) ) != nullptr;
+        return ( dynamic_cast< Argument<Type>* >( _list[index] ) ) != nullptr;
 
     }
 
@@ -179,7 +179,7 @@ public:
     
 private:
     
-    std::vector<BaseArg*> m_list;
+    std::vector< BaseArg* > _list;
 
 
 };

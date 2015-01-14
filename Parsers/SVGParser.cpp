@@ -20,15 +20,15 @@
 #include "NanoSVG/nanosvg.h"
 
 SVGParser::SVGParser() :
-m_image  ( nullptr ),
-m_dpiRes ( 96.0f   )
+_image  ( nullptr ),
+_dpiRes ( 96.0f   )
 {
     className = "SVGParser";
 }
 SVGParser::~SVGParser()
 {
-    if (m_image != nullptr)
-        nsvgDelete( m_image );
+    if ( _image != nullptr)
+        nsvgDelete( _image );
 }
 
 /* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
@@ -39,9 +39,9 @@ bool SVGParser::parseSvgFile( const std::string &filename )
         return false;
     
 //    'px', 'pt', 'pc' 'mm', 'cm', or 'in'
-    m_image = nsvgParseFromFile(filename.c_str() , "px", m_dpiRes );
+    _image = nsvgParseFromFile(filename.c_str() , "px", _dpiRes );
     
-	if (m_image == NULL)
+	if (_image == NULL)
     {
         Log::log("Could not open SVG image '%s' " , filename.c_str() );
 		return false;
@@ -52,7 +52,7 @@ bool SVGParser::parseSvgFile( const std::string &filename )
 
 bool SVGParser::populateGXPaintJS(GXPaintJS* element , bool shouldCleanBefore)
 {
-    if ( ! (m_image && element ) )
+    if ( ! (_image && element ) )
         return false;
     
     NSVGshape* shape = nullptr;
@@ -62,7 +62,7 @@ bool SVGParser::populateGXPaintJS(GXPaintJS* element , bool shouldCleanBefore)
         element->clear();
     
 
-    for (shape = m_image->shapes; shape != NULL; shape = shape->next)
+    for (shape = _image->shapes; shape != NULL; shape = shape->next)
     {
         element->setFillColor( getColorFromNSVGpaint( shape->fill ) );
         element->setStrokeColor( getColorFromNSVGpaint( shape->stroke ) );
@@ -100,7 +100,7 @@ void SVGParser::dump()
     NSVGshape* shape = nullptr;
 	NSVGpath* path = nullptr;
     
-    for (shape = m_image->shapes; shape != NULL; shape = shape->next)
+    for (shape = _image->shapes; shape != NULL; shape = shape->next)
     {
         printf("\n got a shape");
 		for (path = shape->paths; path != NULL; path = path->next)

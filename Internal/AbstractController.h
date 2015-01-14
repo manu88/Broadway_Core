@@ -25,7 +25,7 @@ public:
     
     const std::string getName() const
     {
-        return m_controllerName;
+        return _controllerName;
     }
     
 protected:
@@ -94,7 +94,7 @@ private:
     bool _isReady;
     bool _isInactive;
     
-    std::string m_controllerName;
+    std::string _controllerName;
     
     // data mutex. See getControllerMutex() above.
     std::mutex  _sync;

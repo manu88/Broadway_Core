@@ -10,7 +10,7 @@
 
 
 Event::Event() :
-m_transition ( Undefined )
+_transition ( Undefined )
 
 {
     className = "Event";

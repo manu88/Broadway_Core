@@ -28,22 +28,22 @@ FontParser::FontParser()
 {
     className = "FontParser";
     
-    if( FT_Init_FreeType( &m_library ) )
+    if( FT_Init_FreeType( &_library ) )
     {
         Log::log("couldn't initialize freetype\n");
     }
     
     // set callback functions from Freetype to our code
-    m_functions.move_to  = FT_Outline_MoveToFunc;
-    m_functions.line_to  = FT_Outline_LineToFunc;
-    m_functions.conic_to = FT_Outline_ConicToFunc;
-    m_functions.cubic_to = FT_Outline_CubicToFunc;
+    _functions.move_to  = FT_Outline_MoveToFunc;
+    _functions.line_to  = FT_Outline_LineToFunc;
+    _functions.conic_to = FT_Outline_ConicToFunc;
+    _functions.cubic_to = FT_Outline_CubicToFunc;
     
 }
 
 FontParser::~FontParser()
 {
-    FT_Done_FreeType( m_library );
+    FT_Done_FreeType( _library );
 }
 
 /* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
@@ -53,7 +53,7 @@ std::string FontParser::getFontName( const std::string &filename )
     
     int faceIndex = 0;
     
-    if( FT_New_Face( m_library, filename.c_str(), faceIndex, &face ) != 0 )
+    if( FT_New_Face( _library, filename.c_str(), faceIndex, &face ) != 0 )
     {
         Log::log("font not found \n");
         return "Undefined";
@@ -93,7 +93,7 @@ bool FontParser::parseFontFile(GXFont *font ,  const std::string &filename )
     
     int faceIndex = 0;
     
-    if( FT_New_Face( m_library, filename.c_str(), faceIndex, &face ) != 0 )
+    if( FT_New_Face( _library, filename.c_str(), faceIndex, &face ) != 0 )
     {
         Log::log("couldn't load new face\n");
         return false;
@@ -154,10 +154,10 @@ bool FontParser::parseFontFile(GXFont *font ,  const std::string &filename )
             
             else
             {
-                m_functions.delta = 0;
-                m_functions.shift = 0;
-                FT_Outline_Decompose( &face->glyph->outline, &m_functions , glyph );
+                _functions.delta = 0;
+                _functions.shift = 0;
                 
+                FT_Outline_Decompose( &face->glyph->outline, &_functions , glyph );
 
             }
             
