@@ -88,6 +88,8 @@ bool Thread::stopThread()
     
     if ( _thread )
     {
+        wakeUpThread();
+        
         _shouldStop = true;
 
         _thread->join();

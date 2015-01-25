@@ -20,6 +20,7 @@
 
 #include "../Internal/Object.h"
 #include "../Data/ArgumentsArray.h"
+#include "../Data/Database.h"
 
 
 #define TINYJS_CALL_STACK
@@ -177,9 +178,6 @@ public:
     // without ";" !!!!
 //    CScriptVarLink evaluate( const std::string &buffer);
     std::string    evaluateAsString(const std::string &buffer);
-    
-    
-
 
     void reset();
     
@@ -211,7 +209,67 @@ public:
         
         return ret;
     }
+    
+    template<typename Type>
+    static CScriptVar* getJSArrayFromDatabase( const Database<Type> &data)
+    {
+        const int size = data.getSize();
+        if ( size == 0 )
+            return nullptr;
+        
+        CScriptVar* ret = new CScriptVar();
+        
+        ret->setArray();
+        
+        for (int i = 0; i< size; i++)
+        {
+            const std::string name = data.getItemNameAtIndex( i );
+            const Type value = data.getValueAtIndex( i );
+            
+            CScriptVar *item = new CScriptVar();
+            item->setArray();
+            
+            item->setArrayIndex(0, new CScriptVar( name ));
+            item->setArrayIndex(1, new CScriptVar( value ));
+            
+            ret->setArrayIndex( i, item);
+        }
+        
+        return ret;
+    }
 
+    template<typename Type>
+    static std::string getDatabaseAsJSArrayString( const Database<Type> &data)
+    {
+        std::ostringstream stream;
+        
+        const int size = data.getSize();
+        if ( size == 0 )
+            return "undefined";
+        
+        stream << "[";
+
+
+            
+        for (int i = 0; i< size; i++)
+        {
+            if (i != 0)
+                stream << ",";
+            
+            stream << "["
+            << "\"" << data.getItemNameAtIndex( i ) << "\""
+            << ","
+            << "\"" << data.template getValueAtIndex<Type>( i ) << "\""
+            << "]";
+            
+        }
+
+        stream << "]";
+        
+        return stream.str();
+    }
+    
+    
 protected:
     
     void prepareEnvironment();

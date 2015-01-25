@@ -121,7 +121,7 @@ void JSMachine::prepareEnvironment()
     _machine.addNative( "function system( command )"           , &js_system, this );
     _machine.addNative( "function getTime()"                   , &js_getTime,0);
 
-    executeBuffer("var lets_quit = 0; function quit() { lets_quit = 1; }");
+
 }
 
 /* **** **** **** **** **** **** **** **** **** **** **** **** **** */
@@ -336,25 +336,7 @@ bool JSMachine::importScriptFile( const std::string &filename  )
 void JSMachine::run( bool withLiveParser )
 {
 
-    if ( withLiveParser )
-        Log::log("Interactive mode... Type quit(); to exit ");
     
-    while ( evaluateAsString("lets_quit") == "0")
-    {
-        if ( withLiveParser )
-        {
-            Log::log("> ");
-            char buffer[2048];
-            fgets ( buffer, sizeof( buffer ), stdin );
-            executeBuffer( buffer );
-        }
-        else
-        {
-            usleep(4000);
-        }
-
-        
-    }
     
 
 }
@@ -901,6 +883,7 @@ CScriptVar* JSMachine::getArgumentsAsJSArray( const ArgumentsArray &array )
     ret->setArray();
     
     int count = 0;
+    
     for (int i =0; i< array.getSize() ; i++)
     {
         if ( array.isType<int>(i) )

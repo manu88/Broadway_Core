@@ -43,6 +43,9 @@ namespace FileSystem
                                                              const std::string withExtention = "*"
                                                             );
     
+    const std::string getFileText( const std::string &fileUrl);
+    
+    bool setFileText(const std::string &file , const std::string &data);
     
 } /*namespace FileSystem*/
 

@@ -88,6 +88,7 @@ GpioEvent* InterfaceController::addGpioInput(const int pinNumber  , GPioInputTyp
 {
     ThreadLock lock(this); // scopedLock
 
+    wakeUpThread();
     
     if ( !getGpioEventByPin( pinNumber ) )
     {
@@ -123,6 +124,8 @@ bool InterfaceController::removeGpioInput(const int pinNumber)
 {
     ThreadLock lock(this); // scopedLock
     
+    wakeUpThread();
+    
     GpioEvent *eventToRemove  = nullptr;
     
     if ( ( eventToRemove = getGpioEventByPin( pinNumber ) ) != nullptr )
@@ -141,6 +144,8 @@ bool InterfaceController::removeGpioInput(const int pinNumber)
 void InterfaceController::removeAllInputs()
 {
     ScopedLock lock( getControllerMutex() );
+    
+    wakeUpThread();
     
     for ( auto i : m_inputs )
     {
@@ -198,6 +203,8 @@ SerialEvent* InterfaceController::addSerial( const std::string &port)
 {
     ThreadLock lock(this);
     
+    wakeUpThread();
+    
     SerialEvent* event = new SerialEvent( port );
     m_inputs.insert( event );
     
@@ -230,6 +237,8 @@ CanEvent* InterfaceController::addCanConnexion( const std::string &interface)
 {
     ThreadLock lock(this);
     
+    wakeUpThread();
+    
     CanEvent* event = new CanEvent( interface );
     m_inputs.insert( event );
     
@@ -252,6 +261,13 @@ void InterfaceController::mainLoop()
     while ( !threadShouldStop() )
     {
         ScopedLock lock( getControllerMutex()  );
+        
+        if ( m_inputs.empty() )
+        {
+            Log::log(" gpio in list is empty, wait...");
+            wait( lock );
+        }
+        
 
         for ( auto i : m_inputs )
         {

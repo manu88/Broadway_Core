@@ -127,6 +127,7 @@ long long FileSystem::getFileSize( const std::string &filepath)
     return st.st_size;
 }
 
+/* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
 
 const std::string FileSystem::correctPathIfNeeded( const std::string &path)
 {
@@ -136,6 +137,7 @@ const std::string FileSystem::correctPathIfNeeded( const std::string &path)
     return path + "/";
 }
 
+/* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
 
 const std::string FileSystem::locateFileFromFoldersList( const std::string &filename , const std::vector<std::string> &vector)
 {
@@ -149,6 +151,7 @@ const std::string FileSystem::locateFileFromFoldersList( const std::string &file
     return "";
 }
 
+/* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
 
 const std::vector< std::string > FileSystem::getFilesListFromFolder( const std::string &path ,
                                                                      bool  withFullPath,
@@ -195,12 +198,45 @@ const std::vector< std::string > FileSystem::getFilesListFromFolder( const std::
     // error
     return  std::vector< std::string >();
     
-
-    
-
-    
-
-    
-    
-
 }
+
+/* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
+
+const std::string FileSystem::getFileText( const std::string &fileUrl)
+{
+    const int size = ( int ) FileSystem::getFileSize( fileUrl );
+    
+    FILE *file = fopen( fileUrl.c_str(), "rb" );
+    
+    if( !file )
+        return std::string();
+    
+    char *buffer = new char[size+1];
+    long actualRead = fread(buffer,1,size,file);
+    buffer[actualRead]=0;
+    buffer[size]=0;
+    fclose(file);
+    
+    return std::string( buffer );
+    
+}
+
+
+/* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
+
+bool FileSystem::setFileText(const std::string &file , const std::string &data)
+{
+    FILE *f = fopen(file.c_str() , "w");
+    
+    if (f)
+    {
+        fprintf(f, "%s", data.c_str() );
+        
+        fclose( f );
+        return true;
+    }
+    
+    return false;
+}
+
+/* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */

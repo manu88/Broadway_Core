@@ -86,7 +86,7 @@ public:
     
     float getFrameRate() const
     {
-        return 1000.f / (float)m_frameRate;
+        return 1000.f / (float) m_frameRate;
     }
     
     void setDisplayedElement( GXElement* element);
@@ -102,7 +102,6 @@ public:
         return needsDisplay();
     }
     
-
     
     bool isNativeDeinterlace() const
     {
@@ -113,12 +112,9 @@ public:
     
 #ifdef USE_OPENMAXIL
     
-    
     bool isHDMIorDVI()
     {
-        
         return m_current_tv_state.state & ( VC_HDMI_HDMI | VC_HDMI_DVI );
-        
     }
     
     bool isComposite()
@@ -126,18 +122,19 @@ public:
         return !isHDMIorDVI();
     }
     
-    bool canSupportAudioFormat(EDID_AudioFormat audio_format,
-                               uint32_t num_channels,
-                               EDID_AudioSampleRate fs,
-                               uint32_t bitrate);
+    bool canSupportAudioFormat( EDID_AudioFormat audio_format,
+                                uint32_t num_channels,
+                                EDID_AudioSampleRate fs,
+                                uint32_t bitrate);
     
-        void displayDidChange(); // move to private / protected asap
+    void displayDidChange(); // move to private / protected asap
     
     static float get_display_aspect_ratio(HDMI_ASPECT_T aspect);
     static float get_display_aspect_ratio(SDTV_ASPECT_T aspect);
     static void CallbackTvServiceCallback(void *userdata, uint32_t reason, uint32_t param1, uint32_t param2);
     
 #endif
+    
 protected:
     virtual void run();
     void init();
@@ -157,8 +154,6 @@ protected:
     
     
 private:
-    
-
     
     static DisplayController* s_instance;
     

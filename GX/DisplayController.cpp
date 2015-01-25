@@ -168,7 +168,6 @@ void DisplayController::run()
             else //if ( m_currentElement->needsDisplay() )
             {
 
-
                 if ( threadShouldStop() )
                     break;
                 
@@ -208,6 +207,8 @@ void DisplayController::run()
 {
     return s_instance->threadShouldStop();
 }
+
+
 void DisplayController::init()
 {
     assert( calledFromThisThread() );

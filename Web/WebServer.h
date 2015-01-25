@@ -14,6 +14,7 @@
 #include "../Internal/Thread.h"
 #include "../Internal/AbstractController.h"
 #include "../Internal/FileSystem.h"
+#include "../Data/Database.h"
 #include "../Data/ArgumentsArray.h"
 
 
@@ -27,7 +28,10 @@ public:
     
 protected:
     WebServerDelegate();
-    virtual std::string getRequest(const std::string &ipAddress , const int port, const std::string &addressPattern, const ArgumentsArray &arguments) = 0;
+    virtual std::string getRequest( const std::string &ipAddress ,
+                                    const int port,
+                                    const std::string &addressPattern,
+                                    const Database<std::string> &arguments) = 0;
 };
 
 
@@ -68,6 +72,14 @@ public:
     {
         return m_workingDirectory;
     }
+    
+    static const std::string getDecodedUrl( const std::string &buffer);
+    
+    // will return uri parameters' as a Database
+    static std::unique_ptr<Database< std::string> > getUriArguments( const std::string &uri);
+    
+
+    
     
 private:
     

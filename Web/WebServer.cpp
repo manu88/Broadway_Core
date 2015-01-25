@@ -10,6 +10,7 @@
 
 #include <stdio.h>
 #include <string.h>
+#include <algorithm>
 #include <assert.h>
 #include "../Config.h"
 #include "../Scheduler/Event.h"
@@ -255,25 +256,26 @@ void WebServer::send_reply(struct mg_connection *conn)
         
         
 
-        char var1[500];
-        ArgumentsArray array;
+//        char var1[500];
+//        mg_get_var(conn, "Command", var1, sizeof(var1));
         
-        mg_get_var(conn, "Command", var1, sizeof(var1));
+        std::string content = "";
+        if ( conn->query_string )
+            content = conn->query_string;
         
-        array.addValue<std::string>( var1 );
-        array.addValue<std::string>( conn->content );
-        
-        
-        std::string ret = _delegate->getRequest( conn->remote_ip  , _port , uri.c_str() , array);
+        std::string ret = _delegate->getRequest( conn->remote_ip  , _port , uri.c_str() , *getUriArguments( content));
         
         
         if ( !ret.empty())
+        {
             mg_printf_data(conn,
                            "%s",
                            ret.c_str()
                            );
+        }
         else
             printf("\n no data to send back ...");
+
     }
     
     
@@ -314,5 +316,82 @@ int WebServer::event(struct mg_connection *conn, enum mg_event ev)
     return self->event(conn , ev);
 
 }
+
+/* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
+
+/*static*/ const std::string WebServer::getDecodedUrl( const std::string &buffer)
+{
+    std::string ret = buffer;
+    StringOperations::replaceAll(ret, "+", " ");
+    StringOperations::replaceAll(ret, "%28", "(");
+    StringOperations::replaceAll(ret, "%29", ")");
+    
+    StringOperations::replaceAll(ret, "%3B", ";");
+    StringOperations::replaceAll(ret, "%2C", ",");
+    
+    StringOperations::replaceAll(ret, "%3D", "=");
+    StringOperations::replaceAll(ret, "%2B", "+");
+
+    StringOperations::replaceAll(ret, "%5C", "\\");
+    StringOperations::replaceAll(ret, "%2F", "/");
+
+    
+    StringOperations::replaceAll(ret, "%0D", "\n");
+    StringOperations::replaceAll(ret, "%09", "\t");
+    
+    StringOperations::replaceAll(ret, "%0A", ""); // ?
+
+    StringOperations::replaceAll(ret, "%7B", "{");
+    StringOperations::replaceAll(ret, "%7D", "}");
+    
+    StringOperations::replaceAll(ret, "%5B", "[");
+    StringOperations::replaceAll(ret, "%5D", "]");
+    
+    StringOperations::replaceAll(ret, "%22", "\"");
+    
+    StringOperations::replaceAll(ret, "%21", "!");
+    StringOperations::replaceAll(ret, "%23", "#");
+    StringOperations::replaceAll(ret, "%24", "$");
+    StringOperations::replaceAll(ret, "%26", "&");
+    StringOperations::replaceAll(ret, "%3F", "?");
+    StringOperations::replaceAll(ret, "%27", "'");
+    StringOperations::replaceAll(ret, "%40", "@");
+    StringOperations::replaceAll(ret, "%3A", ":");    
+    return ret;
+}
+
+/*static*/ std::unique_ptr<Database< std::string> > WebServer::getUriArguments( const std::string &uri)
+{
+    
+    Database<std::string>* array = new Database<std::string>();
+    
+    if (!uri.empty())
+    {
+    
+
+    // 1 split uri with '&' delimiter
+    
+    for (auto tok : StringOperations::split(uri, '&') )
+        {
+            // split with '='
+            auto pair = StringOperations::split(tok, '=');
+
+            std::string val = "";
+            
+            if ( pair.size() == 2)
+                val = pair.at(1) ;
+            
+                array->addValue(pair.at(0),  val );
+            
+
+        }
+    }
+    
+    return std::unique_ptr<Database<std::string>>( array );
+}
+
+
+
+
 
 
