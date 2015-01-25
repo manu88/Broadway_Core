@@ -217,7 +217,12 @@ const std::string FileSystem::getFileText( const std::string &fileUrl)
     buffer[size]=0;
     fclose(file);
     
-    return std::string( buffer );
+
+    
+    const std::string ret( buffer );
+    delete [] buffer;    
+    
+    return ret;
     
 }
 

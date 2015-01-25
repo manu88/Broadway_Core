@@ -148,13 +148,10 @@ void JSMachine::addRegisteredSelectors()
 void JSMachine::reset()
 {
     clearStack();
-    
-    _importedHeaders.clear();
-    
-    prepareEnvironment();
-    addRegisteredSelectors();
-    
 
+    prepareEnvironment();
+    
+    addRegisteredSelectors();
     
 }
 
@@ -438,7 +435,7 @@ void JSMachine::removeAllRegisteredFunctions()
 
 void JSMachine::clearStack()
 {
-    
+    _registeredSelectors.clear();
     
     //Log::log("root ref count is %i" ,m_machine.root->getRefs() );
     _machine.root->unref();

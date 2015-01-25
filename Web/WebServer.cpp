@@ -183,6 +183,10 @@ std::string WebServer::getHtmlFile( const std::string & filename)
     
     fclose(file);
     
+    const std::string ret = buffer;
+
+    delete [] buffer;
+    
     return buffer;
 }
 
@@ -255,16 +259,13 @@ void WebServer::send_reply(struct mg_connection *conn)
         // Pas une page web, on envoie la requete au WebServerDelegate
         
         
-
-//        char var1[500];
-//        mg_get_var(conn, "Command", var1, sizeof(var1));
-        
         std::string content = "";
         if ( conn->query_string )
             content = conn->query_string;
         
         std::string ret = _delegate->getRequest( conn->remote_ip  , _port , uri.c_str() , *getUriArguments( content));
         
+        printf("\n ret = '%s'" , ret.c_str() );
         
         if ( !ret.empty())
         {
