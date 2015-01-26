@@ -147,8 +147,11 @@ void JSMachine::addRegisteredSelectors()
 
 void JSMachine::reset()
 {
+    
     clearStack();
-
+    
+    
+    
     prepareEnvironment();
     
     addRegisteredSelectors();
@@ -259,26 +262,7 @@ bool JSMachine::parseScriptFile( const std::string &filename )
 
     
     executeBuffer( buffer );
-    
-    /*
-    
-    try
-    {
-        m_machine.evaluate("main()");
-    }
-    
-    catch (CScriptException *e)
-    {
-        Log::log("ERROR: %s\n", e->text.c_str());
-    }
 
-*/
-
-    
-
-
-    
-    
     delete[] buffer;
     
     return true;
@@ -327,15 +311,6 @@ bool JSMachine::importScriptFile( const std::string &filename  )
     delete[] buffer;
     
     return true;
-}
-/* **** **** **** **** **** **** **** **** **** **** **** **** **** */
-
-void JSMachine::run( bool withLiveParser )
-{
-
-    
-    
-
 }
 
 /* **** **** **** **** **** **** **** **** **** **** **** **** **** */
@@ -433,13 +408,22 @@ void JSMachine::removeAllRegisteredFunctions()
     _registeredSelectors.clear();
 }
 
+/* **** **** **** **** **** **** **** **** **** **** **** **** **** */
+
+void JSMachine::removeAllImportedScripts()
+{
+    _importedHeaders.clear();
+}
+
+/* **** **** **** **** **** **** **** **** **** **** **** **** **** */
+
 void JSMachine::clearStack()
 {
-    _registeredSelectors.clear();
+    removeAllRegisteredFunctions();
     
-    //Log::log("root ref count is %i" ,m_machine.root->getRefs() );
+    removeAllImportedScripts();
+    
     _machine.root->unref();
-    
     
     _machine.root = new CScriptVar();
     _machine.root->ref();

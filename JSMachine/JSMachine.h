@@ -126,8 +126,7 @@ public:
      */
     void registerFunctionWithSignature(const std::string &signature);
 
-    //! remove all selectors from the look-up table
-    void removeAllRegisteredFunctions();
+
     
     //! Remove a Selector from the look-up table
     /*!
@@ -160,13 +159,6 @@ public:
     bool parseScriptFile( const std::string &filename );
     
     bool importScriptFile( const std::string &filename );
-    //! live command parser
-    /*!
-     This method does not return until 'quit();' is entered.
-     */
-    void run( bool withLiveParser );
-    
-
     
     //! Evaluate the content of a text buffer
     /*!
@@ -306,6 +298,12 @@ protected:
     static void js_importFile( CScriptVar *v, void *userdata );
     
 private:
+    
+    //! remove all selectors from the look-up table
+    void removeAllRegisteredFunctions();
+    
+    void removeAllImportedScripts();
+    
     bool findSelectorBySignature( const std::string &signature );
     
     bool _allowSystemCall;

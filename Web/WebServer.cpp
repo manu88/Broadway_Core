@@ -265,7 +265,6 @@ void WebServer::send_reply(struct mg_connection *conn)
         
         std::string ret = _delegate->getRequest( conn->remote_ip  , _port , uri.c_str() , *getUriArguments( content));
         
-        printf("\n ret = '%s'" , ret.c_str() );
         
         if ( !ret.empty())
         {
@@ -278,9 +277,6 @@ void WebServer::send_reply(struct mg_connection *conn)
             printf("\n no data to send back ...");
 
     }
-    
-    
-
    
 }
 

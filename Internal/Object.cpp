@@ -30,7 +30,7 @@ void ObjectWatcher::removeObject( Object* obj )
 
 void ObjectWatcher::removeAndDeleteAllObjects(  )
 {
-    for( auto obj : m_objList ) //.begin() ; got != m_objList.end() ; got++ )
+    for( auto obj : m_objList )
     {
         if (obj)
         {
@@ -45,14 +45,8 @@ void ObjectWatcher::removeAndDeleteAllObjects(  )
 
 ObjectWatcher::~ObjectWatcher()
 {
-
-//    printf("\n num Objects remaining to remove : %li \n" , m_objList.size() );
     
     removeAndDeleteAllObjects();
-
-//    printf("\n num Objects remaining after remove : %li \n" , m_objList.size() );
-    
-   // assert(Object::s_count == 0);
     DEBUG_ASSERT( m_objList.size() == 0 );
 
 }

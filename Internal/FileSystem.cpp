@@ -216,10 +216,9 @@ const std::string FileSystem::getFileText( const std::string &fileUrl)
     buffer[actualRead]=0;
     buffer[size]=0;
     fclose(file);
-    
 
-    
     const std::string ret( buffer );
+    
     delete [] buffer;    
     
     return ret;
