@@ -11,6 +11,14 @@
 
 #include <iostream>
 
+/*
+ 
+ General rules:
+ 
+ Paths have to end with a '/' : most of the methods here (if not all) will correct the path to do so.
+ 
+ */
+
 
 namespace FileSystem
 {
@@ -35,6 +43,9 @@ namespace FileSystem
     
     // will return an empty string if nothing found;
     const std::string locateFileFromFoldersList( const std::string &filename , const std::vector<std::string> &vector);
+    
+    // will return an empty string if nothing found;
+    const std::string locateFolderFromFoldersList( const std::string &folder , const std::vector<std::string> &vector);
     
     
     const std::vector< std::string > getFilesListFromFolder( const std::string &path ,

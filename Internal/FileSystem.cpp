@@ -145,7 +145,23 @@ const std::string FileSystem::locateFileFromFoldersList( const std::string &file
     for (const auto p : vector)
     {
         const std::string fullPath = p + filename;
+        
         if ( fileExists( fullPath) )
+            return fullPath;
+    }
+    
+    return "";
+}
+
+const std::string FileSystem::locateFolderFromFoldersList( const std::string &folder , const std::vector<std::string> &vector)
+{
+    const std::string fol = correctPathIfNeeded( folder );
+    
+    for (const auto p : vector)
+    {
+        const std::string fullPath = p + fol;
+        
+        if ( folderExists( fullPath) )
             return fullPath;
     }
     
