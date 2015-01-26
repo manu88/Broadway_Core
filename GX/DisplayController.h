@@ -67,7 +67,7 @@ typedef enum
     
 } FORMAT_3D_T;
 
-class DisplayController : private AbstractController,
+class DisplayController : public AbstractController,
                           public  Thread,
                           private GXElement
 {
@@ -113,7 +113,7 @@ public:
     
     float getDisplayRatio();
     
-#ifdef USE_OPENMAXIL
+#ifdef TARGET_RASPBERRY_PI
     
     bool isHDMIorDVI()
     {
@@ -136,7 +136,7 @@ public:
     static float get_display_aspect_ratio(SDTV_ASPECT_T aspect);
     static void CallbackTvServiceCallback(void *userdata, uint32_t reason, uint32_t param1, uint32_t param2);
     
-#endif
+#endif /*TARGET_RASPBERRY_PI*/
     
 protected:
     virtual void run();
@@ -202,7 +202,7 @@ private:
     
     // add for omxplayer
     /*
-    DllBcmHost        m_BcmHost;
+    DllBcmHost        m_BcmHost; removed -> use directly bcm_host 
     CRBP              m_RBP;
     COMXCore          m_OMX;
     */

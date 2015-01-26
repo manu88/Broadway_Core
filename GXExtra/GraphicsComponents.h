@@ -22,9 +22,9 @@ public:
     
 private:
     
-    virtual void paint( const GXRect &rect );
-    virtual void prepareRessources();
-    virtual void deleteRessources();
+    void paint( const GXRect &rect );
+    void prepareRessources();
+    void deleteRessources();
     
     virtual void changed();
 

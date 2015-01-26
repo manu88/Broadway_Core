@@ -85,18 +85,18 @@ public:
 
     
 protected:
-    virtual void paint( const GXRect &rect );
-    virtual void prepareRessources();
-    virtual void deleteRessources();
-    virtual void changed();
+    void paint( const GXRect &rect );
+    void prepareRessources();
+    void deleteRessources();
+    void changed();
     
     
-    virtual void childRemoved( GXElement *element );
+    void childRemoved( GXElement *element );
     
 private:
 
     void reorderElements();    
-    void updateElementInRect( GXElement &element , const GXRect &rect);
+    void updateElementInRect( GXElement *element , const GXRect &rect);
     
     bool isAlreadyInScene( GXElement* elementTofind )  const ;
     

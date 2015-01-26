@@ -171,9 +171,9 @@ void GXScene::paint( const GXRect &rect )
     
 //    GXPath::clearRect( getBounds(), m_backgroundColor);
     
-    for ( auto i : m_elements )
+    for ( auto &i : m_elements )
     {
-        updateElementInRect( *i , rect );
+        updateElementInRect( i , rect );
         
     } // end for
 
@@ -181,35 +181,35 @@ void GXScene::paint( const GXRect &rect )
 
 /* **** **** **** **** **** **** **** **** **** **** **** */
 
-void GXScene::updateElementInRect( GXElement &element , const GXRect &rect )
+void GXScene::updateElementInRect( GXElement *element , const GXRect &rect )
 {
     if (DisplayController::signalStop() )
         return;
     
-    if ( !element.isPrepared() )
-        element.prepare();
+    if ( !element->isPrepared() )
+        element->prepare();
     
     
     
-    if ( element.m_changed_flag && element.m_callChangedOnGUIThread)
+    if ( element->m_changed_flag && element->m_callChangedOnGUIThread)
     {
-        element.changed();
-        element.m_changed_flag = false;
+        element->changed();
+        element->m_changed_flag = false;
         
     }
     
     
-    if ( element.shouldBeRemoved() )
+    if ( element->shouldBeRemoved() )
     {
-        element.cleanUp();
-        deleteElementFromGUIThread( &element );
+        element->cleanUp();
+        deleteElementFromGUIThread( element );
     }
     
-    else if ( element.needsDisplay() )
+    else if ( element->needsDisplay() )
     {
-        if ( element.isOpaque() )
+        if ( element->isOpaque() )
         {
-            //GXPath::clearRect( element->getBounds(), element->getBackgroundColor() );
+            GXPath::clearRect( element->getBounds(), element->getBackgroundColor() );
 
         }
         
@@ -229,21 +229,21 @@ void GXScene::updateElementInRect( GXElement &element , const GXRect &rect )
             */
             for (auto prev : m_elements)
             {
-                if ( prev == &element)
+                if ( prev == element)
                     break;
                 /*
                 printf("\n\t so element %i '%s' with layer %i Needs display" ,
                                                 prev->getElementId() ,
                                                 prev->className.c_str() , prev->getLayer() );
                  */
-                prev->setNeedsDisplayInRect( element.m_updateRect );
-                updateElementInRect( *prev, element.m_updateRect );
+                prev->setNeedsDisplayInRect( element->m_updateRect );
+                updateElementInRect( prev, element->m_updateRect );
 
             }
         }
         
-        element.paint( element.m_updateRect );
-        element.setUpdated();
+        element->paint( element->m_updateRect );
+        element->setUpdated();
         
 //        GXPath::scissorRect( element->getBounds() );
 

@@ -37,10 +37,12 @@ DisplayController::DisplayController() :
 #ifdef USE_OPENMAXIL
     m_RBP.Initialize();
     m_OMX.Initialize();
-    
-    displayDidChange();
-    
 #endif
+    
+#ifdef TARGET_RASPBERRY_PI
+    displayDidChange();
+#endif
+
     s_instance = this;
     
     setLayer(1);
@@ -118,7 +120,9 @@ void DisplayController::run()
     setReady();
     clearContext();
     
-//    int count = 0;
+
+    
+    Log::log("screen size is %i %i" , m_bounds.size.width , m_bounds.size.height );
     
     while ( !threadShouldStop() )
     {
@@ -192,7 +196,7 @@ void DisplayController::run()
 
     }
     
-    printf("\n after GUI loop");
+
     if ( m_currentElement )
     {
         Lock();
@@ -213,7 +217,7 @@ void DisplayController::init()
 {
     assert( calledFromThisThread() );
     
-#ifdef USE_OPENMAXIL
+#ifdef TARGET_RASPBERRY_PI
 	int32_t success = 0;
 	EGLBoolean result;
 	EGLint num_config;
@@ -269,6 +273,8 @@ void DisplayController::init()
 	m_dst_rect.y = oriY;
 	m_dst_rect.width = m_screen_width;
 	m_dst_rect.height = m_screen_height;
+    
+    m_bounds = makeRect(0, 0, m_screen_width, m_screen_height);
     
 	m_src_rect.x = oriX;
 	m_src_rect.y = oriY;
@@ -326,7 +332,7 @@ void DisplayController::init()
 	float ratio = (float) m_screen_width / (float) m_screen_height;
 	glFrustumf(-ratio, ratio, -1.0f, 1.0f, 1.0f, 10.0f);
     
-#endif
+#endif /* TARGET_RASPBERRY_PI */
     
 }
 
@@ -339,7 +345,7 @@ void DisplayController::clearContext()
 {
     assert( calledFromThisThread() );
     
-#ifdef USE_OPENMAXIL
+#ifdef TARGET_RASPBERRY_PI
 	vgClear( 0, 0, m_screen_width, m_screen_height);
     
 #endif
@@ -353,7 +359,7 @@ void DisplayController::updateContext()
     assert( calledFromThisThread() );
     
 
-#ifdef USE_OPENMAXIL
+#ifdef TARGET_RASPBERRY_PI
 //    assert( vgGetError() == VG_NO_ERROR );
 
 	eglSwapBuffers(m_EGLdisplay, m_surface);
@@ -366,7 +372,7 @@ void DisplayController::updateContext()
 
 float DisplayController::getDisplayRatio()
 {
-#ifdef USE_OPENMAXIL
+#ifdef TARGET_RASPBERRY_PI
     if ( isHDMIorDVI() )
     {
         m_display_aspect = get_display_aspect_ratio( (HDMI_ASPECT_T) m_current_tv_state.display.hdmi.aspect_ratio);
@@ -385,13 +391,13 @@ float DisplayController::getDisplayRatio()
 }
 
 /* **** **** **** **** **** **** **** **** **** **** **** **** **** **** *****/
-#ifdef USE_OPENMAXIL
+#ifdef TARGET_RASPBERRY_PI
 void DisplayController::displayDidChange()
 {
 
     
     memset( &m_current_tv_state, 0, sizeof(TV_DISPLAY_STATE_T));
-    m_BcmHost.vc_tv_get_display_state( &m_current_tv_state );
+    vc_tv_get_display_state( &m_current_tv_state );
     
 }
 
@@ -403,7 +409,7 @@ bool DisplayController::canSupportAudioFormat(EDID_AudioFormat audio_format,
                                               EDID_AudioSampleRate fs,
                                               uint32_t bitrate)
 {
-    return m_BcmHost.vc_tv_hdmi_audio_supported(audio_format, num_channels, fs, bitrate ) == 0;
+    return vc_tv_hdmi_audio_supported(audio_format, num_channels, fs, bitrate ) == 0;
 }
 #endif
 
@@ -417,7 +423,7 @@ bool DisplayController::canSupportAudioFormat(EDID_AudioFormat audio_format,
 {
     if ( !s_EGLInitialized )
     {
-#ifdef USE_OPENMAXIL
+#ifdef TARGET_RASPBERRY_PI
 
         // bind OpenVG API
         eglBindAPI(EGL_OPENVG_API);
@@ -440,7 +446,7 @@ bool DisplayController::canSupportAudioFormat(EDID_AudioFormat audio_format,
 }
 
 /* **** **** **** **** **** **** **** **** **** **** **** **** **** **** *****/
-#ifdef USE_OPENMAXIL
+#ifdef TARGET_RASPBERRY_PI
 /*static*/ void DisplayController::CallbackTvServiceCallback(void *userdata, uint32_t reason, uint32_t param1, uint32_t param2)
 {
 
