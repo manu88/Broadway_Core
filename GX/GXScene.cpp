@@ -51,7 +51,7 @@ bool GXScene::addElement( GXElement* element )
     
 
     element->setParentElement( this );
-    element->setBounds( m_bounds );
+   // element->setBounds( m_bounds );
     
     m_prepared = false;
     m_elements.push_back( element );
@@ -209,7 +209,7 @@ void GXScene::updateElementInRect( GXElement *element , const GXRect &rect )
     {
         if ( element->isOpaque() )
         {
-            GXPath::clearRect( element->getBounds(), element->getBackgroundColor() );
+          //  GXPath::clearRect( element->getBounds(), element->getBackgroundColor() );
 
         }
         

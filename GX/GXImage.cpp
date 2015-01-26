@@ -33,7 +33,7 @@ m_autoScale    ( true )
 }
 
 
-void GXImage::shouldScaleImageToBounds( bool autoScale )
+void GXImage::fitImageToBounds( bool autoScale )
 {
     
 }
@@ -82,9 +82,12 @@ void GXImage::prepareRessources()
     {
         Log::log(" warning : unable to create image '%s' " , m_filename.c_str() );
     }
-    printf("\n image file size is %i %i" , m_imageSize.width , m_imageSize.height );
-    
-   // assert( m_image != VG_INVALID_HANDLE );
+#ifdef TARGET_RASPBERRY_PI
+    const int width = vgGetParameteri( m_image, VG_IMAGE_WIDTH);
+    const int height = vgGetParameteri( m_image, VG_IMAGE_HEIGHT);
+
+    setBounds(0, 0, width, height);
+#endif
 
 
     
@@ -97,6 +100,7 @@ void GXImage::deleteRessources()
 {
     if ( m_image == VG_INVALID_HANDLE )
         return ;
+    
     
 #ifdef TARGET_RASPBERRY_PI
 	vgDestroyImage(m_image);
@@ -117,8 +121,10 @@ void GXImage::changed()
 /*static*/ VGImage GXImage::createImageFromJpeg(const char *filename , int &w , int &h)
 {
     VGImage img = 0;
+    
     unsigned int width = -1;
     unsigned int height = -1;
+    
 #ifdef TARGET_RASPBERRY_PI
     FILE       *infile;
     struct     jpeg_decompress_struct jdc;
@@ -234,6 +240,8 @@ void GXImage::changed()
 #endif    
     w = width;
     h = height;
+    
+
     
     return img;
 }

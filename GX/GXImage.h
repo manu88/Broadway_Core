@@ -36,10 +36,7 @@ public:
     ~GXImage();
     
 
-    void shouldScaleImageToBounds( bool autoScale );
-    
-
-    
+    void fitImageToBounds( bool autoScale );
 
 protected:
     virtual void paint( const GXRect &rect );    

@@ -27,6 +27,8 @@ typedef VGHandle VGPath;
 
 #define VG_INVALID_HANDLE ((VGHandle)0)
 
+
+
 typedef enum {
     /* Color paint parameters */
     VG_PAINT_TYPE                               = 0x1A00,
