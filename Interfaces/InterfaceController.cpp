@@ -266,6 +266,7 @@ void InterfaceController::mainLoop()
         {
             Log::log(" gpio in list is empty, wait...");
             wait( lock );
+            Log::log(" lock unlocked");
         }
         
 
@@ -274,8 +275,6 @@ void InterfaceController::mainLoop()
             
             if ( i->changed() )
             {
-                
-                
                 m_delegate->inputChanged ( i );
             }
         }

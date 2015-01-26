@@ -18,6 +18,8 @@
     #include <EGL/egl.h>
     #include <GLES/gl.h>
 
+/*  FOR OMX ONLY?
+ 
     #include "OMXStreamInfo.h"
 
     #include "utils/log.h"
@@ -31,6 +33,7 @@
     #include "DllOMX.h"
     #include "Srt.h"
     #include "utils/Strprintf.h"
+ */
 
 #endif /* TARGET_RASPBERRY_PI */
 
@@ -198,10 +201,11 @@ private:
     
     
     // add for omxplayer
+    /*
     DllBcmHost        m_BcmHost;
     CRBP              m_RBP;
     COMXCore          m_OMX;
-    
+    */
     TV_DISPLAY_STATE_T   m_old_tv_state; // store params before init. params are restaured at exit
     TV_DISPLAY_STATE_T   m_current_tv_state; // store params before init. params are restaured at exit
     float             m_display_aspect;

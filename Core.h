@@ -124,7 +124,9 @@
 #endif
 
 #ifdef USE_GRAPHICS
+#include "GX/DisplayController.h"
 #include "GX/GXElement.h"
+#include "GX/GXPath.h"
 #include "GX/GXScene.h"
 #include "GX/GXPaintJS.h"
 #include "GX/GXTextRenderer.h"

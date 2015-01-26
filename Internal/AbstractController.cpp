@@ -33,7 +33,6 @@ AbstractController::~AbstractController()
 
 /*static*/ bool AbstractController::allControllersReady()
 {
-                
     return countReadyControllers() == static_cast< int >( s_controllers.size() );
 }
 
