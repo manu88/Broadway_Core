@@ -243,27 +243,12 @@ bool JSMachine::parseScriptFile( const std::string &filename )
         Log::log("Cannot Open file! '%s'", filename.c_str() );
         return false;
     }
-    
-    const int size = ( int ) FileSystem::getFileSize( filename );
-    
-    FILE *file = fopen( filename.c_str(), "rb" );
 
-    if( !file )
-    {
-        Log::log("Unable to open file! '%s'", filename.c_str() );
-        return false;
-    }
-    
-    char *buffer = new char[size+1];
-    long actualRead = fread(buffer,1,size,file);
-    buffer[actualRead]=0;
-    buffer[size]=0;
-    fclose(file);
-
+    const std::string buffer = FileSystem::getFileText( filename );
     
     executeBuffer( buffer );
 
-    delete[] buffer;
+
     
     return true;
 }
@@ -287,28 +272,10 @@ bool JSMachine::importScriptFile( const std::string &filename  )
         Log::log("Cannot open file! '%s'", filename.c_str() );
         return false;
     }
-    
-    const int size = ( int ) FileSystem::getFileSize( filename );
-    
-    FILE *file = fopen( filename.c_str() , "rb" );
-    
-    if( !file )
-    {
-        Log::log("Unable to open file! '%s'", filename.c_str() );
-        return false;
-    }
-    
-    char *buffer = new char[size+1];
-    long actualRead = fread(buffer,1,size,file);
-    buffer[actualRead]=0;
-    buffer[size]=0;
-    fclose(file);
-    
-    
-    executeBuffer( buffer );
-    
 
-    delete[] buffer;
+    const std::string buf = FileSystem::getFileText( filename );
+    
+    executeBuffer( buf );
     
     return true;
 }

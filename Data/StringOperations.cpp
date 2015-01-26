@@ -80,9 +80,12 @@ std::vector<std::string> &StringOperations::split(const std::string &s, char del
 {
     std::stringstream ss(s);
     std::string item;
-    while (std::getline(ss, item, delim)) {
+    
+    while (std::getline(ss, item, delim))
+    {
         elems.push_back(item);
     }
+    
     return elems;
 }
 

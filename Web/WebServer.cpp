@@ -45,6 +45,7 @@ std::string  WebServer::s_noFilesContent =
 "and check if 'index.html'  exists in the folder </p> ";
 
 /* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
+
 std::string  WebServer::s_404 =
 "<b> Broadway Web server 404 Error : </b> ";
 
@@ -82,7 +83,7 @@ bool WebServer::start()
 {
        
     
-    m_defaultContent = getHtmlFile( m_workingDirectory+ "index.html");
+    m_defaultContent = getHtmlFile( m_workingDirectory+ "index.html" );
     
     _server = mg_create_server(this, ev_handler);
     return startThread();
@@ -166,29 +167,10 @@ std::string WebServer::getHtmlFile( const std::string & filename)
         return s_noFilesContent;
     }
     
-    const int size = ( int ) FileSystem::getFileSize( filename );
-    
-    FILE *file = fopen( filename.c_str() , "rb" );
-    
-    if( !file )
-    {
-        Log::log("Unable to open file! '%s'", filename.c_str() );
-        return s_noFilesContent;
-    }
-    
-    char *buffer = new char[size+1];
-    long actualRead = fread(buffer,1,size,file);
-    buffer[actualRead]=0;
-    buffer[size]=0;
-    
-    fclose(file);
-    
-    const std::string ret = buffer;
+    return FileSystem::getFileText( filename );
 
-    delete [] buffer;
-    
-    return buffer;
 }
+
 
 /* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
 
@@ -202,7 +184,7 @@ void WebServer::send_reply(struct mg_connection *conn)
     // racine 
     if ( uri == "/" )
     {
-        const std::string index =  getHtmlFile( m_workingDirectory + "index.html");
+        const std::string index = getHtmlFile( m_workingDirectory + "index.html" );
         mg_send_data(conn, index.c_str() , ( int ) strlen( index.c_str() ) );
 
         

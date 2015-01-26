@@ -1,6 +1,7 @@
 
 #include <iostream>
 #include <sstream>
+#include <fstream>
 #include <string>
 #include <cstring>
 #include <vector>
@@ -204,24 +205,10 @@ const std::vector< std::string > FileSystem::getFilesListFromFolder( const std::
 
 const std::string FileSystem::getFileText( const std::string &fileUrl)
 {
-    const int size = ( int ) FileSystem::getFileSize( fileUrl );
-    
-    FILE *file = fopen( fileUrl.c_str(), "rb" );
-    
-    if( !file )
-        return std::string();
-    
-    char *buffer = new char[size+1];
-    long actualRead = fread(buffer,1,size,file);
-    buffer[actualRead]=0;
-    buffer[size]=0;
-    fclose(file);
-
-    const std::string ret( buffer );
-    
-    delete [] buffer;    
-    
-    return ret;
+    std::ifstream in( fileUrl );
+        
+    return std::string((std::istreambuf_iterator<char>(in)),
+                                std::istreambuf_iterator<char>());
     
 }
 
