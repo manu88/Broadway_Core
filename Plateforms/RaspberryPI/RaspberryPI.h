@@ -18,10 +18,6 @@
 
 static void initializePlateform()
 {
-
-#ifdef USE_OPENMAXIL
-    printf("\n Use OpenMax IL ");
-#endif
     bcm_host_init();    
 }
 

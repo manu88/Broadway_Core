@@ -42,24 +42,24 @@
 #include <semaphore.h>
 
 #include <iostream>
+#include <string>
+#include <utility>
 
-#include "GXDefs.h"
 
-#include "../GXDataType/GXColors.h"
 
 #include "../Internal/AbstractController.h"
 #include "../Internal/Thread.h"
 #include "../Scheduler/Scheduler.h"
+#include "../Plateforms/Plateform.h"
 
+#include "GXDefs.h"
+
+#include "Impl/DisplayImpl.h"
+
+#include "../GXDataType/GXColors.h"
 #include "GXElement.h"
 #include "GXPath.h"
 #include "GXImage.h"
-
-#include "../Plateforms/Plateform.h"
-
-
-#include <string>
-#include <utility>
 
 
 
@@ -164,6 +164,9 @@ private:
     
     static DisplayController* s_instance;
     
+    DisplayImpl _impl;
+    
+    
     static void initializeEGL();
     static void deinitializeEGL();
     static bool s_EGLInitialized;
@@ -178,30 +181,32 @@ private:
     uint32_t m_screen_width;
 	uint32_t m_screen_height;
     
-    bool              m_NativeDeinterlace;
+    bool    m_NativeDeinterlace;
     sem_t   m_tv_synced;
 
-//    int m_layer;
     
     Chrono    m_frameRateClock;
     long long m_frameRate;
 
+#ifdef HAVE_EGL
+    // OpenGL|ES objects
+	EGLDisplay m_EGLdisplay; // egl.h
     
-#ifdef TARGET_RASPBERRY_PI
-    EGL_DISPMANX_WINDOW_T m_nativewindow;
-
-	// OpenGL|ES objects
-	EGLDisplay m_EGLdisplay;
-    
-	EGLSurface m_surface;
+	EGLSurface m_surface; // egl.h
 	
     // unique
-    EGLContext m_context;
+    EGLContext m_context; // egl.h
+#endif
     
-    VC_RECT_T  m_dst_rect;
-    VC_RECT_T  m_src_rect;
+#ifdef TARGET_RASPBERRY_PI
+    EGL_DISPMANX_WINDOW_T m_nativewindow; // rpi
+
+
     
-    DISPMANX_ELEMENT_HANDLE_T   m_element; // multiple?
+    VC_RECT_T  m_dst_rect; // rpi
+    VC_RECT_T  m_src_rect; // rpi
+    
+    DISPMANX_ELEMENT_HANDLE_T   m_element; // rpi
     
     
     // add for omxplayer
@@ -210,11 +215,14 @@ private:
     CRBP              m_RBP;
     COMXCore          m_OMX;
     */
+    
+    // rpi
     TV_DISPLAY_STATE_T   m_old_tv_state; // store params before init. params are restaured at exit
     TV_DISPLAY_STATE_T   m_current_tv_state; // store params before init. params are restaured at exit
-    float             m_display_aspect;
+    
 #endif
     
+    float             m_display_aspect;
 
 };
 

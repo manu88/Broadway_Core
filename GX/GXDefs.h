@@ -41,7 +41,7 @@
 
     #endif
 
- /* end of TARGET_RASPBERRY_PI*/
+/* end of TARGET_RASPBERRY_PI*/
 
 #elif defined __APPLE__
 
@@ -53,7 +53,7 @@
         #include "../Plateforms/MacOS/MacDummies/vg_mac.h"
 
     #endif
- /* end of __APPLE__ */
+/* end of __APPLE__ */
 
 #endif
 
