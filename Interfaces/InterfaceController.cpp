@@ -130,7 +130,7 @@ bool InterfaceController::removeGpioInput(const int pinNumber)
     
     if ( ( eventToRemove = getGpioEventByPin( pinNumber ) ) != nullptr )
     {
-        ScopedLock lock(getControllerMutex() );
+        ScopedLock ctlLock(getControllerMutex() );
         delete eventToRemove;
         
         m_inputs.erase( eventToRemove );

@@ -44,13 +44,13 @@ std::string FileSystem::getPathRelativeTo( const std::string &pathToGet , const 
     
     std::string ret;
     
-    for (int j=0; j< tok2.size() ; ++j)
+    for (int j=0; j< ( int ) tok2.size() ; ++j)
         ret += "../";
     
-    for (int j=0; j< tok1.size() ; ++j)
+    for (int j=0; j< ( int ) tok1.size() ; ++j)
     {
         ret += tok1.at(j);// +  "/";
-        if ( j< ( tok1.size() - 1 ) )
+        if ( j< ( int) ( tok1.size() - 1 ) )
             ret += "/";
     }
     
@@ -63,6 +63,13 @@ bool FileSystem::hasSuffix( const std::string &str, const std::string &suffix )
 {
     return str.size() >= suffix.size() &&
     str.compare(str.size() - suffix.size(), suffix.size(), suffix) == 0;
+}
+
+/* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
+
+const std::string FileSystem::getFileExtension( const std::string &filePath )
+{
+    return filePath.substr( filePath.find_last_of(".") + 1);
 }
 
 /* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */

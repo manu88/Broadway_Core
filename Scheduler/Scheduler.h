@@ -70,9 +70,9 @@ public:
         }
     }
     
-    TimedEvent(Timestamp next, Duration period ) noexcept :
-    next    ( next     ),
-    period  ( period   ),
+    TimedEvent(Timestamp next_, Duration period_ ) noexcept :
+    next    ( next_    ),
+    period  ( period_  ),
     running ( false    ),
     timerId ( ++s_nextId )
     {

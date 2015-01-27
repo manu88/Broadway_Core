@@ -22,7 +22,7 @@
 
 #ifndef ____GXPath__
 #define ____GXPath__
-
+/*
 #ifdef TARGET_RASPBERRY_PI
     #include <EGL/egl.h>
     #include <GLES/gl.h>
@@ -32,7 +32,7 @@
 #elif __APPLE__
     #include "../Plateforms/MacOS/MacDummies/vg_mac.h"
 #endif
-
+*/
 #include <iostream>
 #include <stdio.h>
 
@@ -43,6 +43,8 @@
 
 
 #include "../Internal/Object.h"
+
+#include "GXDefs.h"
 
 /* **** **** **** **** **** */
 

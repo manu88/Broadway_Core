@@ -14,7 +14,8 @@
 #define __Broadway_test__GXImage__
 
 
-
+#include "GXDefs.h"
+/* moved in ^
 #ifdef TARGET_RASPBERRY_PI
 #include <EGL/egl.h>
 #include <GLES/gl.h>
@@ -24,6 +25,7 @@
 #else
 #include "../Plateforms/MacOS/MacDummies/vg_mac.h"
 #endif
+*/
 
 #include "../GXDataType/GXGeometry.h"
 
@@ -54,7 +56,9 @@ private:
     bool        m_autoScale;
 
     VGImage m_image;
+    
     static VGImage createImageFromJpeg(const char *filename , int &w , int &h);
+    static VGImage createImageFromPng(const char *filename , int &w , int &h);
 
 
     

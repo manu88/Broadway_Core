@@ -28,6 +28,8 @@ namespace FileSystem
     
     bool hasSuffix(const std::string &str, const std::string &suffix);
     
+    const std::string getFileExtension( const std::string &filePath );
+    
     bool fileExists( const std::string &filepath);
     bool folderExists( const std::string &path);
     

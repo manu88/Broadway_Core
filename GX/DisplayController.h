@@ -13,12 +13,14 @@
 #ifndef __Broadway_test__DisplayController__
 #define __Broadway_test__DisplayController__
 
+
+
 #ifdef TARGET_RASPBERRY_PI
     #include <bcm_host.h>
-    #include <EGL/egl.h>
-    #include <GLES/gl.h>
 
-/*  FOR OMX ONLY?
+
+
+/*  FOR OMX ONLY
  
     #include "OMXStreamInfo.h"
 
@@ -40,6 +42,8 @@
 #include <semaphore.h>
 
 #include <iostream>
+
+#include "GXDefs.h"
 
 #include "../GXDataType/GXColors.h"
 

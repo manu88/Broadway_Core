@@ -95,6 +95,7 @@ bool Thread::stopThread()
         _thread->join();
         
         delete _thread;
+        
         _thread = nullptr;
         
         return true;

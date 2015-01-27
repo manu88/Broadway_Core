@@ -9,25 +9,30 @@
 
 
 #ifdef TARGET_RASPBERRY_PI
+
 extern "C"
 {
-#include <stdio.h>
-#include <cstddef>
-#include <jpeglib.h>
+    #include <stdio.h>
+    #include <cstddef>
+    #include <jpeglib.h>
 }
+
 #endif
 
 #include <assert.h>
 
 #include "GXImage.h"
 #include "../Log/Log.h"
+#include "../Data/StringOperations.h"
+#include "../Internal/FileSystem.h"
 
 GXImage::GXImage( const std::string &filename ):
 m_filename     ( filename ),
 m_scaleX       ( 1.f ),
 m_scaleY       ( 1.f ),
 m_imageSize    ( makeSizeNULL() ),
-m_autoScale    ( true )
+m_autoScale    ( true ),
+m_image        ( 0 )
 {
     className = "GXImage";
 }
@@ -76,7 +81,20 @@ GXImage::~GXImage()
 
 void GXImage::prepareRessources()
 {
-    m_image = createImageFromJpeg( m_filename.c_str() , m_imageSize.width , m_imageSize.height );
+    const std::string extension = StringOperations::toLowerCase( FileSystem::getFileExtension( m_filename) );
+    
+    if (   extension == "jpg"
+        || extension == "jpeg"
+        )
+    {
+        m_image = createImageFromJpeg( m_filename.c_str() , m_imageSize.width , m_imageSize.height );
+    }
+    
+    else if (   extension == "png" )
+    {
+        printf("Image is PNG -> impl in progress");
+        
+    }
 
     if (m_image == VG_INVALID_HANDLE )
     {
@@ -245,3 +263,17 @@ void GXImage::changed()
     
     return img;
 }
+
+/* **** **** **** **** **** **** **** **** **** **** **** **** **** */
+
+/*static*/ VGImage GXImage::createImageFromPng(const char *filename , int &w , int &h)
+{
+    VGImage img = 0;
+    
+    
+    return img;
+    
+}
+
+
+

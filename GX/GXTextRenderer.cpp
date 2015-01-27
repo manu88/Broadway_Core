@@ -113,7 +113,7 @@ void GXTextRenderer::paint( const GXRect &rect )
 
 void GXTextRenderer::drawCharAtPositionWithSize( const GXGlyph *glyph , const GXPoint &pos , float size )
 {
-    for (int i = 0 ; i < glyph->getNumSegments() ; i++)
+    for (int i = 0 ; i < ( int ) glyph->getNumSegments() ; i++)
     {
         const Curve_float *c = glyph->getCurveAt( i );
         
