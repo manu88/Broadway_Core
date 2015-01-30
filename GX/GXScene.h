@@ -106,7 +106,7 @@ private:
     {
         bool operator() (const GXElement* lhs, const GXElement* rhs) const
         {
-            return lhs->m_layer <= rhs->m_layer;
+            return lhs->getLayer() <= rhs->getLayer();
         }
     };
     

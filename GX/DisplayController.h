@@ -63,6 +63,7 @@
 
 
 
+// a virer
 typedef enum
 {
     CONF_FLAGS_FORMAT_NONE,
@@ -71,10 +72,55 @@ typedef enum
     
 } FORMAT_3D_T;
 
+class DisplayControllerDelegate
+{
+    friend class DisplayController;
+    
+public:
+    virtual ~DisplayControllerDelegate()
+    {}
+    
+protected:
+    DisplayControllerDelegate()
+    {}
+    
+    virtual void displayDidChange( DisplayNotification notification ) = 0;
+    
+};
+
+
+/* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
+
 class DisplayController : public AbstractController,
                           public  Thread,
                           private GXElement
 {
+
+    
+/* **** **** **** **** **** **** */
+// new methods, with DisplayImpl
+    
+    friend class DisplayImpl;
+    
+public:
+    
+    void setDelegate( DisplayControllerDelegate *delegate)
+    {
+        _delegate = delegate;
+    }
+    
+    const std::list< DisplayInformations > getAvailableVideoMode() const
+    {
+        return _impl.getAvailableVideoMode();
+    }
+    
+    
+private:
+    void displayChangeNotification( DisplayNotification notification );
+    
+    DisplayControllerDelegate *_delegate;
+    
+/* **** **** **** **** **** **** */
 public:
     static DisplayController* getController()
     {
@@ -115,20 +161,21 @@ public:
         return m_NativeDeinterlace;
     }
     
-    float getDisplayRatio();
+    float getDisplayRatio(); // -> move to DisplayImpl
     
 #ifdef TARGET_RASPBERRY_PI
     
-    bool isHDMIorDVI()
+    bool isHDMIorDVI() // -> move to DisplayImpl
     {
         return m_current_tv_state.state & ( VC_HDMI_HDMI | VC_HDMI_DVI );
     }
     
-    bool isComposite()
+    bool isComposite() // -> move to DisplayImpl
     {
         return !isHDMIorDVI();
     }
     
+    // -> move to DisplayImpl
     bool canSupportAudioFormat( EDID_AudioFormat audio_format,
                                 uint32_t num_channels,
                                 EDID_AudioSampleRate fs,
@@ -136,6 +183,7 @@ public:
     
     void displayDidChange(); // move to private / protected asap
     
+    // -> move to DisplayImpl
     static float get_display_aspect_ratio(HDMI_ASPECT_T aspect);
     static float get_display_aspect_ratio(SDTV_ASPECT_T aspect);
     static void CallbackTvServiceCallback(void *userdata, uint32_t reason, uint32_t param1, uint32_t param2);
@@ -166,7 +214,7 @@ private:
     
     DisplayImpl _impl;
     
-    
+    // moved in impl
     static void initializeEGL();
     static void deinitializeEGL();
     static bool s_EGLInitialized;
@@ -208,6 +256,9 @@ private:
     
     DISPMANX_ELEMENT_HANDLE_T   m_element; // rpi
     
+    // rpi
+    TV_DISPLAY_STATE_T   m_old_tv_state; // store params before init. params are restaured at exit
+    TV_DISPLAY_STATE_T   m_current_tv_state; // store params before init. params are restaured at exit
     
     // add for omxplayer
     /*
@@ -216,9 +267,7 @@ private:
     COMXCore          m_OMX;
     */
     
-    // rpi
-    TV_DISPLAY_STATE_T   m_old_tv_state; // store params before init. params are restaured at exit
-    TV_DISPLAY_STATE_T   m_current_tv_state; // store params before init. params are restaured at exit
+
     
 #endif
     

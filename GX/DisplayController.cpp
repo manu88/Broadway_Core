@@ -20,16 +20,19 @@
 /*static*/ bool DisplayController::s_EGLInitialized = false;
 
 DisplayController::DisplayController() :
-    AbstractController   ( "Display controller" ),
-    Thread               ( "GUI"   ),
-    m_currentElement     ( nullptr ),
-    m_shouldClearContext ( true    ),
-//    m_layer              (1),
+AbstractController   ( "Display controller" ),
+Thread               ( "GUI"   ),
 
-    // dummy dimensions
-    m_screen_width  ( 200 ),
-    m_screen_height ( 100 ),
-    m_frameRate ( 0 )
+_impl( this ),
+
+_delegate            ( nullptr ),
+m_currentElement     ( nullptr ),
+m_shouldClearContext ( true    ),
+
+// dummy dimensions
+m_screen_width  ( 200 ),
+m_screen_height ( 100 ),
+m_frameRate ( 0 )
 {
 
     className = "Display controller";
@@ -40,7 +43,7 @@ DisplayController::DisplayController() :
 #endif
     
 #ifdef TARGET_RASPBERRY_PI
-    displayDidChange();
+   // displayDidChange();
 #endif
 
     s_instance = this;
@@ -113,16 +116,39 @@ void DisplayController::run()
 {
     initializeEGL();
     
-    init();
+
     
 
+    
+    Log::log("screen size is %i %i" , _bounds.size.width , _bounds.size.height );
+    
+/*
+    for( const DisplayInformations &mode : _impl.getAvailableVideoMode() )
+    {
+        printf("\n ==== MODE  =====" );
+        printf("\n\t W = %i H = %i" , mode.size.width , mode.size.height );
+        printf("\n\t native %s" , mode.native? "YES" : "NO ");
+        printf("\n\t framerate : %i" , mode.framerate);
+        printf("\n\t pixelRatio : %i " , mode.aspectRatio);
+        
+    }
+*/
+    
+    DisplayInformations mode = _impl.getCurrentDisplayInformations();
+    
+    printf("\n ==== MODE  =====" );
+    printf("\n\t W = %i H = %i" , mode.size.width , mode.size.height );
+    printf("\n\t native %s" , mode.native? "YES" : "NO ");
+    printf("\n\t framerate : %i" , mode.framerate);
+    printf("\n\t pixelRatio : %i " , mode.aspectRatio);
+    
+    init();
+    
     
     setReady();
     clearContext();
     
-
-    
-    Log::log("screen size is %i %i" , m_bounds.size.width , m_bounds.size.height );
+    _delegate->displayDidChange( DISPLAY_ACTIVE );
     
     while ( !threadShouldStop() )
     {
@@ -176,7 +202,7 @@ void DisplayController::run()
                     break;
                 
                 Lock();                
-                m_currentElement->paint( m_updateRect );
+                m_currentElement->paint( _updateRect );
                 
                 m_currentElement->setUpdated();
                 
@@ -204,6 +230,32 @@ void DisplayController::run()
         UnLock();
     }
     setUnReady();    
+}
+
+/* **** **** **** **** **** **** **** **** **** **** **** **** **** */
+
+void DisplayController::displayChangeNotification( DisplayNotification notification )
+{
+    printf("\n Got a notification from display");
+    
+    if ( notification & HDMI_UNPLUGGED )
+        printf("\n HDMI is Unplugged");
+    
+    if ( notification & HDMI_ATTACHED )
+        printf("\n HDMI is Attached");
+    
+    if ( notification & HDMI_DVI )
+        printf("\n HDMI is DVI");
+    
+    if ( notification & HDMI_HDMI )
+        printf("\n HDMI is in HDMI mode and ON");
+    
+    
+    if ( _delegate )
+        _delegate->displayDidChange( notification );
+    
+    
+    
 }
 
 /* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
@@ -452,7 +504,7 @@ bool DisplayController::canSupportAudioFormat(EDID_AudioFormat audio_format,
 
     DisplayController *self = reinterpret_cast<DisplayController*>(userdata);
     
-    
+
     switch(reason)
     {
         case VC_HDMI_UNPLUGGED:

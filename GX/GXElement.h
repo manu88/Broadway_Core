@@ -44,19 +44,19 @@ public:
     
     // 
     
-    void removeFromParent()
+    void removeFromParent() noexcept
     {
-        m_shouldBeRemoved = true;
+        _shouldBeRemoved = true;
     }
     
-    bool shouldBeRemoved() const
+    bool shouldBeRemoved() const noexcept
     {
-        return m_shouldBeRemoved;
+        return _shouldBeRemoved;
     }
     
-    bool isPrepared() const
+    bool isPrepared() const noexcept
     {
-        return m_prepared;
+        return _prepared;
     }
     
     void setUnprepared();
@@ -81,9 +81,9 @@ public:
     void setSize( int width , int height);
     void setSize( const GXSize &size);
 
-    GXRect getBounds() const
+    GXRect getBounds() const noexcept
     {
-        return m_bounds;
+        return _bounds;
     }
     
     /* **** **** **** **** **** **** **** **** **** */
@@ -92,7 +92,7 @@ public:
     
     GXColor getBackgroundColor() const noexcept
     {
-        return m_backgroundColor;
+        return _backgroundColor;
     }
 
     /* **** **** **** **** **** **** **** **** **** */
@@ -103,7 +103,7 @@ public:
     
     bool isTransparent() const noexcept
     {
-        return m_isTransparent;
+        return _isTransparent;
     }
 
     bool isOpaque() const noexcept
@@ -118,7 +118,7 @@ public:
     
     bool isVisible() const noexcept
     {
-        return !m_hidden;
+        return !_hidden;
     }
     
 
@@ -127,13 +127,14 @@ public:
     
     void setParentElement( GXElement *parentElement)
     {
-        m_parentElement = parentElement;
-        m_added = true;
+        _parentElement = parentElement;
+        
+        _added = true;
     }
     
     GXElement* getParentElement() const
     {
-        return m_parentElement;
+        return _parentElement;
     }
     
     
@@ -169,38 +170,33 @@ private:
     
     void elementChanged();
     
-    int             m_layer;
+    int             _layer;
     
-    bool            m_prepared;
-    bool            m_shouldBeRemoved;
-    bool            m_added;
+    bool            _prepared;
+    bool            _shouldBeRemoved;
+    bool            _added;
     
-    int             m_needsDisplay;
-    GXRect          m_updateRect;
+    int             _needsDisplay;
+    GXRect          _updateRect;
     
-    bool            m_hidden;
-    bool            m_layerChanged;
+    bool            _hidden;
+    bool            _layerChanged;
     
     bool            m_changed_flag;
     bool            m_callChangedOnGUIThread;
     
-    GXElement       *m_parentElement;
+    GXElement       *_parentElement;
     
-    GXRect          m_bounds;
+    GXRect          _bounds;
     
-    GXColor         m_backgroundColor;
+    GXColor         _backgroundColor;
 
     // default to false             
-    bool            m_isTransparent;
+    bool            _isTransparent;
     
-    bool  m_autoRendering;
-    
-
-
-
+    bool            _autoRendering;
 
 };
 
-//typedef GXElement* create_element();
 
 #endif /* defined(____GXElement__) */

@@ -86,6 +86,7 @@ bool WebServer::start()
     m_defaultContent = getHtmlFile( m_workingDirectory+ "index.html" );
     
     _server = mg_create_server(this, ev_handler);
+    
     return startThread();
 }
 

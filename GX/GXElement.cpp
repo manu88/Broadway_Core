@@ -18,21 +18,23 @@
 /* **** **** **** **** **** **** **** **** **** **** **** */
 
 GXElement::GXElement() : 
-    m_layer                    ( 0       ),
-    m_prepared                 ( false   ),
-    m_shouldBeRemoved          ( false   ),
-    m_added                    ( false   ),
-    m_needsDisplay             ( false   ),
-    m_updateRect               ( makeRectNULL() ),
-    m_hidden                   ( false   ),
-    m_layerChanged             ( false   ),
-    m_changed_flag             ( false   ),
-    m_callChangedOnGUIThread   ( true    ),
-    m_parentElement            ( nullptr ),
-    m_bounds                   ( makeRectNULL()       ),
-    m_backgroundColor          ( makeColor( 0, 0, 0 ) ),
-    m_isTransparent            ( false   ),
-    m_autoRendering            ( false   )
+    _layer                    ( 0       ),
+    _prepared                 ( false   ),
+    _shouldBeRemoved          ( false   ),
+    _added                    ( false   ),
+    _needsDisplay             ( false   ),
+    _updateRect               ( makeRectNULL() ),
+    _hidden                   ( false   ),
+
+    _layerChanged             ( false   ),
+    m_changed_flag            ( false   ),
+    m_callChangedOnGUIThread  ( true    ),
+
+    _parentElement            ( nullptr ),
+    _bounds                   ( makeRectNULL()       ),
+    _backgroundColor          ( makeColor( 0, 0, 0 ) ),
+    _isTransparent            ( false   ),
+    _autoRendering            ( false   )
 
 {
 
@@ -59,8 +61,8 @@ void GXElement::prepare()
 
     prepareRessources();
     
-    m_updateRect = m_bounds;
-    m_prepared = true;
+    _updateRect = _bounds;
+    _prepared = true;
 }
 
 /* **** **** **** **** **** **** **** **** **** **** **** */
@@ -76,10 +78,10 @@ void GXElement::cleanUp()
 
 void GXElement::setLayer(int layer)
 {
-    if ( m_layer != layer )
+    if ( _layer != layer )
     {
-        m_layer = layer;
-        m_layerChanged = true;
+        _layer        = layer;
+        _layerChanged = true;
         
         elementChanged();
     }
@@ -87,7 +89,7 @@ void GXElement::setLayer(int layer)
 
 int GXElement::getLayer() const
 {
-    return m_layer;
+    return _layer;
 }
 
 /* **** **** **** **** **** **** **** **** **** **** **** */
@@ -99,7 +101,7 @@ void GXElement::setBounds(int x, int y , int width , int height)
 
 void GXElement::setBounds( const GXRect &bounds )
 {
-    m_bounds = bounds;
+    _bounds = bounds;
 
     elementChanged();
 }
@@ -108,14 +110,14 @@ void GXElement::setBounds( const GXRect &bounds )
 
 void GXElement::moveTo( const GXPoint &point )
 {
-    m_bounds.origin = point;
+    _bounds.origin = point;
     
     elementChanged();
 }
 
 void GXElement::moveOf( int dX , int dY)
 {
-    moveTo( makePoint( m_bounds.origin.x + dX, m_bounds.origin.y + dY)); // call ElementChanged!
+    moveTo( makePoint( _bounds.origin.x + dX, _bounds.origin.y + dY)); // call ElementChanged!
 }
 
 void GXElement::moveTo( int x , int y)
@@ -132,7 +134,7 @@ void GXElement::setSize( int width , int height)
 
 void GXElement::setSize( const GXSize &size)
 {
-    m_bounds.size = size;
+    _bounds.size = size;
     
     elementChanged();
 }
@@ -141,9 +143,9 @@ void GXElement::setSize( const GXSize &size)
 
 void GXElement::setTransparency( bool transparent)
 {
-    if (m_isTransparent != transparent )
+    if (_isTransparent != transparent )
     {
-        m_isTransparent = transparent;
+        _isTransparent = transparent;
         
         elementChanged();
     }
@@ -158,9 +160,9 @@ void GXElement::setOpacity( bool opaque )
 
 void GXElement::setHidden(bool hidden)
 {
-    if ( hidden != m_hidden )
+    if ( hidden != _hidden )
     {
-        m_hidden = hidden;
+        _hidden = hidden;
         
         elementChanged();
     }
@@ -173,9 +175,9 @@ void GXElement::setVisible(bool visible)
 
 bool GXElement::flipVisibility()
 {
-    setHidden( !m_hidden ); // call ElementChanged!
+    setHidden( !_hidden ); // call ElementChanged!
     
-    return m_hidden;
+    return _hidden;
 }
 
 
@@ -195,8 +197,8 @@ void GXElement::elementChanged()
         m_changed_flag  = true;
 
 
-    if (m_parentElement)
-        m_parentElement->elementChanged();    
+    if (_parentElement)
+        _parentElement->elementChanged();
 }
 
 
@@ -212,82 +214,83 @@ void GXElement::childRemoved( GXElement *element )
 
 void GXElement::setUnprepared()
 {
-    m_prepared = false;
+    _prepared = false;
 }
 
 /* **** **** **** **** **** **** **** **** **** **** **** */
 
 void  GXElement::setNeedsDisplay()
 {
-    setNeedsDisplayInRect( m_bounds );
+    setNeedsDisplayInRect( _bounds );
 }
 
 void GXElement::setNeedsDisplayFor( int numFrames)
 {
-    m_updateRect = m_bounds;
-    m_autoRendering = false;
+    _updateRect = _bounds;
+    _autoRendering = false;
     
-    m_needsDisplay = numFrames;
+    _needsDisplay = numFrames;
     
-    if (m_parentElement)
-        m_parentElement->setNeedsDisplay();
+    if (_parentElement)
+        _parentElement->setNeedsDisplay();
 }
 
 /* **** **** **** **** **** **** **** **** **** **** **** */
 
 void GXElement::setNeedsDisplayInRect( const GXRect &rect)
 {
-    m_updateRect = rect;
-    m_needsDisplay++;
+    _updateRect = rect;
+    _needsDisplay++;
     
-    if (m_parentElement)
-        m_parentElement->setNeedsDisplay();
+    if (_parentElement)
+        _parentElement->setNeedsDisplay();
     
 }
 /* **** **** **** **** **** **** **** **** **** **** **** */
 
 void GXElement::setUpdated()
 {
-    if (!m_autoRendering)
+    if (!_autoRendering)
     {
-        m_needsDisplay--;
+        _needsDisplay--;
         
-        if (m_needsDisplay<0)
+        if (_needsDisplay<0)
         {
-            m_needsDisplay = 0;
+            _needsDisplay = 0;
         }
     }
 }
 
 bool GXElement::needsDisplay() const
 {
-    if ( m_autoRendering )
+    if ( _autoRendering )
         return true;
     
-    return m_needsDisplay > 0;
+    return _needsDisplay > 0;
 }
 
 /* **** **** **** **** **** **** **** **** **** **** **** */
 
 bool GXElement::startContinuousRendering()
 {
-    if ( m_autoRendering )
+    if ( _autoRendering )
         stopContinuousRendering();
     
-    m_autoRendering = true;
+    _autoRendering = true;
 
 
-    m_parentElement->setNeedsDisplay();
+    _parentElement->setNeedsDisplay();
     
-    return m_autoRendering;
+    return _autoRendering;
 }
 
 bool GXElement::stopContinuousRendering()
 {
-    m_autoRendering = false;
-    m_needsDisplay = 0;
+    _autoRendering = false;
     
-    return m_autoRendering;
+    _needsDisplay = 0;
+    
+    return _autoRendering;
 }
 
 /* **** **** **** **** **** **** **** **** **** **** **** */
@@ -312,9 +315,9 @@ void GXElement::setFillColor  ( GXColor color )
 
 void GXElement::setBackgroundColor( const GXColor &color)
 {
-    m_backgroundColor = color;
+    _backgroundColor = color;
     
-    GXPath::clearRect( m_bounds , m_backgroundColor);
+    GXPath::clearRect( _bounds , _backgroundColor);
 }
 
 

@@ -53,13 +53,9 @@ bool GXScene::addElement( GXElement* element )
     element->setParentElement( this );
    // element->setBounds( m_bounds );
     
-    m_prepared = false;
+    setUnprepared();
     m_elements.push_back( element );
     
-    
-
-
- 
 
     
     reorderElements();
@@ -82,7 +78,7 @@ bool GXScene::removeElement( GXElement* element )
     if ( got == m_elements.end() )
         return false;
 
-    element->m_shouldBeRemoved = true;
+    element->removeFromParent();
     
 
     
@@ -98,7 +94,7 @@ void GXScene::removeAllElements()
     for ( auto i : m_elements )
     {
         //delete i;
-        i->m_shouldBeRemoved = true;
+        i->removeFromParent();
     }
     
 //    m_elements.clear();
@@ -151,8 +147,8 @@ int GXScene::findDeepestLayer() const
     
     for ( auto i = m_elements.begin(); i != m_elements.end(); ++i )
     {
-        if ( (*i)->m_layer <= min)
-            min = (*i)->m_layer;
+        if ( (*i)->getLayer() <= min)
+            min = (*i)->getLayer();
         
     }
     
@@ -236,13 +232,13 @@ void GXScene::updateElementInRect( GXElement *element , const GXRect &rect )
                                                 prev->getElementId() ,
                                                 prev->className.c_str() , prev->getLayer() );
                  */
-                prev->setNeedsDisplayInRect( element->m_updateRect );
-                updateElementInRect( prev, element->m_updateRect );
+                prev->setNeedsDisplayInRect( element->_updateRect );
+                updateElementInRect( prev, element->_updateRect );
 
             }
         }
         
-        element->paint( element->m_updateRect );
+        element->paint( element->_updateRect );
         element->setUpdated();
         
 //        GXPath::scissorRect( element->getBounds() );
