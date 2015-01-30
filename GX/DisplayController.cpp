@@ -25,6 +25,7 @@ Thread               ( "GUI"   ),
 
 _impl( this ),
 
+_displayIsOn         ( false ),
 _delegate            ( nullptr ),
 m_currentElement     ( nullptr ),
 m_shouldClearContext ( true    ),
@@ -256,6 +257,15 @@ void DisplayController::displayChangeNotification( DisplayNotification notificat
     
     
     
+}
+
+/* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
+
+bool DisplayController::setVideoModeTo( const DisplayInformations &mode)
+{
+
+    
+    return true;
 }
 
 /* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */

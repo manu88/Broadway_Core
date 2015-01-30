@@ -44,6 +44,7 @@
 #include <iostream>
 #include <string>
 #include <utility>
+#include <vector>
 
 
 
@@ -109,18 +110,48 @@ public:
         _delegate = delegate;
     }
     
-    const std::list< DisplayInformations > getAvailableVideoMode() const
+    inline const std::vector< DisplayInformations > getAvailableVideoMode() const
     {
         return _impl.getAvailableVideoMode();
+    }
+    
+    bool setVideoModeTo( const DisplayInformations &mode);
+    
+    /* power */
+    
+    bool powerOn()
+    {
+        _delegate->displayDidChange( HDMI_ATTACHED );
+        
+         _displayIsOn = true;
+        
+        return true;
+    }
+    
+    bool powerOff()
+    {
+        _delegate->displayDidChange( HDMI_UNPLUGGED );
+        
+         _displayIsOn = false;
+        
+        return true;
+    }
+    
+    bool isDisplayOn() const
+    {
+        return _displayIsOn;
     }
     
     
 private:
     void displayChangeNotification( DisplayNotification notification );
     
+    bool _displayIsOn;
     DisplayControllerDelegate *_delegate;
     
 /* **** **** **** **** **** **** */
+/* **** **** **** **** **** **** */
+    
 public:
     static DisplayController* getController()
     {

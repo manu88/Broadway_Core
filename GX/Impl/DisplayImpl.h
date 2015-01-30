@@ -10,7 +10,7 @@
 #define __Broadway_core__DisplayImpl__
 
 #include <iostream>
-#include <list>
+#include <vector>
 
 #include "../../Internal/Object.h"
 #include "../../GXDataType/GXGeometry.h"
@@ -109,7 +109,7 @@ class DisplayImpl : public Object
     /* Query informations about current display */
     const DisplayInformations getCurrentDisplayInformations();
     
-    const std::list< DisplayInformations > getAvailableVideoMode() const ;
+    const std::vector< DisplayInformations > getAvailableVideoMode() const ;
     
 private:  /* attributes */
     

@@ -108,9 +108,9 @@ const DisplayInformations DisplayImpl::getCurrentDisplayInformations()
 
 /* **** **** **** **** **** **** **** **** **** **** **** **** **** */
 
-const std::list< DisplayInformations > DisplayImpl::getAvailableVideoMode() const
+const std::vector< DisplayInformations > DisplayImpl::getAvailableVideoMode() const
 {
-    std::list<DisplayInformations> ret;
+    std::vector<DisplayInformations> ret;
     
 #ifdef TARGET_RASPBERRY_PI
     
