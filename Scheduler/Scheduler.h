@@ -121,28 +121,24 @@ class Chrono : public Object
 public:
     
     Chrono()
-    {
-        
-    }
+    {}
     
     ~Chrono()
-    {
-        
-    }
+    {}
     
     void reset()
     {
-        m_start = std::chrono::high_resolution_clock::now();
+        _start = std::chrono::high_resolution_clock::now();
     }
     
     inline long long  elapsedTimeInMs() const
     {
-        return std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::high_resolution_clock::now() - m_start ).count();
+        return std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::high_resolution_clock::now() - _start ).count();
     }
     
 private:
     
-    std::chrono::high_resolution_clock::time_point m_start;
+    std::chrono::high_resolution_clock::time_point _start;
     
 };
 

@@ -165,7 +165,7 @@ void GXScene::paint( const GXRect &rect )
 {
     reorderElements();
     
-//    GXPath::clearRect( getBounds(), m_backgroundColor);
+
     
     for ( auto &i : m_elements )
     {
