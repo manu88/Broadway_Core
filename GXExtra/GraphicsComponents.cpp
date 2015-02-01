@@ -30,7 +30,7 @@ CircleWaitComponent::~CircleWaitComponent()
 
 /* **** **** **** **** **** **** **** **** **** **** **** **** **** */
 
-void CircleWaitComponent::paint( const GXRect &rect )
+void CircleWaitComponent::paint( const GXRect &rect , GXAnimation* anim )
 {
     DEBUG_ASSERT( m_path != nullptr );
 

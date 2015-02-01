@@ -237,6 +237,8 @@ public:
     void clearRect( const GXColor &color);
     GXRect getBoundingRect() const;
     
+    float getPathLenght() const;
+    
     
     // transformations
     void applyTransformation( GXTransformation const transformation);

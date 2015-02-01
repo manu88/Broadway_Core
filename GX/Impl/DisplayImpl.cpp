@@ -26,7 +26,8 @@ bool DisplayImpl::s_EGLInitialized = false;
 DisplayImpl::DisplayImpl( DisplayController *controller ) :
 
 _displayInitOk ( false ),
-_controller ( controller )
+_controller    ( controller ),
+_currentMode   ( DisplayInformations::makeInvalid() )
 {
 #ifdef TARGET_RASPBERRY_PI
     vc_tv_register_callback( tvCallback, this);

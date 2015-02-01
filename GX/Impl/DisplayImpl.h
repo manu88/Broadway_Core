@@ -68,7 +68,6 @@ typedef enum
 /* small POD containing display infos */
 struct DisplayInformations
 {
-
     bool        native;
     
     DisplayType type;
@@ -81,8 +80,16 @@ struct DisplayInformations
     {
         return type != Display_Invalid;
     }
+    
+    static DisplayInformations makeInvalid()
+    {
+        return DisplayInformations{ false, Display_Invalid , makeSize( 0,0) , 0 , 0  };
+    }
 
 };
+
+
+
 
 /* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
 /* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
@@ -114,13 +121,11 @@ class DisplayImpl : public Object
 private:  /* attributes */
     
     static void initializeEGL();
-    
-    
-    
-    
-    
+
     bool _displayInitOk;
     DisplayController *_controller;
+    
+    DisplayInformations _currentMode;
     
     static bool s_EGLInitialized;
     

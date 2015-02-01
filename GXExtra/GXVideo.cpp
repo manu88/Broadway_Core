@@ -54,7 +54,7 @@ void GXVideo::changed()
 
 /* **** **** **** **** **** **** **** **** **** **** **** **** **** */
 
-void GXVideo::paint( const GXRect &rect )
+void GXVideo::paint( const GXRect &rect , GXAnimation* anim)
 {
     
 }

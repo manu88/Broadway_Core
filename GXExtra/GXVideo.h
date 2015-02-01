@@ -139,10 +139,10 @@ public:
     
 protected:
     
-    virtual void paint( const GXRect &rect );
-    virtual void prepareRessources();    
-    virtual void deleteRessources();
-    virtual void changed();
+    void paint( const GXRect &rect , GXAnimation* anim );
+    void prepareRessources();
+    void deleteRessources();
+    void changed();
     
 private:
     AUDIO_OUTPUT m_audioOutput;

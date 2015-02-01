@@ -72,10 +72,10 @@ protected:
     float m_size;
     float m_sizeCoef;
     
-    virtual void paint( const GXRect &rect );    
-    virtual void prepareRessources();
-    virtual void deleteRessources();
-    virtual void changed();
+    void paint( const GXRect &rect , GXAnimation* anim );
+    void prepareRessources();
+    void deleteRessources();
+    void changed();
     
     void drawCharAtPositionWithSize( const GXGlyph *glyph , const GXPoint &pos , float size );
     

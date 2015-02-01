@@ -9,7 +9,11 @@
 #include "GXAnimation.h"
 
 
-GXAnimation::GXAnimation()
+GXAnimation::GXAnimation() :
+_element     ( nullptr ),
+_currentTime ( 0       ),
+
+_running     ( false )
 {
     
 }
@@ -19,20 +23,93 @@ GXAnimation::~GXAnimation()
     
 }
 
-void GXAnimation::paint( const GXRect &rect )
+/* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
+
+void GXAnimation::moveTo( const GXPoint &point , int duration)
+{
+    Animation anim;
+    anim._flags = Anim_MoveTo;
+
+    anim._tX = point.x;
+    anim._tY = point.y;
+    
+    anim._duration = duration;
+    
+    _animList.push_back( anim );
+
+}
+
+/* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
+
+void GXAnimation::jumpTo( const GXPoint &point , int duration)
+{
+    Animation anim;
+    anim._flags = Anim_JumpTo;
+    
+    anim._tX = point.x;
+    anim._tY = point.y;
+    
+    anim._duration = duration;
+    
+    _animList.push_back( anim );
+}
+
+/* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
+
+void GXAnimation::moveAndRotateTo( const GXPoint & point , float destAngle , int duration)
+{
+
+}
+
+/* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
+
+void GXAnimation::waitFor( int duration )
+{
+    Animation anim;
+    
+    anim._duration = duration;
+    
+    _animList.push_back( anim );
+}
+
+/* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
+/* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
+
+bool GXAnimation::start( int start_time )
+{
+    if (_element == nullptr )
+    {
+        printf("\n ERROR : no GXElement attached to this Animation...");
+        return false;
+    }
+    
+    return true;
+}
+
+void GXAnimation::pause()
 {
     
 }
 
-void GXAnimation::prepareRessources()
+void GXAnimation::stop()
 {
     
-}
-void GXAnimation::deleteRessources()
-{
 }
 
-void GXAnimation::changed()
+/* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
+
+GXPoint GXAnimation::getNextPointForDt( int dt)
 {
     
 }
+
+float GXAnimation::getRZForDT( int dt )
+{
+    
+}
+
+/* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
+
+
+
+

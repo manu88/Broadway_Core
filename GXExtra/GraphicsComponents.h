@@ -22,7 +22,7 @@ public:
     
 private:
     
-    void paint( const GXRect &rect );
+    void paint( const GXRect &rect , GXAnimation* anim );
     void prepareRessources();
     void deleteRessources();
     

@@ -78,10 +78,10 @@ protected:
     void addPainter(Painter *painter  );
 
     
-    virtual void prepareRessources();
-    virtual void deleteRessources();
-    virtual void paint( const GXRect &rect );
-    virtual void changed();
+    void prepareRessources();
+    void deleteRessources();
+    void paint( const GXRect &rect , GXAnimation* anim );
+    void changed();
     
     
 private:

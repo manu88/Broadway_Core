@@ -122,7 +122,7 @@ const std::string SerialEvent::readDatas()
     std::string ret;
 
     char buf = '\0';
-    int  n = -1;
+    long  n = -1;
 
   
     char buffer[2];

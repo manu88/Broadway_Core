@@ -34,7 +34,9 @@ GXElement::GXElement() :
     _bounds                   ( makeRectNULL()       ),
     _backgroundColor          ( makeColor( 0, 0, 0 ) ),
     _isTransparent            ( false   ),
-    _autoRendering            ( false   )
+    _autoRendering            ( false   ),
+
+    _anim                     ( nullptr )
 
 {
 
@@ -291,6 +293,27 @@ bool GXElement::stopContinuousRendering()
     _needsDisplay = 0;
     
     return _autoRendering;
+}
+
+/* **** **** **** **** **** **** **** **** **** **** **** */
+
+bool GXElement::attachAnimation( GXAnimation *anim)
+{
+    if (_anim)
+    {
+        printf("\n already has anim, should remove previous one");
+    }
+    
+    _anim = anim;
+    
+    return true;
+}
+
+bool GXElement::detachAnimation()
+{
+    printf("\n  should remove previous anim");
+    
+    return true;
 }
 
 /* **** **** **** **** **** **** **** **** **** **** **** */

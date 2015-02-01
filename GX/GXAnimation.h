@@ -10,24 +10,41 @@
 #define __Broadway_test__GXAnimation__
 
 #include <iostream>
+#include <vector>
 
 #include "GXElement.h"
+#include "../Internal/Object.h"
+#include "Animations.h"
 
-class GXAnimation : public GXElement
+class GXAnimation : Object
 {
     
 public:
     GXAnimation();
     ~GXAnimation();
     
-protected:
-    virtual void paint( const GXRect &rect );
-    virtual void prepareRessources();
-    virtual void deleteRessources();
-    virtual void changed();
-
+    /* Async Animation design */
+    void moveTo( const GXPoint &point , int duration);
+    void jumpTo( const GXPoint &point , int duration);
+    void moveAndRotateTo( const GXPoint & point , float destAngle , int duration);
+    void waitFor( int duration );
+    
+    /* Anim control */
+    bool start( int start_time = 0);
+    void pause();
+    void stop();
+    
 private:
     
+    /* accessed by GXElement on redraw ( GUI Thread!) */
+    GXPoint getNextPointForDt( int dt);
+    float   getRZForDT( int dt );
+    
+    GXElement *_element;
+    
+    int  _currentTime;
+    bool _running;
+    std::vector< Animation > _animList;
     
     
 };

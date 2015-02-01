@@ -203,7 +203,7 @@ void DisplayController::run()
                     break;
                 
                 Lock();                
-                m_currentElement->paint( _updateRect );
+                m_currentElement->paint( _updateRect , _anim );
                 
                 m_currentElement->setUpdated();
                 
@@ -578,7 +578,7 @@ bool DisplayController::canSupportAudioFormat(EDID_AudioFormat audio_format,
 
 /* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
 
-void DisplayController::paint( const GXRect &rect )
+void DisplayController::paint( const GXRect &rect, GXAnimation* anim )
 {
     
 }

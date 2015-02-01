@@ -28,6 +28,8 @@ public:
         return _controllerName;
     }
     
+
+    
 protected:
     AbstractController(const std::string &name);
     virtual ~AbstractController();
@@ -84,6 +86,7 @@ protected:
 
 private:
     static bool waitForAllControllersToBeReady(int timeOut = 10 /*SECS*/);
+    static bool waitForControllerToBeReady( AbstractController*controller , int timeOut = 10 /*SECS*/);
     static bool allControllersReady();
     
     static int countReadyControllers();
@@ -113,6 +116,11 @@ public:
     static bool waitForAllControllersToBeReady(int timeOut = 10 /*SECS*/)
     {
         return AbstractController::waitForAllControllersToBeReady( timeOut );
+    }
+    
+    static bool waitForControllerToBeReady( AbstractController*controller , int timeOut = 10 /*SECS*/)
+    {
+        return AbstractController::waitForControllerToBeReady( controller , timeOut );
     }
     
     static bool allControllersReady()

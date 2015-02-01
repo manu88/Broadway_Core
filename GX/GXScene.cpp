@@ -161,7 +161,7 @@ int GXScene::findDeepestLayer() const
 // ALWAYS called on GUI Thread !
 
 /* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
-void GXScene::paint( const GXRect &rect )
+void GXScene::paint( const GXRect &rect , GXAnimation* anim )
 {
     reorderElements();
     
@@ -238,7 +238,7 @@ void GXScene::updateElementInRect( GXElement *element , const GXRect &rect )
             }
         }
         
-        element->paint( element->_updateRect );
+        element->paint( element->_updateRect , element->getParentElement()->_anim );
         element->setUpdated();
         
 //        GXPath::scissorRect( element->getBounds() );

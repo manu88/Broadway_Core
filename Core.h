@@ -60,6 +60,8 @@
 
 #include "Log/Log.h"
 
+
+
 /* JSON Parser*/
 /*
     This module uses cJSON code
@@ -98,6 +100,7 @@
  */
 #ifdef USE_NETWORK
 #include "Network/NetworkController.h"
+#include "Network/IPCSocket.h"
 #endif
 
 /* Gpio management */
@@ -164,8 +167,7 @@ typedef enum
     XML_PARSING         = ( 1 << 7 ),
     
     ALL                 = -1
-}
-CoreModulesFlags;
+} CoreModulesFlags;
 
 class CoreModules
 {

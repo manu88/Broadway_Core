@@ -190,7 +190,7 @@ void GXPaintJS::deleteRessources()
 
 
 
-void GXPaintJS::paint( const GXRect &rect )
+void GXPaintJS::paint( const GXRect &rect , GXAnimation* anim )
 {
     
     GXPath path( getBounds() );

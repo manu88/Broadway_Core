@@ -21,6 +21,8 @@
 #include "../GXDataType/GXGeometry.h"
 #include "../GXDataType/GXColors.h"
 
+class GXAnimation; // forward
+
 class GXElement : public virtual Element
 {
 public:
@@ -41,6 +43,9 @@ public:
     
     bool startContinuousRendering();
     bool stopContinuousRendering();
+    
+    bool attachAnimation( GXAnimation *anim);
+    bool detachAnimation();
     
     // 
     
@@ -145,7 +150,7 @@ protected:
     virtual ~GXElement();
     
     // called _ONLY_ from GUI thread
-    virtual void paint( const GXRect &rect ) = 0;
+    virtual void paint( const GXRect &rect, GXAnimation* anim ) = 0;
     virtual void prepareRessources() = 0;
     virtual void deleteRessources() = 0;
     
@@ -195,6 +200,8 @@ private:
     bool            _isTransparent;
     
     bool            _autoRendering;
+    
+    GXAnimation    *_anim;
 
 };
 

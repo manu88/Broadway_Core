@@ -99,7 +99,7 @@ void GXTextRenderer::changed()
     setUnprepared();
 }
 
-void GXTextRenderer::paint( const GXRect &rect )
+void GXTextRenderer::paint( const GXRect &rect , GXAnimation* anim )
 {
     if (m_font == nullptr)
         return;

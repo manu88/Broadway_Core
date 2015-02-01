@@ -43,7 +43,7 @@ void GXImage::fitImageToBounds( bool autoScale )
     
 }
 
-void GXImage::paint( const GXRect &rect )
+void GXImage::paint( const GXRect &rect , GXAnimation* anim )
 {
     if ( m_image == VG_INVALID_HANDLE )
         return ;

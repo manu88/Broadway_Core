@@ -200,7 +200,6 @@ public:
         gettimeofday( &t, 0 );
         
         return ((double)t.tv_sec*1000.) + ((double)t.tv_usec / 1000.);
-
     }
     
     static Timecode getCurrentTC()

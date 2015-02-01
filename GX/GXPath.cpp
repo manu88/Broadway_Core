@@ -508,6 +508,17 @@ GXRect GXPath::getBoundingRect() const
 
 /* **** **** **** **** **** **** **** **** **** **** **** **** **** */
 
+float GXPath::getPathLenght() const
+{
+#ifdef TARGET_RASPBERRY_PI
+//    return vgPathLength ( m_path , )
+#else
+    return 1.0f;
+#endif
+}
+
+/* **** **** **** **** **** **** **** **** **** **** **** **** **** */
+
 void GXPath::applyTransformation( GXTransformation const transformation)
 {
     //  { sx, shy, w0,

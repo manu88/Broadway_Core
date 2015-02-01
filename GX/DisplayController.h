@@ -105,6 +105,9 @@ class DisplayController : public AbstractController,
     
 public:
     
+    DisplayController();
+    ~DisplayController();
+    
     void setDelegate( DisplayControllerDelegate *delegate)
     {
         _delegate = delegate;
@@ -116,6 +119,9 @@ public:
     }
     
     bool setVideoModeTo( const DisplayInformations &mode);
+    
+    bool start();
+    bool stop();
     
     /* power */
     
@@ -157,16 +163,8 @@ public:
     {
         return s_instance;
     }
-    
-    DisplayController();
-    ~DisplayController();
 
     static bool signalStop();
-
-
-    
-    bool start();
-    bool stop();
     
     float getFrameRate() const
     {
@@ -180,12 +178,10 @@ public:
     void clearScreen();
     void update();
     
-    
     bool isBusy() const
     {
         return needsDisplay();
     }
-    
     
     bool isNativeDeinterlace() const
     {
@@ -233,10 +229,10 @@ protected:
     
     
     // reimp from GXElement, useless
-    virtual void paint( const GXRect &rect );
-    virtual void prepareRessources();
-    virtual void deleteRessources();
-    virtual void changed();
+    void paint( const GXRect &rect, GXAnimation* anim );
+    void prepareRessources();
+    void deleteRessources();
+    void changed();
     
     
 private:
