@@ -118,6 +118,11 @@ public:
         return _impl.getAvailableVideoMode();
     }
     
+    inline const DisplayInformations getCurrentMode() const
+    {
+        return _impl.getCurrentDisplayInformations();
+    }
+    
     bool setVideoModeTo( const DisplayInformations &mode);
     
     bool start();
@@ -148,6 +153,15 @@ public:
         return _displayIsOn;
     }
     
+    /* Displayed Element's management */
+    
+    void setDisplayedElement( GXElement* element);
+    
+    void removeElement( GXElement* element);
+    
+    void clearScreen();
+    void update();
+    
     
 private:
     void displayChangeNotification( DisplayNotification notification );
@@ -159,66 +173,28 @@ private:
 /* **** **** **** **** **** **** */
     
 public:
+
     static DisplayController* getController()
     {
         return s_instance;
     }
 
-    static bool signalStop();
+
     
     float getFrameRate() const
     {
         return 1000.f / (float) m_frameRate;
     }
     
-    void setDisplayedElement( GXElement* element);
-    
-    void removeElement( GXElement* element);
-    
-    void clearScreen();
-    void update();
+
     
     bool isBusy() const
     {
         return needsDisplay();
     }
     
-    bool isNativeDeinterlace() const
-    {
-        return m_NativeDeinterlace;
-    }
-    
-    float getDisplayRatio(); // -> move to DisplayImpl
-    
-#ifdef TARGET_RASPBERRY_PI
-    
-    bool isHDMIorDVI() // -> move to DisplayImpl
-    {
-        return m_current_tv_state.state & ( VC_HDMI_HDMI | VC_HDMI_DVI );
-    }
-    
-    bool isComposite() // -> move to DisplayImpl
-    {
-        return !isHDMIorDVI();
-    }
-    
-    // -> move to DisplayImpl
-    bool canSupportAudioFormat( EDID_AudioFormat audio_format,
-                                uint32_t num_channels,
-                                EDID_AudioSampleRate fs,
-                                uint32_t bitrate);
-    
-    void displayDidChange(); // move to private / protected asap
-    
-    // -> move to DisplayImpl
-    static float get_display_aspect_ratio(HDMI_ASPECT_T aspect);
-    static float get_display_aspect_ratio(SDTV_ASPECT_T aspect);
-    static void CallbackTvServiceCallback(void *userdata, uint32_t reason, uint32_t param1, uint32_t param2);
-    
-#endif /*TARGET_RASPBERRY_PI*/
-    
-protected:
-    virtual void run();
+private:
+    void run();
     void init();
 
     
@@ -235,70 +211,33 @@ protected:
     void changed();
     
     
-private:
+
     
     static DisplayController* s_instance;
     
     DisplayImpl _impl;
-    
-    // moved in impl
-    static void initializeEGL();
-    static void deinitializeEGL();
-    static bool s_EGLInitialized;
-    
 
-    
     GXElement   *m_currentElement;
     
     bool     m_shouldClearContext;
     bool     m_shouldForceUpdate;
-
-    uint32_t m_screen_width;
-	uint32_t m_screen_height;
-    
-    bool    m_NativeDeinterlace;
-    sem_t   m_tv_synced;
-
     
     Chrono    m_frameRateClock;
     long long m_frameRate;
 
-#ifdef HAVE_EGL
-    // OpenGL|ES objects
-	EGLDisplay m_EGLdisplay; // egl.h
-    
-	EGLSurface m_surface; // egl.h
-	
-    // unique
-    EGLContext m_context; // egl.h
-#endif
-    
-#ifdef TARGET_RASPBERRY_PI
-    EGL_DISPMANX_WINDOW_T m_nativewindow; // rpi
 
-
-    
-    VC_RECT_T  m_dst_rect; // rpi
-    VC_RECT_T  m_src_rect; // rpi
-    
-    DISPMANX_ELEMENT_HANDLE_T   m_element; // rpi
-    
-    // rpi
-    TV_DISPLAY_STATE_T   m_old_tv_state; // store params before init. params are restaured at exit
-    TV_DISPLAY_STATE_T   m_current_tv_state; // store params before init. params are restaured at exit
-    
     // add for omxplayer
     /*
+#ifdef TARGET_RASPBERRY_PI
+    
+    
     DllBcmHost        m_BcmHost; removed -> use directly bcm_host 
     CRBP              m_RBP;
     COMXCore          m_OMX;
-    */
-    
 
     
 #endif
-    
-    float             m_display_aspect;
+    */    
 
 };
 

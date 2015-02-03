@@ -28,6 +28,21 @@ public:
         return _controllerName;
     }
     
+    bool isReady() const
+    {
+        return _isReady;
+    }
+    
+    bool isInactive() const
+    {
+        return _isInactive;
+    }
+    
+    bool isActive() const
+    {
+        return !_isInactive;
+    }
+    
 
     
 protected:
@@ -45,25 +60,14 @@ protected:
         _isReady = false;
     }
     
-    bool isReady() const
-    {
-        return _isReady;
-    }
+
     
     void setInactive()
     {
         _isInactive = true;
     }
     
-    bool isInactive() const
-    {
-        return _isInactive;
-    }
-    
-    bool isActive() const
-    {
-        return !_isInactive;
-    }
+
     
     // use this mutex to lock thread to avoid race-conditions
     // in both controller's thread and accessing-var methods.

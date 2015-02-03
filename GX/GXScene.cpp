@@ -179,9 +179,7 @@ void GXScene::paint( const GXRect &rect , GXAnimation* anim )
 
 void GXScene::updateElementInRect( GXElement *element , const GXRect &rect )
 {
-    if (DisplayController::signalStop() )
-        return;
-    
+
     if ( !element->isPrepared() )
         element->prepare();
     

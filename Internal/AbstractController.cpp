@@ -16,7 +16,8 @@
 std::unordered_set< AbstractController *> AbstractController::s_controllers;
 
 AbstractController::AbstractController( const std::string &name ) :
-_isReady ( false ),
+_isReady    ( false ),
+_isInactive ( false ),
 _controllerName( name )
 {
     s_controllers.insert( this );

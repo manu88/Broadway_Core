@@ -33,6 +33,31 @@ typedef enum
     
 } DisplayType ;
 
+/*
+ HDMI_ASPECT_UNKNOWN = 0, //< Unknown aspect ratio, or not one of the values below
+ HDMI_ASPECT_4_3 = 1, //< 4:3
+ HDMI_ASPECT_14_9 = 2, //< 14:9
+ HDMI_ASPECT_16_9 = 3, //< 16:9
+ HDMI_ASPECT_5_4 = 4, //< 5:4
+ HDMI_ASPECT_16_10 = 5, //< 16:10
+ HDMI_ASPECT_15_9 = 6, //< 15:9
+ HDMI_ASPECT_64_27 = 7, //< 64:27
+ HDMI_ASPECT_21_9 = HDMI_ASPECT_64_27 //< 21:9 is jargon, 64:27 is the actual aspect ratio
+ // More aspect ratio values may be added here if defined by CEA in future
+ } HDMI_ASPECT_T;
+ 
+ /+++++/
+ {
+ 
+ SDTV_ASPECT_UNKNOWN  = 0, //<Unknown
+ SDTV_ASPECT_4_3      = 1, //<4:3
+ SDTV_ASPECT_14_9     = 2, //<14:9
+ SDTV_ASPECT_16_9     = 3, //<16:9
+ SDTV_ASPECTFORCE_32BIT = 0x80000000
+ } SDTV_ASPECT_T;
+ 
+ */
+
 
 /* Notification flag passed to displayChangeNotification()  */
 typedef enum
@@ -63,6 +88,10 @@ typedef enum
 } DisplayNotification;
 
 
+
+
+
+
 /* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
 
 /* small POD containing display infos */
@@ -74,7 +103,7 @@ struct DisplayInformations
     GXSize      size;
     
     int         framerate;
-    int         aspectRatio;
+    float       aspectRatio;
     
     bool isValid() const
     {
@@ -83,7 +112,7 @@ struct DisplayInformations
     
     static DisplayInformations makeInvalid()
     {
-        return DisplayInformations{ false, Display_Invalid , makeSize( 0,0) , 0 , 0  };
+        return DisplayInformations{ false, Display_Invalid , makeSize( 0,0) , 0 , 0.0f  };
     }
 
 };
@@ -108,29 +137,54 @@ class DisplayImpl : public Object
     
     static bool initPlateform();
     static bool deInitPlateform();
+
+    static void initializeEGL();    
     
     bool initDisplay();
     
     float getAspectRatio();
     
     /* Query informations about current display */
-    const DisplayInformations getCurrentDisplayInformations();
+    const DisplayInformations getCurrentDisplayInformations() const ;
     
     const std::vector< DisplayInformations > getAvailableVideoMode() const ;
     
+    void update();
+    
 private:  /* attributes */
     
-    static void initializeEGL();
-
     bool _displayInitOk;
     DisplayController *_controller;
     
     DisplayInformations _currentMode;
     
+
+    
+#ifdef HAVE_EGL
+    
+	EGLDisplay _EGLdisplay; // init() et updateContext()
+	EGLSurface _surface;    // init() et updateContext()
+    
+#endif
+
+#ifdef TARGET_RASPBERRY_PI    
+    // RPI callback from bcm_host
+    static void tvCallback(void *userdata, uint32_t reason, uint32_t param1, uint32_t param2);
+    
+    static float get_display_aspect_ratio(HDMI_ASPECT_T aspect);
+    static float get_display_aspect_ratio(SDTV_ASPECT_T aspect);
+    
+    bool canSupportAudioFormat( EDID_AudioFormat audio_format,
+                               uint32_t num_channels,
+                               EDID_AudioSampleRate fs,
+                               uint32_t bitrate);
+
+    EGL_DISPMANX_WINDOW_T _nativewindow; // rpi
+#endif
+    
     static bool s_EGLInitialized;
     
-    // RPI callback from bcm_host 
-    static void tvCallback(void *userdata, uint32_t reason, uint32_t param1, uint32_t param2);
+
 };
 
 #endif /* defined(__Broadway_core__DisplayImpl__) */
