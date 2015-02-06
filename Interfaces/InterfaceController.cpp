@@ -178,14 +178,7 @@ GpioEvent* InterfaceController::getGpioEventByPin( const int pin)
 
 void InterfaceController::listActivesInput()
 {
-    /*
-    printf("\n######## LIST (inputs) ########");
-    for ( auto i = m_inputs.begin(); i != m_inputs.end(); ++i )
-    {
-        printf("\n GPI pin %i state %i" ,(*i)->pin , (*i)->state );
-    }
-    */
-    printf("\n##############################");
+
 }
 
 void InterfaceController::sendGpo(const int pinNumber , const GpioState state)

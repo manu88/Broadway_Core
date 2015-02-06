@@ -36,6 +36,7 @@ GXPath::GXPath( const GXRect &bounds ) :
     setStrokeWidth ( 1. );
     setJoinStyle   ( Join_Miter );
     setCapStyle    ( Cap_Butt );
+    
 }
 
 /* **** **** **** **** **** **** **** **** **** **** **** **** **** */
@@ -45,6 +46,7 @@ GXPath::~GXPath()
 #ifdef TARGET_RASPBERRY_PI
     vgDestroyPath( m_path);
 #endif
+    
 }
 
 /* **** **** **** **** **** **** **** **** **** **** **** **** **** */

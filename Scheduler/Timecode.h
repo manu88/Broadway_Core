@@ -130,6 +130,16 @@ public:
         
     }
     
+    bool isNull() const
+    {
+        return getInMs() == 0 ;
+    }
+    
+    bool isValid() const
+    {
+        return !isNull();
+    }
+    
     std::string getString() const
     {
 

@@ -88,8 +88,6 @@ bool DisplayImpl::initDisplay()
     
 	EGLConfig config;
     
-    
-    
 	// get an appropriate EGL frame buffer configuration
 	result = eglChooseConfig( _EGLdisplay, attribute_list, &config, 1, &num_config);
 	assert( EGL_FALSE != result );
@@ -291,7 +289,7 @@ const std::vector< DisplayInformations > DisplayImpl::getAvailableVideoMode() co
                                              Display_HD,
                                              makeSize( list[i].width, list[i].height),
                                              list[i].frame_rate,
-                                             ( int ) list[i].aspect_ratio
+                                             get_display_aspect_ratio( (HDMI_ASPECT_T) list[i].aspect_ratio )
                                            }
                       );
     }
@@ -325,12 +323,59 @@ const std::vector< DisplayInformations > DisplayImpl::getAvailableVideoMode() co
 
 void DisplayImpl::update()
 {
+    /*
+     typedef enum {
+     VG_NO_ERROR                                 = 0,
+     VG_BAD_HANDLE_ERROR                         = 0x1000,
+     VG_ILLEGAL_ARGUMENT_ERROR                   = 0x1001,
+     VG_OUT_OF_MEMORY_ERROR                      = 0x1002,
+     VG_PATH_CAPABILITY_ERROR                    = 0x1003,
+     VG_UNSUPPORTED_IMAGE_FORMAT_ERROR           = 0x1004,
+     VG_UNSUPPORTED_PATH_FORMAT_ERROR            = 0x1005,
+     VG_IMAGE_IN_USE_ERROR                       = 0x1006,
+     VG_NO_CONTEXT_ERROR                         = 0x1007
+     } VGErrorCode;*/
 
 #ifdef HAVE_EGL
-    assert( vgGetError() == VG_NO_ERROR );
+    VGErrorCode ret = vgGetError();
+    
+    /*
+    if (ret !=  VG_NO_ERROR)
+    {
+        if (ret == VG_BAD_HANDLE_ERROR )
+            printf("VG_BAD_HANDLE_ERROR");
+        
+        else if (ret == VG_ILLEGAL_ARGUMENT_ERROR )
+            printf("VG_ILLEGAL_ARGUMENT_ERROR");
+        
+        else if (ret == VG_OUT_OF_MEMORY_ERROR )
+            printf("VG_OUT_OF_MEMORY_ERROR");
+        
+        else if (ret ==VG_PATH_CAPABILITY_ERROR  )
+            printf("VG_PATH_CAPABILITY_ERROR");
+        
+        else if (ret == VG_UNSUPPORTED_IMAGE_FORMAT_ERROR  )
+            printf("VG_UNSUPPORTED_IMAGE_FORMAT_ERROR");
+        
+        else if (ret == VG_UNSUPPORTED_PATH_FORMAT_ERROR  )
+            printf("VG_UNSUPPORTED_PATH_FORMAT_ERROR");
+        
+        else if (ret == VG_IMAGE_IN_USE_ERROR  )
+            printf("VG_IMAGE_IN_USE_ERROR");
+        
+        else if (ret == VG_NO_CONTEXT_ERROR  )
+            printf("VG_NO_CONTEXT_ERROR");
+
+        
+    }
+     */
+    assert( ret == VG_NO_ERROR );
+    
+    // fix for raspberry : rendering freezes after a short time ...
+    glFinish();
     
 	eglSwapBuffers( _EGLdisplay, _surface);
-    
+
 	assert( eglGetError() == EGL_SUCCESS);
 #endif
 }

@@ -117,11 +117,11 @@ void DisplayController::run()
     
 
     
-    printf("\n ==== MODE  =====" );
-    printf("\n\t W = %i H = %i" , mode.size.width , mode.size.height );
-    printf("\n\t native %s" , mode.native? "YES" : "NO ");
-    printf("\n\t framerate : %i" , mode.framerate);
-    printf("\n\t aspectRatio : %f " , mode.aspectRatio);
+    Log::log("\n ==== MODE  =====" );
+    Log::log("\n\t W = %i H = %i" , mode.size.width , mode.size.height );
+    Log::log("\n\t native %s" , mode.native? "YES" : "NO ");
+    Log::log("\n\t framerate : %i" , mode.framerate);
+    Log::log("\n\t aspectRatio : %f " , mode.aspectRatio);
     
     _impl.initDisplay();
 
@@ -136,6 +136,9 @@ void DisplayController::run()
     {
 
         m_frameRateClock.reset();
+        
+        Thread::sleepFor(Timecode(0,0,0,10));
+        
         
         if ( needsDisplay() )
         {
@@ -177,11 +180,13 @@ void DisplayController::run()
                 
             }
             
-            else //if ( m_currentElement->needsDisplay() )
+            else if ( m_currentElement->needsDisplay() )
             {
-
+                
                 if ( threadShouldStop() )
                     break;
+                
+
                 
                 Lock();                
                 m_currentElement->paint( _updateRect , _anim );
@@ -218,20 +223,6 @@ void DisplayController::run()
 
 void DisplayController::displayChangeNotification( DisplayNotification notification )
 {
-    printf("\n Got a notification from display");
-    
-    if ( notification & HDMI_UNPLUGGED )
-        printf("\n HDMI is Unplugged");
-    
-    if ( notification & HDMI_ATTACHED )
-        printf("\n HDMI is Attached");
-    
-    if ( notification & HDMI_DVI )
-        printf("\n HDMI is DVI");
-    
-    if ( notification & HDMI_HDMI )
-        printf("\n HDMI is in HDMI mode and ON");
-    
     
     if ( _delegate )
         _delegate->displayDidChange( notification );

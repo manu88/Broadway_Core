@@ -27,7 +27,7 @@ GXScene::GXScene()
 {
     className = "GXScene";
     
-    setBackgroundColor( makeColor(255, 255, 255 ) );
+    
     
 }
 
@@ -165,7 +165,11 @@ void GXScene::paint( const GXRect &rect , GXAnimation* anim )
 {
     reorderElements();
     
-
+    if ( m_elements.empty() )
+    {
+        GXPath::clearRect( getBounds(), getBackgroundColor() );
+        setUpdated();
+    }
     
     for ( auto &i : m_elements )
     {

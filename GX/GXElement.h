@@ -41,6 +41,8 @@ public:
     void setNeedsDisplayFor( int numFrames);
     void setNeedsDisplayInRect( const GXRect &rect);
     
+    void setUpdated();
+    
     bool startContinuousRendering();
     bool stopContinuousRendering();
     
@@ -164,7 +166,7 @@ protected:
     void setFillColor  ( GXColor color );
     
     
-    void setUpdated();
+
     
     
 
