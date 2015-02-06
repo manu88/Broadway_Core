@@ -29,7 +29,17 @@ GXPath::GXPath( const GXRect &bounds ) :
     
 #ifdef TARGET_RASPBERRY_PI
     m_path = vgCreatePath(VG_PATH_FORMAT_STANDARD, VG_PATH_DATATYPE_F, 1.0f, 0.0f, 0, 0, VG_PATH_CAPABILITY_ALL);
+
+    /*
+    vgRemovePathCapabilities( m_path , VG_PATH_CAPABILITY_MODIFY );
+    vgRemovePathCapabilities( m_path , VG_PATH_CAPABILITY_TRANSFORM_FROM );
+    vgRemovePathCapabilities( m_path , VG_PATH_CAPABILITY_INTERPOLATE_FROM );
+    vgRemovePathCapabilities( m_path , VG_PATH_CAPABILITY_INTERPOLATE_TO );
     
+    vgRemovePathCapabilities( m_path , VG_PATH_CAPABILITY_PATH_LENGTH );
+    vgRemovePathCapabilities( m_path , VG_PATH_CAPABILITY_POINT_ALONG_PATH );
+    vgRemovePathCapabilities( m_path , VG_PATH_CAPABILITY_TANGENT_ALONG_PATH );
+     */
 #endif
     
     // reset to defaults ?

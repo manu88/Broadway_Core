@@ -141,6 +141,10 @@ class DisplayImpl : public Object
     static void initializeEGL();    
     
     bool initDisplay();
+    bool deInitDisplay();
+    
+    
+    void checkErrors();
     
     float getAspectRatio();
     
@@ -164,6 +168,7 @@ private:  /* attributes */
     
 	EGLDisplay _EGLdisplay; // init() et updateContext()
 	EGLSurface _surface;    // init() et updateContext()
+    EGLContext _context;
     
 #endif
 

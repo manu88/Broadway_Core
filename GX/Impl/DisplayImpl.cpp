@@ -48,7 +48,7 @@ bool DisplayImpl::initDisplay()
 #ifdef TARGET_RASPBERRY_PI
     
     
-    EGLContext context; // egl.h
+    
     
     uint32_t screen_width  = 0;
 	uint32_t screen_height = 0;
@@ -93,8 +93,8 @@ bool DisplayImpl::initDisplay()
 	assert( EGL_FALSE != result );
     
 	// create an EGL rendering context
-	context = eglCreateContext( _EGLdisplay, config, EGL_NO_CONTEXT, NULL);
-	assert( context != EGL_NO_CONTEXT );
+	_context = eglCreateContext( _EGLdisplay, config, EGL_NO_CONTEXT, NULL);
+	assert( _context != EGL_NO_CONTEXT );
     
 	// create an EGL window surface
 	success = graphics_get_display_size(0 /* LCD */ , &screen_width,&screen_height);
@@ -157,7 +157,7 @@ bool DisplayImpl::initDisplay()
 	assert(EGL_FALSE != result);
     
 	// connect the context to the surface
-	result = eglMakeCurrent( _EGLdisplay, _surface, _surface, context );
+	result = eglMakeCurrent( _EGLdisplay, _surface, _surface, _context );
 	assert(EGL_FALSE != result);
     
 	// set up screen ratio
@@ -171,6 +171,19 @@ bool DisplayImpl::initDisplay()
 	glFrustumf(-ratio, ratio, -1.0f, 1.0f, 1.0f, 10.0f);
     
 #endif /* TARGET_RASPBERRY_PI */
+    
+    return true;
+}
+
+/* **** **** **** **** **** **** **** **** **** **** **** **** **** */
+
+bool DisplayImpl::deInitDisplay()
+{
+#ifdef TARGET_RASPBERRY_PI
+    
+    eglDestroyContext(_EGLdisplay , _context );
+    
+#endif /*TARGET_RASPBERRY_PI*/
     
     return true;
 }
@@ -294,7 +307,7 @@ const std::vector< DisplayInformations > DisplayImpl::getAvailableVideoMode() co
                       );
     }
     
-    assert( count == ret.size() );
+    assert( count == (int) ret.size() );
     
 #elif defined __APPLE__
     
@@ -372,14 +385,24 @@ void DisplayImpl::update()
     assert( ret == VG_NO_ERROR );
     
     // fix for raspberry : rendering freezes after a short time ...
-    glFinish();
+//    glFinish();
+
+//    vgFinish();
+//    vgFlush();
     
 	eglSwapBuffers( _EGLdisplay, _surface);
 
-	assert( eglGetError() == EGL_SUCCESS);
+//	assert( eglGetError() == EGL_SUCCESS);
 #endif
 }
 
+void DisplayImpl::checkErrors()
+{
+#ifdef TARGET_RASPBERRY_PI
+    VGErrorCode ret = vgGetError();
+    assert( ret == VG_NO_ERROR );
+#endif
+}
 
 
 /* **** **** **** **** **** **** **** **** **** **** **** **** **** */

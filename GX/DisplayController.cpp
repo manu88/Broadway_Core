@@ -106,16 +106,9 @@ void DisplayController::update()
 
 void DisplayController::run()
 {
-//    initializeEGL();
-    
-
     _impl.initPlateform();
 
-    
-  
     DisplayInformations mode = _impl.getCurrentDisplayInformations();
-    
-
     
     Log::log("==== MODE  =====" );
     Log::log(" W = %i H = %i" , mode.size.width , mode.size.height );
@@ -134,7 +127,6 @@ void DisplayController::run()
     
     while ( !threadShouldStop() )
     {
-
         m_frameRateClock.reset();
         
         Thread::sleepFor(Timecode(0,0,0,10));
@@ -154,29 +146,31 @@ void DisplayController::run()
         
         else if (m_currentElement)
         {
+            _impl.checkErrors();
+            
             if ( !m_currentElement->isPrepared() )
             {
-                Lock();
+//                Lock();
                 m_currentElement->prepare();
-                UnLock();
+//                UnLock();
             }
             
             if ( m_currentElement->shouldBeRemoved() )
             {
-                Lock();
+//                Lock();
                 m_currentElement->cleanUp();
                 m_currentElement = nullptr;
-                UnLock();
+//                UnLock();
                 
                 break;
             }
             
             if ( m_currentElement->m_changed_flag && m_currentElement->m_callChangedOnGUIThread)
             {
-                Lock();
+//                Lock();
                 m_currentElement->changed();
                 m_currentElement->m_changed_flag = false;
-                UnLock();
+//                UnLock();
                 
             }
             
@@ -188,12 +182,12 @@ void DisplayController::run()
                 
 
                 
-                Lock();                
+//                Lock();
                 m_currentElement->paint( _updateRect , _anim );
                 
                 m_currentElement->setUpdated();
                 
-                UnLock();
+//                UnLock();
                 
                 updateContext();
                 
@@ -212,10 +206,12 @@ void DisplayController::run()
 
     if ( m_currentElement )
     {
-        Lock();
+//        Lock();
         m_currentElement->cleanUp();
-        UnLock();
+//        UnLock();
     }
+    _impl.deInitDisplay();
+    
     setUnReady();    
 }
 
@@ -260,7 +256,7 @@ void DisplayController::updateContext()
 {
     
     assert( calledFromThisThread() );
-    
+
     _impl.update();
     
 

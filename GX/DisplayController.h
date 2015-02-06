@@ -166,8 +166,12 @@ public:
 private:
     void displayChangeNotification( DisplayNotification notification );
     
+    DisplayImpl _impl;
+    
     bool _displayIsOn;
     DisplayControllerDelegate *_delegate;
+    
+    GXElement   *m_currentElement;
     
 /* **** **** **** **** **** **** */
 /* **** **** **** **** **** **** */
@@ -215,9 +219,9 @@ private:
     
     static DisplayController* s_instance;
     
-    DisplayImpl _impl;
 
-    GXElement   *m_currentElement;
+
+
     
     bool     m_shouldClearContext;
     bool     m_shouldForceUpdate;
