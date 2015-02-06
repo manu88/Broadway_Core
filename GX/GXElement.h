@@ -36,9 +36,13 @@ public:
     void prepare();
     void cleanUp();
     
-    // signal that this GXElement has to be redrawn
+    //! signal that this GXElement has to be redrawn once
     void setNeedsDisplay();
+    
+    //! signal that this GXElement has to be redrawn for numFrames
     void setNeedsDisplayFor( int numFrames);
+    
+    //! signal that this GXElement has to be redrawn once in a specified region.
     void setNeedsDisplayInRect( const GXRect &rect);
     
     void setUpdated();

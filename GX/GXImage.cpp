@@ -100,6 +100,7 @@ void GXImage::prepareRessources()
     {
         Log::log(" warning : unable to create image '%s' " , m_filename.c_str() );
     }
+    
 #ifdef TARGET_RASPBERRY_PI
     const int width = vgGetParameteri( m_image, VG_IMAGE_WIDTH);
     const int height = vgGetParameteri( m_image, VG_IMAGE_HEIGHT);

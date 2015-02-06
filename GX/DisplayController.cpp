@@ -117,11 +117,11 @@ void DisplayController::run()
     
 
     
-    Log::log("\n ==== MODE  =====" );
-    Log::log("\n\t W = %i H = %i" , mode.size.width , mode.size.height );
-    Log::log("\n\t native %s" , mode.native? "YES" : "NO ");
-    Log::log("\n\t framerate : %i" , mode.framerate);
-    Log::log("\n\t aspectRatio : %f " , mode.aspectRatio);
+    Log::log("==== MODE  =====" );
+    Log::log(" W = %i H = %i" , mode.size.width , mode.size.height );
+    Log::log(" Native %s" , mode.native? "YES" : "NO ");
+    Log::log(" Framerate : %i" , mode.framerate);
+    Log::log(" AspectRatio : %f " , mode.aspectRatio);
     
     _impl.initDisplay();
 

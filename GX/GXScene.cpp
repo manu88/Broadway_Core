@@ -45,18 +45,14 @@ bool GXScene::addElement( GXElement* element )
     
     ThreadLock l( DisplayController::getController() );
     
-    
     if ( isAlreadyInScene( element ) )
         return false;
     
-
     element->setParentElement( this );
    // element->setBounds( m_bounds );
     
     setUnprepared();
     m_elements.push_back( element );
-    
-
     
     reorderElements();
     

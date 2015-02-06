@@ -68,7 +68,7 @@ public:
         return ( int ) m_elements.size();
     }
     
-    //! Founds and returns a GXElement by its ID, if added to the scene. nullptr if not.
+    //! Found and return a GXElement by its ID, if added to the scene. nullptr if not.
     GXElement* getElementByID( int _id);
     
 
