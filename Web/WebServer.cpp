@@ -202,15 +202,18 @@ void WebServer::send_reply(struct mg_connection *conn)
         ///////////////////////////////////////
         // on cherche dans la liste des fichiers dans m_workingDirectory
         
-        auto filelist = ArgumentsArray::getArrayFromFolder( m_workingDirectory );
+        auto filelist =  FileSystem::getFilesListFromFolder(m_workingDirectory, false); //ArgumentsArray::getArrayFromFolder( m_workingDirectory );
         
         std::string file = "";
-        for (int i =0 ; i<filelist->getSize(); i++)
+        
+        printf("\n test rep");
+        for (const std::string &tok : filelist)
         {
+            printf("\n got a file '%s'" , tok.c_str() );
             
-            if ( uri == ("/" + filelist->getValueAtIndex<std::string>(i) ) )
+            if ( uri == ("/" + tok ) )
             {
-                file = filelist->getValueAtIndex<std::string>(i);
+                file = tok;
                 break;
                 
             }

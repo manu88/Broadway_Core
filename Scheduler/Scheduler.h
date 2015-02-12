@@ -238,6 +238,8 @@ public:
     bool start();
     bool stop();
     
+    void startFromThisThread();
+    
 private:
     
     void run();

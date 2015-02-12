@@ -110,10 +110,16 @@ bool Scheduler::start()
     return startThread();
 }
 
+void Scheduler::startFromThisThread()
+{
+    run();
+}
+
+/* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
+
 bool Scheduler::stop()
 {
 
-//    _wakeUp.notify_all();
     wakeUpThread();
     
     return stopThread();

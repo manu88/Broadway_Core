@@ -141,9 +141,6 @@ public:
 private:
     
     enum { Output_Buffer_Size = 1024  };
-
-    
-    
     
     SocketUdpIn* getSocketForPort( int port );
     void internalDeleteSocket( SocketUdpIn* socket );
@@ -163,10 +160,8 @@ private:
     NetworkControllerDelegate   *_delegate;
     
     volatile bool _lockThread;
-
     
     SocketReceiveMultiplexer _multiplexer;
-
 
     std::unordered_set<SocketUdpIn*> _socketList;
     

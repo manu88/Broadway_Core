@@ -19,20 +19,9 @@
 
 #include "../Internal/Object.h"
 
-/* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
 
-class BaseArg : public Object
-{
-public:
-    BaseArg()
-    {
-        className = "BaseArg";
-    }
-    virtual ~BaseArg()
-    {}
-};
 
-/* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
+
 
 
 class ArgumentsArray  : public Object
@@ -40,14 +29,26 @@ class ArgumentsArray  : public Object
 private:
     
     /* **** **** **** **** **** **** **** **** **** **** */
+    //! Base Class for arguments stored in ArgumentsArray.
+    class BaseArg : public Object
+    {
+    public:
+        BaseArg()
+        {
+            className = "BaseArg";
+        }
+        virtual ~BaseArg()
+        {}
+    };
     
+    //! Template Class for arguments stored in ArgumentsArray
     template <typename T>
     class Argument : public BaseArg
     {
     public:
         
         Argument(T value) :
-        m_data( value )
+        _data( value )
         {
             className = "ArgumentsArray";            
         }
@@ -58,27 +59,32 @@ private:
         
         T getValue() const
         {
-            return m_data;
+            return _data;
         }
         
         
         template<typename Type>
         bool isType() const
         {
-            return ( typeid( m_data ) == typeid ( Type ) );
+            return ( typeid( _data ) == typeid ( Type ) );
         }
         
         
     private:
-        T m_data;
+        T _data;
     };
     
     /* **** **** **** **** **** **** **** **** **** **** */    
     
 public:
     
-    /* Conversions methods*/
-    static std::unique_ptr<ArgumentsArray> getArrayFromFolder( const std::string &folder);
+    //! Will return a list from the content of a specified folder.
+    /*!
+     \param   A filder's path.
+     \return  A scoped pointer with the list (ABC sorted) of files and/or folders.
+     */
+    /* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
+//    static std::unique_ptr<ArgumentsArray> getArrayFromFolder( const std::string &folder);
 
 
     ArgumentsArray()

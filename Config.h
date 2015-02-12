@@ -9,9 +9,6 @@
 #ifndef Broadway_test_Config_h
 #define Broadway_test_Config_h
 
-
-
-
 #include <assert.h>
 
 #ifdef BROADWAY_DEBUG

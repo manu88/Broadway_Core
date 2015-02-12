@@ -59,27 +59,20 @@ ArgumentsArray::ArgumentsArray( const bool argument)
 
 
 /* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
-/*static*/ std::unique_ptr<ArgumentsArray> ArgumentsArray::getArrayFromFolder( const std::string &folder)
+/*std::unique_ptr<ArgumentsArray> ArgumentsArray::getArrayFromFolder( const std::string &folder)
 {
     ArgumentsArray* array = new ArgumentsArray();
-    
     
     DIR * d = nullptr;
     
     d = opendir ( folder.c_str() );
     
     if (! d)
-    {
-        Log::log ( "Cannot open directory '%s': %s\n",
-                  folder.c_str(), strerror (errno));
+        Log::log ( "Cannot open directory '%s': %s\n", folder.c_str(), strerror (errno));
 
-
-    }
     else
     {
-        
         int count = 0;
-        
         
         while (1)
         {
@@ -96,17 +89,15 @@ ArgumentsArray::ArgumentsArray( const bool argument)
                 && ( strcmp( entry->d_name , ".." ) != 0 )
                 )
             {
-                //Log::log ("%s\n", entry->d_name);
                 array->addValue( std::string(entry->d_name) );
                 
-                //vars->setArrayIndex( count , new CScriptVar( std::string( entry->d_name ) ) );
                 count++;
                 
             }
         }
         
         // ABC Sort
-        /*
+
         for ( int i = 0; i < count - 1 ; i++)
         {
             for (int j = i + 1; j < count; j++)
@@ -122,20 +113,18 @@ ArgumentsArray::ArgumentsArray( const bool argument)
                 }
             }
         }
-        */
+
         // end of sort
         
         
-        /* Close the directory. */
+        // Close the directory. 
         if ( closedir (d) )
-        {
-            Log::log ("Could not close '%s': %s\n",
-                      folder.c_str(), strerror (errno));
-        }
+            Log::log ("Could not close '%s': %s\n", folder.c_str(), strerror (errno));
     }
     
     return std::unique_ptr<ArgumentsArray>(array);
 }
+*/
 
 
 

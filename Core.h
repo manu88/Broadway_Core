@@ -122,20 +122,20 @@
 #endif
 
 #ifdef USE_GRAPHICS_HELPERS
-#include "Parsers/SVGParser.h"
-#include "Parsers/FontParser.h"
+    #include "Parsers/SVGParser.h"
+    #include "Parsers/FontParser.h"
 #endif
 
 #ifdef USE_GRAPHICS
-#include "GX/GXDefs.h"
-#include "GX/DisplayController.h"
-#include "GX/GXElement.h"
-#include "GX/GXPath.h"
-#include "GX/GXImage.h"
-#include "GX/GXScene.h"
-#include "GX/GXPaintJS.h"
-#include "GX/GXTextRenderer.h"
-#include "GX/GXFont.h"
+    #include "GX/GXDefs.h"
+    #include "GX/DisplayController.h"
+    #include "GX/GXElement.h"
+    #include "GX/GXPath.h"
+    #include "GX/GXImage.h"
+    #include "GX/GXScene.h"
+    #include "GX/GXPaintJS.h"
+    #include "GX/GXTextRenderer.h"
+    #include "GX/GXFont.h"
 #endif
 
 
@@ -156,7 +156,7 @@
 
 typedef enum
 {
-    EMPTY               = 0,
+    EMPTY               =   0,
     WEB_SERVER          = ( 1 << 0 ),
     JAVA_INTERPRETER    = ( 1 << 1 ),
     NETWORK             = ( 1 << 2 ),
@@ -217,8 +217,7 @@ public:
     
 private:
     CoreModulesFlags _mdlList;
-    
-    
+
 };
 
 #endif /* Broadway_Core_h */

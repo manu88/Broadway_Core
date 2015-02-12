@@ -51,7 +51,10 @@ public:
     
     static const std::vector<std::string> getSerialDevicesList();
     
-    bool writeOnPort( const char* datas);
+    bool send( const char* datas);
+    
+    /* Ugly Impl*/
+    bool send( int val);
     
     void cleanup()
     {

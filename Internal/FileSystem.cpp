@@ -187,6 +187,7 @@ const std::vector< std::string > FileSystem::getFilesListFromFolder( const std::
     if ( isFolder( path) && (d = opendir ( path.c_str() ) ))
     {
         std::vector< std::string > list;
+        
         while (1)
         {
             struct dirent * entry;

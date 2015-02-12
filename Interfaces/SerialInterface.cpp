@@ -138,13 +138,27 @@ const std::string SerialEvent::readDatas()
 
 /* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
 
-bool SerialEvent::writeOnPort( const char* datas)
+bool SerialEvent::send( const char* datas)
 {
     if ( !_isOpen )
         return false;
     
     int numWritten = ( int ) write( _fd, datas , strlen( datas ) );
+    
+    
     return numWritten > 0;
+    
+}
+
+bool SerialEvent::send( int val)
+{
+    char buf[4];
+    sprintf(buf, "%i" , val);
+    
+    
+    
+    
+    return send( buf );
     
 }
 
