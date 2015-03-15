@@ -211,6 +211,11 @@ public:
         use should use itemExists() to test the item before
      */
     
+    inline int getValueForItemNameAsFloat(const std::string &item) const
+    {
+        return atof( getValueForItemName<T1>( item ).c_str() );
+    }
+    
     inline int getValueForItemNameAsInt(const std::string &item) const
     {
         return atoi( getValueForItemName<T1>( item ).c_str() );

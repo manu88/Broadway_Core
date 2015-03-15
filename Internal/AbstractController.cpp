@@ -72,13 +72,10 @@ AbstractController::~AbstractController()
     clock_t start = clock();
     double time = 0;
     
-    Log::log("Wait for %li controller(s) ... " , (s_controllers.size() - countReadyControllers() ) );
-    
     while ( (time <= timeOut)  )
     {
         if ( allControllersReady() )
         {
-            Log::log("All controllers are OK");
             return true;
         }
         
@@ -86,22 +83,9 @@ AbstractController::~AbstractController()
         time = ( clock() - start)/(double)CLOCKS_PER_SEC;
     }
     
-    Log::log("warning, time out failed: ");
 
-    if ( allControllersReady() )
-        Log::log(" but all controllers seem ready ");
     
-    else
-    {
-        Log::log(" _NOT_ all controllers are ready ");
-        for ( auto i : s_controllers )
-        {
-            if( (!i->isReady() ) )
-                Log::log("%s is _NOT_ ready" , i->_controllerName.c_str() );
-        }
-    }
-    
-    // timeout failed
+
     return false;
 }
 
@@ -135,38 +119,18 @@ AbstractController::~AbstractController()
     clock_t start = clock();
     double time = 0;
     
-    Log::log("Wait for %li controller(s) to finish ... " , countReadyControllers()  );
+
     
     while ( (time <= timeOut )  )
     {
         if ( allControllersUnReady() )
-        {
-            Log::log("All controllers' tasks are Finished");
             return true;
-        }
+
         
         
         time = ( clock() - start)/(double)CLOCKS_PER_SEC;
     }
     
-    Log::log("warning, time out failed: ");
-    
-    if ( allControllersUnReady() )
-        Log::log(" but all controllers are done ");
-    
-    else
-    {
-        Log::log(" _NOT_ all controllers are done ");
-        
-        for ( auto i : s_controllers )
-        {
-            if( (i->isReady() ) )
-                Log::log("%s is still ready" , i->_controllerName.c_str() );
-        }
-        
-    }
-    
-    // timeout failed
     return false;
 
 }

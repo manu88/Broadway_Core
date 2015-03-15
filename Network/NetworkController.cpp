@@ -91,7 +91,6 @@ bool NetworkController::stop()
     
     _multiplexer.AsynchronousBreak();
 
-    Log::log(" Network Thread Stopped");
     return stopThread();
 
 }
@@ -123,7 +122,6 @@ void NetworkController::run()
     }
 
     setUnReady();
-    Log::log("network controller stopped");
 }
 
 /* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
@@ -255,6 +253,7 @@ bool NetworkController::sendOSC( const std::string &ip , const int port , const 
                 Log::log("error while parsing ArgumentsArray -> OSCMessage, type not handled");
             
         }
+
 
 
         p<< osc::EndMessage;

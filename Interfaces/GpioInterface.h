@@ -41,7 +41,7 @@ public :
     bool changed();
     GpioState read();
     
-    int pin;
+    unsigned int pin;
     GpioState state;
     
     static void setGpio( const int pin , const GpioState state);

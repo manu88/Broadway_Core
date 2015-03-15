@@ -61,6 +61,7 @@ public:
     }
     
     static void sleepFor( const Timecode &tc);
+    static void sleepForMs( const unsigned long ms);
     
 protected:
     // user defined main() thread

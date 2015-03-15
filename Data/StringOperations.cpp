@@ -51,30 +51,40 @@ std::string StringOperations::reduce(const std::string& str, const std::string& 
     return result;
 }
 
-
+/*
 std::string StringOperations::stringWithFormat(const std::string fmt_str, ...)
 {
-    int final_n, n = ((int)fmt_str.size()) * 2; /* Reserve two times as much as the length of the fmt_str */
-    std::string str;
-    std::unique_ptr<char[]> formatted;
-    va_list ap;
-    
-    while(1)
+    try
     {
-        formatted.reset(new char[n]); /* Wrap the plain char array into the unique_ptr */
-        strcpy(&formatted[0], fmt_str.c_str());
+        int final_n, n = ((int)fmt_str.size()) * 2;
+        std::string str = 0;
+        std::unique_ptr<char[]> formatted = 0;
+        va_list ap = {};
         
-        va_start(ap, fmt_str);
-        final_n = vsnprintf(&formatted[0], n, fmt_str.c_str(), ap);
-        va_end(ap);
-        
-        if (final_n < 0 || final_n >= n)
-            n += abs(final_n - n + 1);
-        else
-            break;
+        while(1)
+        {
+            formatted.reset(new char[n]);
+            strcpy(&formatted[0], fmt_str.c_str());
+            
+            va_start(ap, fmt_str);
+            final_n = vsnprintf( &formatted[0], n, fmt_str.c_str(), ap);
+            va_end(ap);
+            
+            if (final_n < 0 || final_n >= n)
+                n += abs(final_n - n + 1);
+            else
+                break;
+        }
+        return std::string(formatted.get());
     }
-    return std::string(formatted.get());
+    
+    catch ( std::logic_error &err)
+    {
+        printf("\n std::logic_error caught");
+    }
+    return "ERR_";
 }
+ */
 
 std::vector<std::string> &StringOperations::split(const std::string &s, char delim, std::vector<std::string> &elems)
 {
@@ -97,6 +107,14 @@ std::vector<std::string> StringOperations::split(const std::string &s, char deli
     std::vector<std::string> elems;
     split(s, delim, elems);
     return elems;
+}
+
+
+std::ostream& StringOperations::operator<<( std::ostream& o, const Formatter& a )
+{
+    o.fill( a.fill );
+    o.width( a.width );
+    return o;
 }
 
 

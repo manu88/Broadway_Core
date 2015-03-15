@@ -65,6 +65,11 @@ public:
     
     /* GPIO part */
     
+    void setNoPoll()
+    {
+        setInactive();
+    }
+    
     GpioEvent* addGpioInput(const int pinNumber , GPioInputType typeOfInput);
     bool removeGpioInput(const int pinNumber);
     

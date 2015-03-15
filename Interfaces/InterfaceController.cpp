@@ -44,7 +44,9 @@ InterfaceController::InterfaceController():
 {
     className = "Interface controller";
     if (! init())
+    {
         Log::log("\n error while initializing gpio interface");
+    }
 }
 
 InterfaceController::~InterfaceController()
@@ -79,6 +81,9 @@ bool InterfaceController::start()
 
 bool InterfaceController::stop()
 {
+
+
+    
     return stopThread();
 }
 
@@ -257,9 +262,7 @@ void InterfaceController::mainLoop()
         
         if ( m_inputs.empty() )
         {
-            Log::log(" gpio in list is empty, wait...");
             wait( lock );
-            Log::log(" lock unlocked");
         }
         
 
@@ -279,11 +282,9 @@ void InterfaceController::mainLoop()
 
 void InterfaceController:: run()
 {
-    Log::log("Starting GPIO Thread");
     setReady();
     mainLoop();
     setUnReady();    
-    Log::log("GPIO Thread Stopped");
 }
 
 

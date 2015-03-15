@@ -46,7 +46,6 @@ bool Scheduler::listenForMouseInput()
 int Scheduler::registerTimedEvent( Timecode start , Timecode period , bool oneShot )
 {
     
-
     return createImpl( TimedEvent( Clock::now() + Duration( start.getInMs() ), Duration( period.getInMs() )  ));
 }
 
@@ -281,7 +280,7 @@ bool Scheduler::destroyAll()
     return blockThreadFor( duration.getInMs() );
 }
 
-/*static*/ long long Scheduler::blockThreadFor(const unsigned int ms )
+/*static*/ long long Scheduler::blockThreadFor(const unsigned long ms )
 {
 
     const auto t0 = std::chrono::high_resolution_clock::now();
@@ -291,7 +290,6 @@ bool Scheduler::destroyAll()
     const auto t1 = std::chrono::high_resolution_clock::now();
     std::chrono:: milliseconds total_ms = std::chrono::duration_cast< std::chrono::milliseconds>(t1 - t0);
     
-    Log::log("this_thread_sleep %i ms - real = %i" , ms , total_ms.count() );
 
     return total_ms.count();
 }

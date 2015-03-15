@@ -20,14 +20,13 @@
 
 
 
-/*  FOR OMX ONLY
+#ifdef USE_OPENMAXIL
  
     #include "OMXStreamInfo.h"
 
     #include "utils/log.h"
     #include "DllAvUtil.h"
     #include "DllAvFormat.h"
-    #include "DllAvFilter.h"
     #include "DllAvCodec.h"
     #include "linux/RBP.h"
     #include "OMXVideo.h"
@@ -35,9 +34,9 @@
     #include "DllOMX.h"
     #include "Srt.h"
     #include "utils/Strprintf.h"
- */
+#endif
 
-#endif /* TARGET_RASPBERRY_PI */
+#endif /* USE_OPENMAXIL */
 
 #include <semaphore.h>
 
@@ -159,17 +158,34 @@ public:
     
     void removeElement( GXElement* element);
     
+    void setCleanColor( GXColor color);
     void clearScreen();
     void update();
+    
+    /* adds for OMX */
+    
+    
+    bool isNativeDeinterlace() const
+    {
+        return true;
+    }
+    
+    float getDisplayRatio() const
+    {
+        return _impl.getCurrentDisplayInformations().aspectRatio;
+    }
     
     
 private:
     void displayChangeNotification( DisplayNotification notification );
     
+
     DisplayImpl _impl;
     
     bool _displayIsOn;
     DisplayControllerDelegate *_delegate;
+
+    GXColor _clearColor; /* later use GXElements' backgroundColor*/
     
     GXElement   *m_currentElement;
     
@@ -214,14 +230,7 @@ private:
     void deleteRessources();
     void changed();
     
-    
-
-    
     static DisplayController* s_instance;
-    
-
-
-
     
     bool     m_shouldClearContext;
     bool     m_shouldForceUpdate;
@@ -231,17 +240,17 @@ private:
 
 
     // add for omxplayer
-    /*
-#ifdef TARGET_RASPBERRY_PI
+
+#ifdef USE_OPENMAXIL
     
     
-    DllBcmHost        m_BcmHost; removed -> use directly bcm_host 
+//    DllBcmHost        m_BcmHost; removed -> use directly bcm_host
     CRBP              m_RBP;
     COMXCore          m_OMX;
 
     
 #endif
-    */    
+
 
 };
 

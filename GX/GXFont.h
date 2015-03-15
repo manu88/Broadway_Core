@@ -132,7 +132,7 @@ public:
         if ( vectorIt != m_glyphes.end() )
             return vectorIt->second;
         
-        Log::log("\n char '%c' not found in font '%s'" , c , m_fontName.c_str() );
+//        Log::log("\n char '%c' not found in font '%s'" , c , m_fontName.c_str() );
         
         return nullptr;
 

@@ -26,6 +26,9 @@ _impl( this ),
 
 _displayIsOn         ( false ),
 _delegate            ( nullptr ),
+
+_clearColor ( makeColor( 0,0,0) ),
+
 m_currentElement     ( nullptr ),
 m_shouldClearContext ( true    ),
 m_frameRate          ( 0 )
@@ -75,7 +78,10 @@ void DisplayController::removeElement( GXElement* element)
 
 void DisplayController::setDisplayedElement( GXElement* element)
 {
-    ThreadLock l(this);    
+    ThreadLock l(this);
+    
+    wakeUpThread();
+    
     m_currentElement = element;
 
     m_currentElement->setParentElement( this );
@@ -87,8 +93,19 @@ void DisplayController::setDisplayedElement( GXElement* element)
 
 /* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
 
+void DisplayController::setCleanColor( GXColor color)
+{
+    _clearColor = color;
+}
+
+/* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
+
 void DisplayController::clearScreen()
 {
+    ScopedLock lock( getControllerMutex()  );
+    
+    wakeUpThread();
+    
     m_shouldClearContext = true;
 }
 
@@ -96,7 +113,9 @@ void DisplayController::clearScreen()
 
 void DisplayController::update()
 {
-    ThreadLock l(this);
+    ScopedLock lock( getControllerMutex()  );
+    
+    wakeUpThread();
     
     if (m_currentElement)
         m_currentElement->setNeedsDisplay();
@@ -109,13 +128,7 @@ void DisplayController::run()
     _impl.initPlateform();
 
     DisplayInformations mode = _impl.getCurrentDisplayInformations();
-    
-    Log::log("==== MODE  =====" );
-    Log::log(" W = %i H = %i" , mode.size.width , mode.size.height );
-    Log::log(" Native %s" , mode.native? "YES" : "NO ");
-    Log::log(" Framerate : %i" , mode.framerate);
-    Log::log(" AspectRatio : %f " , mode.aspectRatio);
-    
+        
     _impl.initDisplay();
 
     setBounds(0, 0, mode.size.width , mode.size.height);
@@ -127,9 +140,15 @@ void DisplayController::run()
     
     while ( !threadShouldStop() )
     {
+        ScopedLock lock( getControllerMutex()  );
+        
+        if ( m_currentElement == nullptr)
+        {
+            wait( lock );
+        }
         m_frameRateClock.reset();
         
-        Thread::sleepFor(Timecode(0,0,0,10));
+        //Thread::sleepFor(Timecode(0,0,0,10));
         
         
         if ( needsDisplay() )
@@ -245,11 +264,6 @@ void DisplayController::init()
     
 }
 
-
-
-
-
-
 /* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
 
 void DisplayController::updateContext()
@@ -267,8 +281,9 @@ void DisplayController::updateContext()
 void DisplayController::clearContext()
 {
     assert( calledFromThisThread() );
+
     
-    GXPath::clearRect( getBounds(), makeColor(0, 0, 0) );
+    GXPath::clearRect( getBounds(), _clearColor );
     
 }
 

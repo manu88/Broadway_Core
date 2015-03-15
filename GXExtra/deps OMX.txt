@@ -1,0 +1,11 @@
+# should get rid of boost ...
+
+sudo apt-get -y install libpcre3-dev
+sudo apt-get -y install libboost1.50-dev
+
+# dbus - à virer
+sudo apt-get install -y libdbus-1-dev
+
+
+##### deps ffmpeg
+sudo apt-get install -ylibssl-dev

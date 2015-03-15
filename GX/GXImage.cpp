@@ -98,7 +98,7 @@ void GXImage::prepareRessources()
 
     if (m_image == VG_INVALID_HANDLE )
     {
-        Log::log(" warning : unable to create image '%s' " , m_filename.c_str() );
+
     }
     
 #ifdef TARGET_RASPBERRY_PI
@@ -174,6 +174,7 @@ void GXImage::changed()
     
     // Try to open image file
     infile = fopen(filename, "rb");
+    
     if (infile == NULL)
     {
         Log::log("Failed opening '%s' for reading!\n", filename);

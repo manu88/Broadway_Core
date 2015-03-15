@@ -84,12 +84,17 @@ Timecode operator-=(Timecode& lhs, const Timecode& rhs)
 
 Timecode operator-(const Timecode& lhs, const Timecode& rhs)
 {
-    Timecode r( lhs.h , lhs.min , lhs.sec , lhs.milli ) ;
-    r.milli -= rhs.milli;
-    r.sec   -= rhs.sec;
-    r.min   -= rhs.min;
-    r.h     -= rhs.h;
+    Timecode r;
+
     
+    if ( rhs>lhs )
+        return r;
+
+    const auto diff = lhs.getInMs() -rhs.getInMs();
+    
+    r.milli = diff;
+    
+    r.reconstruct();
     
     return r;
 }
@@ -111,13 +116,13 @@ Timecode operator+(const Timecode& lhs, const Timecode& rhs)
 
 void printTime(Timecode tc)
 {
-    printf("\n TC_ %i:%i:%i:%i", tc.h , tc.min , tc.sec , tc.milli);
+    printf("\n TC_ %lu:%lu:%lu:%lu", tc.h , tc.min , tc.sec , tc.milli);
 }
 
 
 
 /* **** **** ****  **** **** */
-int getTimeToWaitInMS(Timecode &currentTime , Timecode &tc )
+unsigned long getTimeToWaitInMS(Timecode &currentTime , Timecode &tc )
 {
     DEBUG_ASSERT(tc>=currentTime);
     

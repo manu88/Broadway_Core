@@ -104,7 +104,7 @@ typedef struct
 } GXColorFLOAT;
 
 /* **** **** **** **** **** **** **** **** **** **** **** **** **** **** *****/
-//! Create a new GXColor, with RGBA components.
+//! Create a new GXColor, with RGB(A) components.
 /*!
  */
 GXColor makeColor(uint8_t r , uint8_t g , uint8_t b , uint8_t a = 255 );

@@ -14,6 +14,8 @@
 
 #include <sys/time.h>
 
+#include <sstream>
+
 #include "../Data/StringOperations.h"
 
 
@@ -21,10 +23,10 @@
 
 struct Timecode_t
 {
-    unsigned int h;
-    unsigned int min;
-    unsigned int sec;
-    unsigned int milli;
+    unsigned long h;
+    unsigned long min;
+    unsigned long sec;
+    unsigned long milli;
     
 public:
     
@@ -37,7 +39,7 @@ public:
     }
 
     
-    Timecode_t ( unsigned int heures = 0 , unsigned int minutes =0 , unsigned int secondes = 0 , unsigned int milliSecs = 0 ) :
+    Timecode_t ( unsigned long heures = 0 , unsigned long minutes =0 , unsigned long secondes = 0 , unsigned long milliSecs = 0 ) :
         h    ( heures    ),
         min  ( minutes   ),
         sec  ( secondes  ),
@@ -100,7 +102,7 @@ public:
     
     void reconstruct()
     {
-        int add = milli / 1000.;
+        auto add = milli / 1000.;
         milli %= 1000;
         
         sec+=add;
@@ -124,7 +126,7 @@ public:
         reconstruct();
     }
     
-    int getInMs() const
+    unsigned long getInMs() const
     {
         return milli + 1000*(sec + 60*(min +60*h));
         
@@ -143,7 +145,13 @@ public:
     std::string getString() const
     {
 
-        return StringOperations::stringWithFormat("%2i:%2i:%2i:%3i" ,h , min , sec, milli);
+        std::stringstream stream;
+        stream << StringOperations::Formatter('0' , 2) << h     << ":"
+               << StringOperations::Formatter('0' , 2) << min   << ":"
+               << StringOperations::Formatter('0' , 2) << sec   << ":"
+               << StringOperations::Formatter('0' , 3) << milli ;
+        
+        return stream.str();// StringOperations::stringWithFormat("%2i:%2i:%2i:%3i" ,h , min , sec, milli);
     }
     
 
@@ -172,7 +180,7 @@ Timecode operator-(const Timecode& lhs, const Timecode& rhs);
 
 Timecode operator+(const Timecode& lhs, const Timecode& rhs);
 void printTime(Timecode tc);
-int getTimeToWaitInMS(Timecode &currentTime , Timecode &tc );
+unsigned long getTimeToWaitInMS(Timecode &currentTime , Timecode &tc );
 bool isValidTimecode(Timecode &tc);
 
 #endif

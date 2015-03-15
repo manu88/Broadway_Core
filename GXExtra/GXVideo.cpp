@@ -10,6 +10,7 @@
 #include "../Log/Log.h"
 
 GXVideo::GXVideo() :
+    m_player     ( this  ),
     m_isPrepared ( false ),
     m_length     ( Timecode() )
 {
@@ -19,13 +20,15 @@ GXVideo::GXVideo() :
     performChangedSignalOnGUIThread( false );
     
     m_player.setClock( &m_clock );
+    
+    setVisible( true);
 }
 
 /* **** **** **** **** **** **** **** **** **** **** **** **** **** */
 
 GXVideo::~GXVideo()
 {
-    m_player.stop();
+    stop();
 }
 
 /* **** **** **** **** **** **** **** **** **** **** **** **** **** */
@@ -50,6 +53,8 @@ void GXVideo::changed()
     m_player.setBounds(getBounds().origin.x, getBounds().origin.y,  getBounds().size.width, getBounds().size.height);
     
     m_player.setLayerNum( getLayer() );
+    
+    m_player.flipVisibilityTo( isVisible() );
 }
 
 /* **** **** **** **** **** **** **** **** **** **** **** **** **** */
@@ -97,17 +102,78 @@ Timecode GXVideo::getVideoLength()
 
 void GXVideo::seekToTC( Timecode tc )
 {
-    printTime( tc );
 
-    printTime( m_length);
     if ( tc > m_length )
     {
-        Log::log("\n seek excess video lenght");
         return;
     }
     double tcInS = tc.getInMs() / 1000.0f;
     
     m_player.seekTo( tcInS );
+}
+
+void GXVideo::registerTCNotification( const Timecode &tc )
+{
+    m_player.registerTC (tc.getInMs() );
+}
+
+/* **** **** **** **** **** **** **** **** **** **** **** **** **** */
+
+void GXVideo::willStart()
+{
+    _notif = VideoWillStart;
+    
+    if (_schedulerDelegate )
+        _schedulerDelegate->scheduledEventReceived( *this);
+    
+}
+
+void GXVideo::didStart()
+{
+    _notif = VideoDidStart;
+    
+    if (_schedulerDelegate )
+        _schedulerDelegate->scheduledEventReceived( *this);
+}
+
+void GXVideo::didPause()
+{
+    _notif = VideoPaused;
+    
+    if (_schedulerDelegate )
+        _schedulerDelegate->scheduledEventReceived( *this);
+}
+
+void GXVideo::didResume()
+{
+    _notif = VideoDidResume;
+    
+    if (_schedulerDelegate )
+        _schedulerDelegate->scheduledEventReceived( *this);
+}
+
+void GXVideo::willEnd()
+{
+    _notif = VideoWillStop;
+    
+    if (_schedulerDelegate )
+        _schedulerDelegate->scheduledEventReceived( *this);
+}
+void GXVideo::didEnd()
+{
+    _notif = VideoDidStop;
+    
+    if (_schedulerDelegate )
+        _schedulerDelegate->scheduledEventReceived( *this);
+
+}
+
+void GXVideo::didReachTC( unsigned long millis)
+{
+    _notif = VideoDidReachTC;
+    
+    if (_schedulerDelegate )
+        _schedulerDelegate->scheduledEventReceived( *this);
 }
 
 /* **** **** **** **** **** **** **** **** **** **** **** **** **** */

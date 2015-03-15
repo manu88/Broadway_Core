@@ -43,7 +43,7 @@ bool SVGParser::parseSvgFile( const std::string &filename )
     
 	if (_image == NULL)
     {
-        Log::log("Could not open SVG image '%s' " , filename.c_str() );
+//        Log::log("Could not open SVG image '%s' " , filename.c_str() );
 		return false;
 	}
     

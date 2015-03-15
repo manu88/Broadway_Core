@@ -38,7 +38,7 @@ namespace StringOperations
     /*
         Write a formatted string like printf and others
      */
-    std::string stringWithFormat(const std::string fmt_str, ...);
+    //std::string stringWithFormat(const std::string fmt_str, ...);
     
     std::vector<std::string> &split(const std::string &s, char delim, std::vector<std::string> &elems);
     std::vector<std::string> split(const std::string &s, char delim);
@@ -65,6 +65,24 @@ namespace StringOperations
     }
     
     
+    /* *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** */
+    /*
+        Fill & width formatter for ostream
+        stream << myfillandw( '0', 2 ) << value;     
+     
+     */
+    /* *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** */
+
+    struct Formatter
+    {
+        Formatter( const char f, int w )
+        : fill(f), width(w) {}
+        
+        char fill;
+        int width;
+    };
+    
+    std::ostream& operator<<( std::ostream& o, const Formatter& a );
     
     
 }

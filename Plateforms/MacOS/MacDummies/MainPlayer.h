@@ -37,10 +37,13 @@ public:
     
 };
 
+class GXVideo;
+
 class MainPlayer
 {
 public:
-    MainPlayer() :
+    MainPlayer( GXVideo *parent) :
+    _parent(parent),
     m_volumeAudio(1.f)
     {
         
@@ -106,6 +109,11 @@ public:
 
     }
     
+    void flipVisibilityTo( bool visible)
+    {
+        
+    }
+    
     bool isRunning() const
     {
         return false;
@@ -140,13 +148,23 @@ public:
         return 100;
     }
     
+    unsigned long getCurrentTC()
+    {
+        return 100;
+    }
     
     void seekTo(double timeInS)
     {
         
     }
     
+    void registerTC( unsigned long tc)
+    {
+        
+    }
+    
 private:
+    GXVideo *_parent;
     float m_volumeAudio;
     
     

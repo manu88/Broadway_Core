@@ -141,18 +141,17 @@ void WebServer::run()
     
     mg_set_option( _server, "listening_port", port.c_str() );
     
-    Log::log("Starting Web Server on port %s\n", mg_get_option( _server, "listening_port"));
-    
     setReady();
     
     while (!threadShouldStop())
     {
         mg_poll_server( _server, 1000);
+
+
     }
     
     setUnReady();
     
-    Log::log("Web server stopped");
     
 }
 
@@ -164,7 +163,6 @@ std::string WebServer::getHtmlFile( const std::string & filename)
     
     if ( !FileSystem::fileExists( filename ) )
     {
-        Log::log("Cannot find file '%s' !", filename.c_str() );
         return s_noFilesContent;
     }
     

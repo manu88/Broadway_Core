@@ -196,7 +196,7 @@ void GXScene::updateElementInRect( GXElement *element , const GXRect &rect )
     if ( element->shouldBeRemoved() )
     {
         element->cleanUp();
-        deleteElementFromGUIThread( element );
+        //deleteElementFromGUIThread( element );
     }
     
     else if ( element->needsDisplay() )

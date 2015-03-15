@@ -83,7 +83,7 @@ Log::~Log()
 
 /*static*/ void Log::log( const char * format , ... )
 {
-    char buffer[512];
+    char buffer[ BUFFER_SIZE ];
     va_list args;
     va_start (args, format);
     vsprintf (buffer,format, args);

@@ -100,12 +100,12 @@ void GXAnimation::stop()
 
 GXPoint GXAnimation::getNextPointForDt( int dt)
 {
-    
+    return makePointNULL();
 }
 
 float GXAnimation::getRZForDT( int dt )
 {
-    
+    return 0.0f;
 }
 
 /* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */

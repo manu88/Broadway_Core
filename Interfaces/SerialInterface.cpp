@@ -50,12 +50,6 @@ bool SerialEvent::openPort()
         Log::log(" ERROR : unable to open port '%s' ." , _port.c_str() );        
         return false;
     }
-    
-    
-    // ok
-    
-    Log::log("Port '%s' is open" , _port.c_str() );
-    
 
     _isOpen = true;
     return true;
@@ -71,12 +65,10 @@ bool SerialEvent::closePort()
         
         if ( ret != 0 )
         {
-            Log::log(" ERROR : unable to close port '%s' ." , _port.c_str() );
             return false;
         }
         
         _isOpen = false;
-            Log::log("Port '%s' is close ." , _port.c_str() );            
             
     }
     return true;
@@ -154,10 +146,7 @@ bool SerialEvent::send( int val)
 {
     char buf[4];
     sprintf(buf, "%i" , val);
-    
-    
-    
-    
+
     return send( buf );
     
 }

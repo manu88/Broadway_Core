@@ -104,6 +104,8 @@ void GXTextRenderer::paint( const GXRect &rect , GXAnimation* anim )
     if (m_font == nullptr)
         return;
     
+    GXPath::clearRect(rect, getBackgroundColor() );
+    
     GXPath::setFillColor( m_textColor );
     m_textPath->fill();
 

@@ -48,7 +48,7 @@ typedef std::chrono::milliseconds       Duration;
 
 
 
-class TimedEvent : public Element
+class TimedEvent : public Event
 {
 public:
     TimedEvent():
@@ -149,11 +149,12 @@ class SchedulerDelegate
     friend class Scheduler;
 public:
     virtual ~SchedulerDelegate() {}
-    
+
+    virtual void scheduledEventReceived( Event &event) = 0;
 protected:
     SchedulerDelegate() {}
     
-    virtual void scheduledEventReceived( TimedEvent &event) = 0;
+
 //    virtual void mouseEventReceived( const MouseEvent &event);
 
     
@@ -233,7 +234,7 @@ public:
     
     // block for a certain duration
     static long long blockThreadFor(const Timecode & duration );
-    static long long blockThreadFor(const unsigned int ms );
+    static long long blockThreadFor(const unsigned long ms );
     
     bool start();
     bool stop();

@@ -55,6 +55,8 @@ class Log : public Object
 {
 public:
     
+    enum { BUFFER_SIZE = 512};
+    
     static void log( const char * format , ... );
     
     static void cleanupLogger();
@@ -109,7 +111,7 @@ public:
     
 protected:
     
-    virtual void print(const char * c) const
+    void print(const char * c) const
     {}
 };
 
@@ -126,7 +128,7 @@ public:
     
 protected:
     
-    virtual void print(const char * c) const
+    void print(const char * c) const
     {
         printf("\nLog:>%s" , c );
     }
@@ -142,7 +144,7 @@ public:
     ~LogFile();
     
 protected:
-    virtual void print(const char * c) const;
+    void print(const char * c) const;
     
 private:
     std::string _filepath;
@@ -166,7 +168,7 @@ protected:
     struct sockaddr_in m_endPoint;
     
     
-    virtual void print(const char * c) const;
+    void print(const char * c) const;
 };
 
 #endif /* defined(__Broadway_test__Log__) */

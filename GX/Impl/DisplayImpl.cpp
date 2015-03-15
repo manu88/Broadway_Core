@@ -205,7 +205,7 @@ const DisplayInformations DisplayImpl::getCurrentDisplayInformations() const
 {
 #ifdef TARGET_RASPBERRY_PI
     
-    TV_DISPLAY_STATE_T currentState;
+    TV_DISPLAY_STATE_T currentState = {0,0};
     
     if (vc_tv_get_display_state( &currentState) == 0)
     {
