@@ -18,25 +18,7 @@
 #ifdef TARGET_RASPBERRY_PI
     #include <bcm_host.h>
 
-
-
-#ifdef USE_OPENMAXIL
- 
-    #include "OMXStreamInfo.h"
-
-    #include "utils/log.h"
-    #include "DllAvUtil.h"
-    #include "DllAvFormat.h"
-    #include "DllAvCodec.h"
-    #include "linux/RBP.h"
-    #include "OMXVideo.h"
-    #include "utils/PCMRemap.h"
-    #include "DllOMX.h"
-    #include "Srt.h"
-    #include "utils/Strprintf.h"
-#endif
-
-#endif /* USE_OPENMAXIL */
+#endif /* TARGET_RASPBERRY_PI */
 
 #include <semaphore.h>
 
@@ -51,6 +33,8 @@
 #include "../Internal/Thread.h"
 #include "../Scheduler/Scheduler.h"
 #include "../Plateforms/Plateform.h"
+
+#include "../Data/Database.h"
 
 #include "GXDefs.h"
 
@@ -89,6 +73,7 @@ protected:
 };
 
 
+
 /* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
 
 class DisplayController : public AbstractController,
@@ -112,6 +97,11 @@ public:
         _delegate = delegate;
     }
     
+    bool start();
+    bool stop();
+    
+    /* Modes & infos */
+    
     inline const std::vector< DisplayInformations > getAvailableVideoMode() const
     {
         return _impl.getAvailableVideoMode();
@@ -122,29 +112,38 @@ public:
         return _impl.getCurrentDisplayInformations();
     }
     
-    bool setVideoModeTo( const DisplayInformations &mode);
+    inline bool setVideoModeTo( const DisplayInformations &mode)
+    {
+        return _impl.setVideoModeTo( mode );
+    }
     
-    bool start();
-    bool stop();
+    inline int getAudioVideoLatency() const
+    {
+        return _impl.getAudioVideoLatency();
+    }
+
     
-    /* power */
+    /* Commands to send to the display */
+    
+    inline bool showInfosOnDisplay( bool show ) const
+    {
+        return _impl.showInfosOnDisplay( show );
+    }
     
     bool powerOn()
     {
-        _delegate->displayDidChange( HDMI_ATTACHED );
+        if (_impl.sendTvPowerOn() )
+            _displayIsOn = true;
         
-         _displayIsOn = true;
-        
-        return true;
+        return _displayIsOn;
     }
     
     bool powerOff()
     {
-        _delegate->displayDidChange( HDMI_UNPLUGGED );
+        if ( _impl.sendTvPowerOff() )
+            _displayIsOn = false;
         
-         _displayIsOn = false;
-        
-        return true;
+        return _displayIsOn;
     }
     
     bool isDisplayOn() const
@@ -170,17 +169,22 @@ public:
         return true;
     }
     
-    float getDisplayRatio() const
-    {
-        return _impl.getCurrentDisplayInformations().aspectRatio;
-    }
+    /* Utils */
     
+    bool saveCurrentConfiguration( const std::string &file);
+    bool loadConfigurationFile( const std::string &file);
+    
+    static Database<std::string> getDisplayInformationsAsDatabase( const DisplayInformations &info);
+    static DisplayInformations   getDisplayInformationsFromDatabase( const Database<std::string> &data);
+
     
 private:
     void displayChangeNotification( DisplayNotification notification );
     
 
     DisplayImpl _impl;
+    
+    DisplayInformations _currentMode;
     
     bool _displayIsOn;
     DisplayControllerDelegate *_delegate;
@@ -194,6 +198,10 @@ private:
     
 public:
 
+    /*
+     Todo : Seulement utilisé par GXelement -> peut être remplacé par un remontée de getParent() 
+     jusqu'au DisplayController, qui est l'élément au sommet de l'arborescence
+     */
     static DisplayController* getController()
     {
         return s_instance;
@@ -241,15 +249,7 @@ private:
 
     // add for omxplayer
 
-#ifdef USE_OPENMAXIL
-    
-    
-//    DllBcmHost        m_BcmHost; removed -> use directly bcm_host
-    CRBP              m_RBP;
-    COMXCore          m_OMX;
 
-    
-#endif
 
 
 };

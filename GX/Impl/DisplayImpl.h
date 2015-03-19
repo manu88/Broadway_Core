@@ -15,6 +15,13 @@
 #include "../../Internal/Object.h"
 #include "../../GXDataType/GXGeometry.h"
 
+#ifdef USE_OPENMAXIL
+
+#include "OMXCore.h"   // def COMXCore
+#include "linux/RBP.h" // def CRBP
+
+#endif /* USE_OPENMAXIL */
+
 /*
     Actual implementation of Display operations.
 
@@ -32,31 +39,6 @@ typedef enum
     Display_HD      = 1
     
 } DisplayType ;
-
-/*
- HDMI_ASPECT_UNKNOWN = 0, //< Unknown aspect ratio, or not one of the values below
- HDMI_ASPECT_4_3 = 1, //< 4:3
- HDMI_ASPECT_14_9 = 2, //< 14:9
- HDMI_ASPECT_16_9 = 3, //< 16:9
- HDMI_ASPECT_5_4 = 4, //< 5:4
- HDMI_ASPECT_16_10 = 5, //< 16:10
- HDMI_ASPECT_15_9 = 6, //< 15:9
- HDMI_ASPECT_64_27 = 7, //< 64:27
- HDMI_ASPECT_21_9 = HDMI_ASPECT_64_27 //< 21:9 is jargon, 64:27 is the actual aspect ratio
- // More aspect ratio values may be added here if defined by CEA in future
- } HDMI_ASPECT_T;
- 
- /+++++/
- {
- 
- SDTV_ASPECT_UNKNOWN  = 0, //<Unknown
- SDTV_ASPECT_4_3      = 1, //<4:3
- SDTV_ASPECT_14_9     = 2, //<14:9
- SDTV_ASPECT_16_9     = 3, //<16:9
- SDTV_ASPECTFORCE_32BIT = 0x80000000
- } SDTV_ASPECT_T;
- 
- */
 
 
 /* Notification flag passed to displayChangeNotification()  */
@@ -94,7 +76,7 @@ typedef enum
 
 /* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
 
-/* small POD containing display infos */
+//! POD containing display informations. Use getAvailableVideoMode() and getCurrentDisplayInformations() to get infos from current display
 struct DisplayInformations
 {
     bool        native;
@@ -149,11 +131,29 @@ class DisplayImpl : public Object
     float getAspectRatio();
     
     /* Query informations about current display */
+    
     const DisplayInformations getCurrentDisplayInformations() const ;
     
     const std::vector< DisplayInformations > getAvailableVideoMode() const ;
     
+    
+    //! Return the AV latency (in ms) for HDMI (lipsync)
+    /* Only valid if HDMI is currently powered on,
+    * otherwise you get zero. The latency is defined as the relative delay
+    * of the video stream to the audio stream
+    */
+    int getAudioVideoLatency() const;
+    
     void update();
+    
+    /* Commands to send to the display */
+    
+    bool setVideoModeTo( const DisplayInformations &mode);
+    
+    bool showInfosOnDisplay( bool show ) const;
+    
+    bool sendTvPowerOff() const;
+    bool sendTvPowerOn() const;
     
 private:  /* attributes */
     
@@ -185,6 +185,14 @@ private:  /* attributes */
                                uint32_t bitrate);
 
     EGL_DISPMANX_WINDOW_T _nativewindow; // rpi
+#endif
+    
+#ifdef USE_OPENMAXIL
+    
+    static CRBP     s_RBP;
+    static COMXCore s_OMX;
+    
+    
 #endif
     
     static bool s_EGLInitialized;

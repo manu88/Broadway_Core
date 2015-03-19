@@ -182,6 +182,13 @@ bool operator!=(const GXPoint& lhs, const GXPoint& rhs)
 
 /* **** **** **** **** **** **** **** **** **** **** **** **** **** **** *****/
 
+bool operator!=(const GXSize&  lhs, const GXSize&  rhs)
+{
+    return !( lhs == rhs);
+}
+
+/* **** **** **** **** **** **** **** **** **** **** **** **** **** **** *****/
+
 GXPoint operator+(const GXPoint& lhs, const GXPoint& rhs)
 {
     return GXPoint {  lhs.x + rhs.x ,  lhs.y + rhs.y };

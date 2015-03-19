@@ -134,6 +134,8 @@ bool FontParser::parseFontFile(GXFont *font ,  const std::string &filename )
 
     for(int cc = 0 ; cc<256 ; cc++ )
     {
+
+        
         
         if( cc < 32 )
             continue;   //discard the first 32 characters

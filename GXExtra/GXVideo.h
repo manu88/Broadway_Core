@@ -91,9 +91,9 @@ public:
     {
         if (! m_isPrepared )
         {
-            m_player.prepare();
-            m_isPrepared = true;
+            
         }
+        m_isPrepared = m_player.prepare();
         getVideoLength();
         
         return m_isPrepared;
@@ -108,10 +108,12 @@ public:
     /* **** **** **** **** **** **** **** **** */
     // telecommand
     
-    void start()
+    bool start()
     {
-        if ( prepare() )
-            m_player.start();
+//        if ( m_isPrepared )
+            
+        m_player.start();
+        return m_isPrepared;
     }
     
     void pause()
@@ -153,6 +155,11 @@ public:
     }
     
     void registerTCNotification( const Timecode &tc);
+    
+    void showInfosOnScreen( bool show )
+    {
+        m_player.showInfosOnScreen( show );
+    }
 
     
     // audio

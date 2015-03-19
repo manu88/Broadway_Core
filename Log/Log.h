@@ -57,7 +57,12 @@ public:
     
     enum { BUFFER_SIZE = 512};
     
+    /* C style logging, like printf() */
     static void log( const char * format , ... );
+
+    /* TODO : C++ style logging, with streams */
+
+
     
     static void cleanupLogger();
     

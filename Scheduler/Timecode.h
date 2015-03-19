@@ -142,14 +142,21 @@ public:
         return !isNull();
     }
     
-    std::string getString() const
+    std::string getString(bool displayH = true , bool displayMin = true , bool displaySec = true , bool displayMilli = true ) const
     {
 
         std::stringstream stream;
-        stream << StringOperations::Formatter('0' , 2) << h     << ":"
-               << StringOperations::Formatter('0' , 2) << min   << ":"
-               << StringOperations::Formatter('0' , 2) << sec   << ":"
-               << StringOperations::Formatter('0' , 3) << milli ;
+        if ( displayH )
+            stream << StringOperations::Formatter('0' , 2) << h     << ":";
+        
+        if ( displayMin )
+            stream << StringOperations::Formatter('0' , 2) << min   << ":";
+        
+        if ( displaySec )
+            stream << StringOperations::Formatter('0' , 2) << sec   ;
+        
+        if ( displayMilli )
+            stream << "::"<< StringOperations::Formatter('0' , 3) << milli ;
         
         return stream.str();// StringOperations::stringWithFormat("%2i:%2i:%2i:%3i" ,h , min , sec, milli);
     }

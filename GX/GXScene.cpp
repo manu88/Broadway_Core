@@ -179,7 +179,11 @@ void GXScene::paint( const GXRect &rect , GXAnimation* anim )
 
 void GXScene::updateElementInRect( GXElement *element , const GXRect &rect )
 {
-
+    /*
+    printf("\n element %i '%s' with layer %i is transparent" , element->getElementId() ,
+           element->className.c_str() ,
+           element->getLayer() );
+     */
     if ( !element->isPrepared() )
         element->prepare();
     
@@ -196,40 +200,43 @@ void GXScene::updateElementInRect( GXElement *element , const GXRect &rect )
     if ( element->shouldBeRemoved() )
     {
         element->cleanUp();
+
+        
         //deleteElementFromGUIThread( element );
     }
     
     else if ( element->needsDisplay() )
     {
-        if ( element->isOpaque() )
+
+        if ( element->isTransparent() )
         {
           //  GXPath::clearRect( element->getBounds(), element->getBackgroundColor() );
-
+        /*
         }
         
         // gestion alpha
         else // transparent -> we need to update each GXelement in the back
         {
-            /*
+
             printf("\n element %i '%s' with layer %i is transparent" , element->getElementId() ,
                                                                        element->className.c_str() ,
                                                                        element->getLayer() );
             
-            printf("\n needs to update in %i %i %i %i" , element->m_updateRect.origin.x ,
-                                                         element->m_updateRect.origin.y,
-                                                         element->m_updateRect.size.width,
-                                                         element->m_updateRect.size.height
+            printf("\n needs to update in %i %i %i %i" , element->_updateRect.origin.x ,
+                                                         element->_updateRect.origin.y,
+                                                         element->_updateRect.size.width,
+                                                         element->_updateRect.size.height
                    );
-            */
+*/
             for (auto prev : m_elements)
             {
                 if ( prev == element)
                     break;
-                /*
+/*
                 printf("\n\t so element %i '%s' with layer %i Needs display" ,
                                                 prev->getElementId() ,
                                                 prev->className.c_str() , prev->getLayer() );
-                 */
+*/
                 prev->setNeedsDisplayInRect( element->_updateRect );
                 updateElementInRect( prev, element->_updateRect );
 

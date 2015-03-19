@@ -21,6 +21,13 @@
 
 bool DisplayImpl::s_EGLInitialized = false;
 
+#ifdef USE_OPENMAXIL
+
+CRBP     DisplayImpl::s_RBP = CRBP();
+COMXCore DisplayImpl::s_OMX = COMXCore();
+
+#endif
+
 /* **** **** **** **** **** **** **** **** **** **** **** **** **** */
 
 DisplayImpl::DisplayImpl( DisplayController *controller ) :
@@ -334,6 +341,20 @@ const std::vector< DisplayInformations > DisplayImpl::getAvailableVideoMode() co
 
 /* **** **** **** **** **** **** **** **** **** **** **** **** **** */
 
+int DisplayImpl::getAudioVideoLatency() const
+{
+    int ret = 0;
+    
+#ifdef TARGET_RASPBERRY_PI
+    ret = vc_tv_hdmi_get_av_latency();
+#endif
+    
+    
+    return ret;
+}
+
+/* **** **** **** **** **** **** **** **** **** **** **** **** **** */
+
 void DisplayImpl::update()
 {
     /*
@@ -404,6 +425,65 @@ void DisplayImpl::checkErrors()
 #endif
 }
 
+/* **** **** **** **** **** **** **** **** **** **** **** **** **** */
+
+bool DisplayImpl::setVideoModeTo( const DisplayInformations &mode)
+{
+    bool ret = false;
+    
+#ifdef TARGET_RASPBERRY_PI
+    
+    /* HDMI_INTERLACED_T =  HDMI_NONINTERLACED / HDMI_INTERLACED */
+    
+    /* EDID_MODE_MATCH_FLAG_T  = HDMI_MODE_MATCH_FRAMERATE HDMI_MODE_MATCH_RESOLUTION HDMI_MODE_MATCH_SCANMODE*/
+    
+    ret =  vc_tv_hdmi_power_on_best( /*uint32_t width*/  mode.size.width  ,
+                                     /*uint32_t height*/ mode.size.height ,
+                                     /*uint32_t frame_rate*/ mode.framerate ,
+                                     /*HDMI_INTERLACED_T scan_mode*/ HDMI_INTERLACED ,
+                                     /* EDID_MODE_MATCH_FLAG_T match_flags*/ HDMI_MODE_MATCH_RESOLUTION
+                                    ) == 0 ;
+#endif
+    
+    return ret;
+}
+
+/* **** **** **** **** **** **** **** **** **** **** **** **** **** */
+
+bool DisplayImpl::showInfosOnDisplay( bool show ) const
+{
+    bool ret = false;
+  
+#ifdef TARGET_RASPBERRY_PI
+    ret =  vc_tv_show_info( (uint32_t) show) == 0;
+#endif
+    
+    return ret;
+    
+}
+
+bool DisplayImpl::sendTvPowerOff() const
+{
+    bool ret = false;
+    
+#ifdef TARGET_RASPBERRY_PI
+    ret = (bool) vc_tv_power_off();
+#endif
+    
+    return ret;
+}
+
+bool DisplayImpl::sendTvPowerOn() const
+{
+    bool ret = false;
+
+#ifdef TARGET_RASPBERRY_PI
+    ret = vc_tv_hdmi_power_on_preferred() == 0;
+    
+#endif
+    return ret;
+}
+
 
 /* **** **** **** **** **** **** **** **** **** **** **** **** **** */
 /*
@@ -415,6 +495,12 @@ void DisplayImpl::checkErrors()
 
 bool DisplayImpl::initPlateform()
 {
+    
+#ifdef USE_OPENMAXIL
+    s_RBP.Initialize();
+    s_OMX.Initialize();
+#endif
+    
     initializeEGL();
     
     

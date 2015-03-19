@@ -24,6 +24,8 @@ Thread               ( "GUI"   ),
 
 _impl( this ),
 
+_currentMode( DisplayInformations::makeInvalid() ),
+
 _displayIsOn         ( false ),
 _delegate            ( nullptr ),
 
@@ -35,11 +37,7 @@ m_frameRate          ( 0 )
 {
 
     className = "Display controller";
-    
-#ifdef USE_OPENMAXIL
-    m_RBP.Initialize();
-    m_OMX.Initialize();
-#endif
+
 
     s_instance = this;
     
@@ -248,13 +246,6 @@ void DisplayController::displayChangeNotification( DisplayNotification notificat
 
 /* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
 
-bool DisplayController::setVideoModeTo( const DisplayInformations &mode)
-{
-
-    
-    return true;
-}
-
 void DisplayController::init()
 {
     assert( calledFromThisThread() );
@@ -311,5 +302,58 @@ void DisplayController::deleteRessources()
 void DisplayController::changed()
 {
     
+}
+
+/* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
+/* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
+
+bool DisplayController::saveCurrentConfiguration( const std::string &file)
+{
+    return getDisplayInformationsAsDatabase( getCurrentMode() ).saveToFile( file, '=');
+}
+
+/* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
+
+bool DisplayController::loadConfigurationFile( const std::string &file)
+{
+    Database<std::string> data;
+    
+    if ( data.parseFile( file, '=') )
+        return setVideoModeTo( getDisplayInformationsFromDatabase( data ));
+
+    else
+        return false;
+}
+
+/* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
+
+/*static*/ Database<std::string> DisplayController::getDisplayInformationsAsDatabase( const DisplayInformations &info)
+{
+
+
+    return {
+            std::make_pair( "WIDTH"     , std::to_string ( info.size.width )  ),
+            std::make_pair( "HEIGHT"    , std::to_string ( info.size.height ) ),
+            std::make_pair( "FRAMERATE" , std::to_string ( info.framerate )   ),
+            std::make_pair( "TYPE"      , std::to_string ( info.type )        ),
+            std::make_pair( "NATIVE"    , std::to_string ( info.native )      ),
+            std::make_pair( "RATIO"    , std::to_string  ( info.aspectRatio ) ),
+           };
+}
+
+/* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
+
+/*static*/ DisplayInformations DisplayController::getDisplayInformationsFromDatabase( const Database<std::string> &data)
+{
+    return  DisplayInformations {  /* native*/               data.getValueForItemNameAsBool("NATIVE") ,
+                                   /* Type*/  (DisplayType)  data.getValueForItemNameAsInt ("TYPE"),
+        
+                                   /* size*/ makeSize( data.getValueForItemNameAsInt ("WIDTH") ,
+                                                       data.getValueForItemNameAsInt ("HEIGHT")
+                                                      ),
+        
+                                   /* frate*/     data.getValueForItemNameAsInt ("FRAMERATE") ,
+                                   /* aspect ratio*/  data.getValueForItemNameAsFloat ("RATIO")
+                                };
 }
 

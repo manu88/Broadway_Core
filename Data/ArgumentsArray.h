@@ -99,6 +99,7 @@ public:
     ArgumentsArray( const double argument);
     ArgumentsArray( const int argument);
     ArgumentsArray( const bool argument);
+
     
     ~ArgumentsArray()
     {
@@ -163,6 +164,25 @@ public:
         
         else if ( isType< float >( index ) )
             return static_cast < int >( getValueAtIndex< float >( index ));
+        
+        // add specific cast
+        assert( false );
+        
+        return 0;
+    }
+    
+    /**/
+    
+    const std::string getStringValueAtIndex( const int index ) const
+    {
+        if ( isType< std::string >( index ) )
+            return getValueAtIndex< std::string >( index );
+        
+        else if ( isType< float >( index ) )
+            return std::to_string( getValueAtIndex< float >( index ) );
+        
+        else if ( isType< int >( index ) )
+            return std::to_string( getValueAtIndex< int >( index ) );
         
         // add specific cast
         assert( false );

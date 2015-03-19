@@ -6,8 +6,14 @@
 //
 //
 
-#include "MainPlayer.h"
+extern "C"
+{
+#include <libavformat/avformat.h>
+#include <libavutil/avutil.h>
+};
 
+#include "MainPlayer.h"
+#include "utils/Strprintf.h"
 
 #include "../GXVideo.h"
 
@@ -23,6 +29,9 @@ MainPlayer::MainPlayer( GXVideo *parent) :
     m_incr                ( 0     ),
 
     m_new_win_pos         ( false ),
+
+    _showInfosOnScreen ( false ),
+
     m_video_queue_size    ( 0.0f  ),
     m_video_fifo_size     ( 0.0f  ),
     m_live                ( false ),
@@ -429,25 +438,11 @@ bool MainPlayer::prepare()
     
     
     
-    
+    printf("\n MainPlayer Size %i %i " , m_hints_video.width, m_hints_video.height);
     if (orientation >= 0)
         m_hints_video.orientation = orientation;
     
-    if(    m_has_video
-       && !m_player_video.Open(m_hints_video,
-                               m_av_clock,
-                               m_destRect,
-                               m_Deinterlace ? VS_DEINTERLACEMODE_FORCE:m_NoDeinterlace ? VS_DEINTERLACEMODE_OFF:VS_DEINTERLACEMODE_AUTO,
-                               m_anaglyph,
-                               m_hdmi_clock_sync,
-                               m_thread_player,
-                               m_displayController->getDisplayRatio() /*m_display_aspect*/,
-                               0,
-                               m_layer,
-                               m_video_queue_size,
-                               m_video_fifo_size
-                               )
-       )
+    if(    m_has_video && !openVideoPlayer() )
     {
         
         return false;
@@ -635,8 +630,10 @@ void MainPlayer::update()
             */
             auto t = (unsigned) (m_av_clock->OMXMediaTime()*1e-6);
             auto dur = m_omx_reader.GetStreamLength() / 1000;
-            DISPLAY_TEXT_LONG(strprintf("Pause\n%02d:%02d:%02d / %02d:%02d:%02d",
-                                        (t/3600), (t/60)%60, t%60, (dur/3600), (dur/60)%60, dur%60));
+            
+            if ( _showInfosOnScreen )
+                DISPLAY_TEXT_LONG(strprintf("Pause\n%02d:%02d:%02d / %02d:%02d:%02d",
+                                            (t/3600), (t/60)%60, t%60, (dur/3600), (dur/60)%60, dur%60));
 
             _parent->didPause();
             
@@ -650,8 +647,11 @@ void MainPlayer::update()
             */
             auto t = (unsigned) (m_av_clock->OMXMediaTime()*1e-6);
             auto dur = m_omx_reader.GetStreamLength() / 1000;
-            DISPLAY_TEXT_SHORT(strprintf("Play\n%02d:%02d:%02d / %02d:%02d:%02d",
-                                         (t/3600), (t/60)%60, t%60, (dur/3600), (dur/60)%60, dur%60));
+
+            if ( _showInfosOnScreen )
+                DISPLAY_TEXT_SHORT(strprintf("Play\n%02d:%02d:%02d / %02d:%02d:%02d",
+                                             (t/3600), (t/60)%60, t%60, (dur/3600), (dur/60)%60, dur%60));
+            
             _parent->didResume();
         }
         
@@ -706,6 +706,23 @@ case KeyConfig::ACTION_UNHIDE_VIDEO:
     seek_flush = true;
     break;
      */
+}
+
+
+bool MainPlayer::openVideoPlayer()
+{
+    return m_player_video.Open(m_hints_video,
+                               m_av_clock,
+                               m_destRect,
+                               m_Deinterlace ? VS_DEINTERLACEMODE_FORCE:m_NoDeinterlace ? VS_DEINTERLACEMODE_OFF:VS_DEINTERLACEMODE_AUTO,
+                               m_anaglyph,
+                               m_hdmi_clock_sync,
+                               m_thread_player,
+                               m_displayController->getCurrentMode().aspectRatio /*m_display_aspect*/,
+                               0, /* m_display?*/
+                               m_layer,
+                               m_video_queue_size,
+                               m_video_fifo_size);
 }
 
 /* **** **** **** **** **** **** **** **** **** **** **** **** **** **** *****/
@@ -802,13 +819,14 @@ bool MainPlayer::run()
                 
                 if (! m_new_win_pos)
                 {
-                    DISPLAY_TEXT_LONG( strprintf("Seek\n%02d:%02d:%02d / %02d:%02d:%02d",
-                                                 (t/3600),
-                                                 (t/60)%60,
-                                                 t%60,
-                                                 (dur/3600),
-                                                 (dur/60)%60, dur%60)
-                                     );
+                    if ( _showInfosOnScreen )
+                        DISPLAY_TEXT_LONG( strprintf("Seek\n%02d:%02d:%02d / %02d:%02d:%02d",
+                                                     (t/3600),
+                                                     (t/60)%60,
+                                                     t%60,
+                                                     (dur/3600),
+                                                     (dur/60)%60, dur%60)
+                                         );
                     
 
                 }
@@ -825,20 +843,7 @@ bool MainPlayer::run()
             
             sentStarted = false;
             
-            if(    m_has_video
-               && !m_player_video.Open(m_hints_video,
-                                       m_av_clock,
-                                       m_destRect,
-                                       m_Deinterlace ? VS_DEINTERLACEMODE_FORCE:m_NoDeinterlace ? VS_DEINTERLACEMODE_OFF:VS_DEINTERLACEMODE_AUTO,
-                                       m_anaglyph,
-                                       m_hdmi_clock_sync,
-                                       m_thread_player,
-                                       m_displayController->getDisplayRatio() /*m_display_aspect*/,
-                                       0, /* m_display?*/
-                                       m_layer,
-                                       m_video_queue_size,
-                                       m_video_fifo_size)
-               )
+            if(    m_has_video && !openVideoPlayer() )
                     return false;
             
             CLog::Log(LOGDEBUG, "Seeked %.0f %.0f %.0f\n", DVD_MSEC_TO_TIME(seek_pos), startpts, m_av_clock->OMXMediaTime());
@@ -1295,7 +1300,10 @@ void MainPlayer::releasePlayer()
 void MainPlayer::Process()
 {
 
-    run();
+    if (!run())
+    {
+        printf("\n Error while trying to play video \n");
+    }
     
 
 

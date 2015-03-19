@@ -137,6 +137,7 @@ GXPoint operator+(const GXSize& lhs, const GXPoint& rhs);
 /* **** **** **** **** **** **** **** **** **** **** **** **** **** **** *****/
 
 bool operator!=(const GXPoint& lhs, const GXPoint& rhs);
+bool operator!=(const GXSize&  lhs, const GXSize&  rhs);
 
 /* **** **** **** **** **** **** **** **** **** **** **** **** **** **** *****/
 

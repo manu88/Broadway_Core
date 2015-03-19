@@ -16,24 +16,41 @@
 #include <sstream>
 #include <iostream>     
 #include <string.h>
-#include <algorithm>
+//#include <algorithm>
 #include <ctype.h>
+
+#include <fstream>
 
 #include "../Config.h"
 #include "../Internal/Object.h"
+#include "../Internal/FileSystem.h"
 
 #include "StringOperations.h"
+
+#include "../Scheduler/TimeDefs.h"
+#include "../Scheduler/Timecode.h"
+
+
 
 template <typename T1 >
 class Database : public Object
 {
 public:
+
+    /* **** **** **** **** **** **** **** **** **** **** **** **** **** */
     
     Database()
     {
         className = "Database";
     }
     
+    Database( std::initializer_list< std::pair<std::string , T1> > args)
+    {
+        for (const std::pair<std::string , T1> &p : args )
+            addValue( p.first, p.second);
+        
+    }
+
     ~Database()
     {
         
@@ -43,7 +60,9 @@ public:
     
     bool parseFile(const std::string &fileName , const char delim)
     {
-
+        if (!FileSystem::fileExists( fileName))
+            return false;
+        
         FILE* file = fopen(fileName.c_str() , "r");
         
         if (!file)
@@ -64,7 +83,7 @@ public:
                 std::getline(ss, item, delim);
                 std::getline(ss, value, delim);
 
-                if ( !isEmpty( item) && !isEmpty( value )) // acceptable pair item/value, ie. not empty
+                if ( !StringOperations::isEmpty( item) && !StringOperations::isEmpty( value )) // acceptable pair item/value, ie. not empty
                 {
                     bool overwrite = true;
                     
@@ -84,7 +103,7 @@ public:
                         /* trim value, ie remove leading & trailing spaces */
                         value = StringOperations::trim( value , " \t\n" );
 
-                        if (!contains(value, "\""))
+                        if (!StringOperations::contains(value, "\""))
                         {
                         }
                         
@@ -175,6 +194,47 @@ public:
     }
     
     /* **** **** **** **** **** **** **** **** **** **** **** **** **** */
+    //! Save a Database to a file, using a specitic delimiter.
+    /*
+        If you overwrite an already existing database file, this method will
+        _NOT_ save any comments, nor any page formatting.
+     */
+    bool saveToFile(const std::string &fileName , const char delim  )
+    {
+        
+        std::ofstream file;
+        
+        file.open( fileName.c_str() );
+        
+        if ( !file.is_open() )
+            return false;
+        
+        Date now;
+        Timecode t;
+        t.setToCurrentTime();
+        
+        file << "########## Database file generated on " << now.toString().c_str()
+             << " at " << t.getString(true,true,true,false).c_str() << " ##########" ;
+
+        
+        file <<  "\n";
+        file <<  "\n";
+        
+        for (const std::pair<std::string , T1> &pair : _dataList )
+        {
+            file << pair.first << " " << delim << " " << pair.second;
+            file <<  "\n";
+            file <<  "\n";
+            
+        }
+
+
+        
+        file.close();
+        return true;
+    }
+    
+    /* **** **** **** **** **** **** **** **** **** **** **** **** **** */
     
     std::string getItemNameAtIndex( const int index) const
     {
@@ -211,7 +271,12 @@ public:
         use should use itemExists() to test the item before
      */
     
-    inline int getValueForItemNameAsFloat(const std::string &item) const
+    inline const std::string getValueForItemNameAsString( const std::string &item ) const
+    {
+        return getValueForItemName<std::string>( item);
+    }
+    
+    inline float getValueForItemNameAsFloat(const std::string &item) const
     {
         return atof( getValueForItemName<T1>( item ).c_str() );
     }
@@ -287,17 +352,7 @@ public:
 private:    
     /* **** **** **** **** **** **** **** **** **** **** **** **** **** */
     
-    // check if token only contains \t \n ' ' '\r' ( isspace )
-    inline bool isEmpty( const std::string &token)
-    {
-        return std::all_of( token.begin() , token.end() , isspace );
-    }
-    
-    inline bool contains( const std::string &token , const std::string &toFind)
-    {
-        return token.find( toFind ) != std::string::npos ;
-    }
-    
+        
     /* **** **** **** **** **** **** **** **** **** **** **** **** **** */
     
     typename std::vector< std::pair<std::string , T1> >::iterator findItemPosition( const std::string &item )
@@ -328,5 +383,6 @@ private:
 
 template<> void Database< std::string >::addValue( const std::string &item, const std::string  &value );
 template<> void Database< int         >::addValue( const std::string &item, const std::string  &value );
+
 
 #endif /* defined(____Database__) */

@@ -53,9 +53,9 @@ public:
         
     }
     
-    void prepare()
+    bool prepare()
     {
-        
+        return true;
     }
     
     void setDisplayController(DisplayController* controllerToUse)
@@ -163,9 +163,20 @@ public:
         
     }
     
+    void showInfosOnScreen( bool show )
+    {
+        _showInfosOnScreen = show;
+    }
+    
+    bool getInfoOnScreen() const // Todo : better name :-)
+    {
+        return _showInfosOnScreen;
+    }
+    
 private:
     GXVideo *_parent;
     float m_volumeAudio;
+    bool _showInfosOnScreen;
     
     
 };

@@ -9,3 +9,15 @@ sudo apt-get install -y libdbus-1-dev
 
 ##### deps ffmpeg
 sudo apt-get install -ylibssl-dev
+
+
+
+#### add ld path
+
+sudo nano /etc/ld.so.conf
+#ajouter ligne ->
+/home/pi/Broadway/MediaCenter/omxplayer/ffmpeg_compiled/usr/local/lib/
+
+sudo ldconfig
+
+good!

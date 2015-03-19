@@ -13,6 +13,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <ctype.h>
 
 namespace StringOperations
 {
@@ -64,6 +65,17 @@ namespace StringOperations
         
     }
     
+    // check if token only contains \t \n ' ' '\r' ( isspace )
+    inline bool isEmpty( const std::string &token)
+    {
+        return std::all_of( token.begin() , token.end() , ::isspace );
+    }
+    
+    inline bool contains( const std::string &token , const std::string &toFind)
+    {
+        return token.find( toFind ) != std::string::npos ;
+    }
+
     
     /* *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** */
     /*

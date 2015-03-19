@@ -24,11 +24,7 @@
 
 #define AV_NOWARN_DEPRECATED // ?
 
-extern "C"
-{
-#include <libavformat/avformat.h>
-#include <libavutil/avutil.h>
-};
+
 
 #include "OMXStreamInfo.h"
 
@@ -55,7 +51,7 @@ extern "C"
 #include "DllOMX.h"
 #include "Srt.h"
 #include "KeyConfig.h"
-#include "utils/Strprintf.h"
+//
 #include "Keyboard.h"
 
 #include <string>
@@ -262,6 +258,15 @@ public:
         return m_volumeAudio;
     }
     
+    void showInfosOnScreen( bool show )
+    {
+        _showInfosOnScreen = show;
+    }
+    
+    bool getInfoOnScreen() const // Todo : better name :-)
+    {
+        return _showInfosOnScreen;
+    }
 
 
 
@@ -275,10 +280,19 @@ protected:
 private:
     bool run();
     
-    GXVideo *_parent;
-    vector< TCMark > _registeredTCNotif;
+    bool openVideoPlayer();
     
+    /* *** *** *** *** *** *** */
+    // cleaned attributes
+    GXVideo         *_parent;
+    vector< TCMark > _registeredTCNotif;
     std::string     m_filename;
+    
+    // flags
+    bool    m_shouldPause;
+    bool    m_isRunning;
+    
+    bool _shouldFlipVisibility;
 
     
     DisplayController *m_displayController;
@@ -288,7 +302,11 @@ private:
     
     double  m_incr;
     bool    m_new_win_pos; // flag to signal new win;
+    
+    bool _showInfosOnScreen;
 
+    /* *** *** *** *** *** *** */
+    
     bool        m_live;
     float       m_video_queue_size;
     float       m_video_fifo_size;
@@ -303,11 +321,7 @@ private:
     /* Relatifs au player en général */
     static void sig_handler(int s);
 
-    // flags
-    bool    m_shouldPause;
-    bool    m_isRunning;
     
-    bool _shouldFlipVisibility;
     
     //////////////
     // à trier ...
