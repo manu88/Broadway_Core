@@ -106,14 +106,17 @@ void GXTextRenderer::paint( const GXRect &rect , GXAnimation* anim )
     
     if (isOpaque())
     {
+        GXPath::clearRect(rect, getBackgroundColor() );
+        /*
         GXPath back ( rect );
         back.addRect( rect );
         
         back.setFillColor(getBackgroundColor());
         back.fill();
+        */
     }
     
-//    GXPath::clearRect(rect, getBackgroundColor() );
+
     
     GXPath::setFillColor( m_textColor );
     m_textPath->fill();

@@ -80,6 +80,12 @@
 #include "Parsers/XMLParser.h"
 #endif
 
+/* HTML parser*/
+
+#ifdef USE_HTML_PARSER
+#include "Parsers/HTMLParser.h"
+#endif
+
 /* Web Server */
 
 #ifdef USE_WEB_SERVER
