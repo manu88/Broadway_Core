@@ -16,6 +16,8 @@
 #include "XMLImp/XMLErrorHandler.h"
 
 
+
+
 #include "../Internal/Object.h"
 
 
@@ -115,8 +117,22 @@ public:
     
     const XMLElementList getNodeListForName( const std::string &elementName ) const;
     
+    //! Return Root Dom Element. Can be nullptr.
+    const XMLElement* getRootElement() const;
+    
 
     
+    
+    /* TODO : create real XMLElement class*/
+    
+    static const std::string getAttribute( const XMLElement *element , const std::string &attr) /*const*/ ;
+    static const std::string getName( const XMLElement *element ) /*const*/ ;
+    
+    static const XMLElementList getChilds( const XMLElement* element) /*const*/;
+    
+    static const XMLElement* getChildElementNamed( const XMLElement* element, const std::string &elementName ) /*const*/;
+
+    /**/
 private:
     
     XercesDOMParser *_parser;

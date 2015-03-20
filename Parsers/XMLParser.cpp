@@ -199,6 +199,8 @@ const XMLParser::AttributesList XMLParser::getAttributesForTag( const std::strin
     
 }
 
+/* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
+
 const XMLParser::XMLElementList XMLParser::getNodeListForName( const std::string &elementName ) const
 {
     std::vector<XMLElement*> ret;
@@ -210,13 +212,17 @@ const XMLParser::XMLElementList XMLParser::getNodeListForName( const std::string
     
     if (list)
     {
+
         for (XMLSize_t xx = 0; xx < list->getLength(); ++xx )
         {
             DOMNode* currentNode = list->item(xx);
-            
+
             if( currentNode->getNodeType() && currentNode->getNodeType() == DOMNode::ELEMENT_NODE )
             {
+
+                
                 DOMElement* elem = dynamic_cast< xercesc::DOMElement* >( currentNode );
+
                 ret.push_back( elem );
                 
             }
@@ -229,6 +235,84 @@ const XMLParser::XMLElementList XMLParser::getNodeListForName( const std::string
 }
 
 
+const XMLParser::XMLElement* XMLParser::getRootElement() const
+{
+    if (_parser)
+        return _parser->getDocument()->getDocumentElement();
+    
+    return nullptr;
+}
+
+
+/* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
+
+const std::string XMLParser::getAttribute( const XMLParser::XMLElement *element , const std::string &attr) 
+{
+    return ScopedXMLString( element->getAttribute( ScopedXMLString( attr)) );
+}
+
+const std::string XMLParser::getName( const XMLParser::XMLElement *element ) /*const*/
+{
+    return ScopedXMLString ( element->getNodeName() );
+}
+
+const XMLParser::XMLElementList XMLParser::getChilds( const XMLParser::XMLElement* element) 
+{
+    std::vector<XMLElement*> ret;
+    
+    const DOMNodeList *list = element->getChildNodes();
+    
+    if (list)
+    {
+        
+        for (XMLSize_t xx = 0; xx < list->getLength(); ++xx )
+        {
+            DOMNode* currentNode = list->item(xx);
+            
+            if( currentNode->getNodeType() && currentNode->getNodeType() == DOMNode::ELEMENT_NODE )
+                ret.push_back( dynamic_cast< xercesc::DOMElement* >( currentNode ) );
+            
+        }
+    }
+    
+    return ret;
+}
+
+const XMLParser::XMLElement* XMLParser::getChildElementNamed( const XMLElement* element , const std::string &elementName )
+{
+    
+    const DOMNodeList *list = element->getChildNodes();
+    
+    if (list)
+    {
+        
+        for (XMLSize_t xx = 0; xx < list->getLength(); ++xx )
+        {
+            DOMNode* currentNode = list->item(xx);
+            
+            
+            const std::string st = ScopedXMLString( currentNode->getNodeName() );
+            
+            if ( st == elementName )
+            {
+                return dynamic_cast< xercesc::DOMElement* >( currentNode );
+            }
+            
+            /*
+             if( currentNode->getNodeType() && currentNode->getNodeType() == DOMNode::ELEMENT_NODE )
+             {
+             
+             }
+             */
+        }
+    }
+    
+    return nullptr;
+}
+
+
+/* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
+/* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
 /* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
 
 /*static*/ bool XMLParser::initializeXML()

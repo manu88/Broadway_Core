@@ -144,6 +144,10 @@
     #include "GX/GXFont.h"
 #endif
 
+#if defined USE_XML_PARSER && defined USE_GRAPHICS
+    #include "GXExtra/GXUI.h"
+#endif
+
 
 
 /* Exteral Libs loader & management */
