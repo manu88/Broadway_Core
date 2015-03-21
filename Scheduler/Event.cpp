@@ -9,8 +9,8 @@
 #include "Event.h"
 
 
-Event::Event() :
-_transition ( Undefined )
+Event::Event( EventType type  ) :
+_type( type )
 
 {
     className = "Event";

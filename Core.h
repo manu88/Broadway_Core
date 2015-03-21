@@ -144,8 +144,18 @@
     #include "GX/GXFont.h"
 #endif
 
-#if defined USE_XML_PARSER && defined USE_GRAPHICS
-    #include "GXExtra/GXUI.h"
+
+#ifdef USE_GRAPHIC_UI
+
+#ifndef USE_XML_PARSER
+#define USE_XML_PARSER
+#endif
+
+#ifndef USE_GRAPHICS
+#define USE_GRAPHICS
+#endif
+
+    #include "GXExtra/UI/GXUI.h"
 #endif
 
 

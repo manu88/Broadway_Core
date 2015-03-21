@@ -11,29 +11,21 @@
 
 #include <iostream>
 
-//#include "../JSMachine/JSMachine.h"
 #include "../Internal/Element.h"
 
-/* **** **** **** **** **** */
+/* **** **** **** **** **** **** */
 
-//! \enum Transition  Define the change of state on witch the callback will occur.
 typedef enum
 {
-    Undefined       = -1, /**< Undefined. This state only appear on Event's contruction. 
-                               Use Event::setTransition() to set the transition to the desired state   
-                           */
-    Changed         = 0,  // default
-    Rising          = 1,  // front montant
-    Falling         = 2,  // front descendant
-    EndOfVideo      = 3,  // Fin de stream
-    MessageReceived = 4   // Message reçu
+    Event_Timer  = 0, // implemented by TimedEvent
+    Event_Input  = 1, // implemented by GpioEvent
+    Event_Video  = 2, // implemented by GXVideo
+    Event_Action = 3  // implemented in GXUI system
     
-}Transition; //!< Transition type
+} EventType;
 
 
-
-class Selector;
-class JSMachine;
+/* **** **** **** **** **** **** */
 
 
 //! Event
@@ -49,24 +41,51 @@ class JSMachine;
 class Event : public virtual Element
 {
 public:
-    Event( );
+    Event( EventType type );
+    
     virtual ~Event();
     
-
-    void setTransition( const Transition transition)
+    /**/
+    
+    const EventType &getType() const
     {
-        _transition = transition;
+        return _type;
+    }
+    
+    bool isTimer() const
+    {
+        return _type == Event_Timer;
+    }
+    
+    bool isVideo() const
+    {
+        return _type == Event_Video;
+    }
+    
+    bool isInput() const
+    {
+        return _type == Event_Input;
+    }
+    
+    bool isAction() const
+    {
+        return _type == Event_Action;
+    }
+    
+    /* Safe cast */
+    
+    template<typename T>
+    static T event_cast( Event* event)
+    {
+        return reinterpret_cast<T>(event);
     }
 
-    Transition getTypeOfTransition() const
-    {
-        return _transition;
-    }
-
-
+    /**/
     
 protected:
-    Transition  _transition;
+    
+    EventType _type;
+
 private:
 
     

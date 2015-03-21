@@ -11,9 +11,10 @@
 
 #include <iostream>
 
-#include "../../GX/GXElement.h"
+#include "GXUIBase.h"
 
-class GXButton : public GXElement
+
+class GXButton : public GXUIBase
 {
 public:
     GXButton();

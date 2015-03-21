@@ -13,12 +13,12 @@
 
 #include <map>
 
-#include "../GX/GXScene.h"
-#include "../GX/GXPaintJS.h"
+#include "../../GX/GXScene.h"
+#include "../../GX/GXPaintJS.h"
 
-#include "../Parsers/XMLParser.h"
+#include "../../Parsers/XMLParser.h"
 
-#include "../GXDataType/GXGeometry.h"
+#include "../../GXDataType/GXGeometry.h"
 
 /* **** **** **** **** **** ****  */
 

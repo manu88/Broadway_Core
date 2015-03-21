@@ -10,8 +10,9 @@
 #include "../Log/Log.h"
 
 GXVideo::GXVideo() :
-    m_player     ( this  ),
-    m_isPrepared ( false ),
+    Event   ( Event_Video ),
+    m_player     ( this   ),
+    m_isPrepared ( false  ),
     m_length     ( Timecode() )
 {
     className = "GXVideo";

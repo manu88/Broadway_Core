@@ -12,7 +12,8 @@
 
 
 InterfaceEvent::InterfaceEvent( InterfaceEventType type ) :
-_type( type )
+Event ( Event_Input ),
+_type ( type )
 {
     
 }

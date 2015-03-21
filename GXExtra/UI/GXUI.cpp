@@ -6,15 +6,15 @@
 //  Copyright (c) 2015 Manuel Deneu. All rights reserved.
 //
 
-#include "../GX/GXImage.h"
-#include "../GX/GXTextRenderer.h"
+#include "../../GX/GXImage.h"
+#include "../../GX/GXTextRenderer.h"
 
-#include "../GX/GXFont.h"
+#include "../../GX/GXFont.h"
 
 #include "GXUI.h"
 #include "GXUIXML.h"
 
-#include "../Log/Log.h"
+#include "../../Log/Log.h"
 
 /* **** **** **** **** **** **** **** **** **** **** **** **** */
 

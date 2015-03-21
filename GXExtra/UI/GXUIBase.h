@@ -16,6 +16,16 @@
 class GXUIBase : public GXElement
 {
     
+public:
+    
+    GXUIBase();
+    
+protected:
+    
+    virtual ~GXUIBase();
+    
+    
+    
 };
 
 #endif /* defined(__Broadway_core__GXUIBase__) */

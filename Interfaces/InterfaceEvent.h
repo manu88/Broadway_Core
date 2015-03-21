@@ -13,7 +13,7 @@
 
 #include "../Internal/Element.h"
 
-
+#include "../Scheduler/Event.h"
 
 typedef enum
 {
@@ -26,7 +26,7 @@ typedef enum
 } InterfaceEventType;
 
 
-class InterfaceEvent : public Element
+class InterfaceEvent : public Event
 {
 public:
     virtual ~InterfaceEvent();

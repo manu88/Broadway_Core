@@ -51,8 +51,9 @@ typedef std::chrono::milliseconds       Duration;
 class TimedEvent : public Event
 {
 public:
-    TimedEvent():
-    running(false),
+    TimedEvent() :
+    Event   ( Event_Timer ),
+    running ( false),
     timerId ( ++s_nextId )
     {
         s_timerCount++;
@@ -71,6 +72,7 @@ public:
     }
     
     TimedEvent(Timestamp next_, Duration period_ ) noexcept :
+    Event   ( Event_Timer ),
     next    ( next_    ),
     period  ( period_  ),
     running ( false    ),
@@ -81,6 +83,7 @@ public:
     TimedEvent( TimedEvent const& r) = delete;
     
     TimedEvent( TimedEvent&& r) noexcept :
+    Event   ( Event_Timer ),    
     next    ( r.next    ),
     period  ( r.period  ),
     running ( r.running ),

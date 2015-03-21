@@ -7,3 +7,15 @@
 //
 
 #include "GXUIBase.h"
+
+
+GXUIBase::GXUIBase()
+{
+    className = "GXUIBase";    
+}
+
+
+GXUIBase::~GXUIBase()
+{
+    
+}
