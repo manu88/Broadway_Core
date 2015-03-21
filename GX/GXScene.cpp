@@ -98,12 +98,27 @@ void GXScene::removeAllElements()
 
 /* **** **** **** **** **** **** **** **** **** **** **** */
 
-GXElement* GXScene::getElementByID( int _id)
+GXElement* GXScene::getElementByID( int _id) const
 {
     ThreadLock l( DisplayController::getController() ); 
-    for ( auto i : m_elements ) 
+    for ( const auto &i : m_elements )
     {
         if ( i->getElementId() == _id )
+            return i;
+    }
+    
+    return nullptr;
+}
+
+/* **** **** **** **** **** **** **** **** **** **** **** */
+
+GXElement* GXScene::getElementByName( const std::string &name ) const
+{
+    ThreadLock l( DisplayController::getController() );
+    
+    for ( const auto &i : m_elements )
+    {
+        if ( i->getName() == name )
             return i;
     }
     
@@ -132,7 +147,7 @@ void GXScene::forceUpdate()
 
 void GXScene::reorderElements()
 {
-    std::sort(m_elements.begin() , m_elements.end(), layer_comparor());
+    std::sort(m_elements.begin() , m_elements.end(), layer_comparor() );
 }
 
 /* **** **** **** **** **** **** **** **** **** **** **** */

@@ -20,4 +20,7 @@ sudo nano /etc/ld.so.conf
 
 sudo ldconfig
 
-good!
+############ set memory split to 256 !!!!!!!!!!!!!!
+
+
+

@@ -33,7 +33,13 @@ _clearColor ( makeColor( 0,0,0) ),
 
 m_currentElement     ( nullptr ),
 m_shouldClearContext ( true    ),
-m_frameRate          ( 0 )
+m_frameRate          ( 0 ),
+
+/* Config file load/save */
+
+_shouldSaveConfigOnFile ( false ),
+_fileConfig("screenConfig.txt")
+
 {
 
     className = "Display controller";
@@ -134,7 +140,7 @@ void DisplayController::run()
     setReady();
     clearContext();
     
-    _delegate->displayDidChange( DISPLAY_ACTIVE );
+    displayChangeNotification( DISPLAY_ACTIVE );
     
     while ( !threadShouldStop() )
     {
@@ -244,6 +250,23 @@ void DisplayController::displayChangeNotification( DisplayNotification notificat
     
 }
 
+/* **** **** **** **** **** **** **** **** **** **** **** **** **** */
+
+bool DisplayController::saveConfigFile() const
+{
+    return saveCurrentConfiguration( _fileConfig );
+}
+
+/* **** **** **** **** **** **** **** */
+
+bool DisplayController::loadConfigFile()
+{
+    if (! FileSystem::fileExists( _fileConfig ))
+        return false;
+    
+    return true;
+}
+
 /* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
 
 void DisplayController::init()
@@ -307,7 +330,7 @@ void DisplayController::changed()
 /* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
 /* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
 
-bool DisplayController::saveCurrentConfiguration( const std::string &file)
+bool DisplayController::saveCurrentConfiguration( const std::string &file) const
 {
     return getDisplayInformationsAsDatabase( getCurrentMode() ).saveToFile( file, '=');
 }

@@ -57,7 +57,13 @@ protected:
     
     virtual ~Object();
     
+    //! A good way to keep track of objects.
+    /* 
+     className will be printed when an error occur in Object's management,
+     e.g when ObjectWatcher has to remove any instance.
+     */
     std::string className;
+    
     int num_obj;
     
     

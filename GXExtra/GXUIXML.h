@@ -84,6 +84,9 @@
 #define ATTR_SIZE "size"
 #endif
 
+#ifndef ATTR_NAME
+#define ATTR_NAME "name"
+#endif
 
 
 /* Elements nodes */

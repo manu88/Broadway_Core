@@ -148,6 +148,18 @@ public:
         return _parentElement;
     }
     
+    /* **** **** **** **** **** **** **** **** **** */
+    
+    const std::string& getName() const
+    {
+        return _elementName;
+    }
+    
+    void setName( const std::string &name)
+    {
+        _elementName = name;
+    }
+    
     
 protected:
     
@@ -171,15 +183,32 @@ protected:
     
     
 
+    /**/
     
-    
-
+    //! Traverse GXElements' tree and return top GXElement. Can be DisplayController.
+    const GXElement* getTopElement() const
+    {
+        const GXElement *el = this;
+        
+        while ( el != nullptr)
+        {
+            if (el->getParentElement() != nullptr )
+                el = el->getParentElement();
+            
+            else
+                return el;
+        }
+        
+        return nullptr;
+    }
     
 
 
 private:
     
     void elementChanged();
+    
+    std::string     _elementName;
     
     int             _layer;
     

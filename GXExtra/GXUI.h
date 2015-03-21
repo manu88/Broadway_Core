@@ -11,6 +11,8 @@
 
 #include <iostream>
 
+#include <map>
+
 #include "../GX/GXScene.h"
 #include "../GX/GXPaintJS.h"
 
@@ -18,12 +20,20 @@
 
 #include "../GXDataType/GXGeometry.h"
 
+/* **** **** **** **** **** ****  */
+
 typedef struct
 {
     GXRect bounds;
     int    layer;
     
 }GXGeometry;
+
+/* **** **** **** **** **** ****  */
+
+// Forwards
+
+class GXButton;
 
 
 class GXUI : public GXScene
@@ -35,20 +45,30 @@ public:
     
     bool parseXMLFile( const std::string &file);
     
-
+    /**/
     
-    static GXGeometry getGeometryFromElement( const XMLParser::XMLElement *element );
+
     
     
 private:
+    // parse an Element Node and return its gemoetry.
+    static GXGeometry getGeometryFromElement( const XMLParser::XMLElement *element );
     
+    // called by parseXMLFile()
     bool addGXImage( const XMLParser::XMLElement *element );
-    bool addGXText( const XMLParser::XMLElement *element );
+    bool addGXText ( const XMLParser::XMLElement *element );
+    bool addGXPath ( const XMLParser::XMLElement *element );
     
+    // called by each add**()
     bool addUIElement( GXElement *element );
     
     
+    
+    
     GXPaintJS _painter;
+    
+
+    
 };
 
 

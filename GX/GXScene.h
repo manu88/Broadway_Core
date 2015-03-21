@@ -69,7 +69,9 @@ public:
     }
     
     //! Found and return a GXElement by its ID, if added to the scene. nullptr if not.
-    GXElement* getElementByID( int _id);
+    GXElement* getElementByID( int _id) const ;
+    
+    GXElement* getElementByName( const std::string &name ) const ;
     
 
     const std::vector<GXElement* > &getChildren() const

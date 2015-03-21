@@ -19,13 +19,29 @@
 
 #include "../Internal/FileSystem.h"
 
+/* **** **** **** **** **** **** **** **** **** **** **** */
+// Actual implementation.
+
+// On raspberry Pi, uses OMXPlayer
+// see https://github.com/popcornmix/omxplayer
+
 #ifdef TARGET_RASPBERRY_PI
     #include "OMX/MainPlayer.h"
 
+
+// Dummy impl on Mac OS !
 #else
     #include "../Plateforms/MacOS/MacDummies/MainPlayer.h"
+
+
 #endif
 
+/* **** **** **** **** */
+
+//! Audio output representation
+/*
+    Todo : create audioGraph processor, add alsa support for external sound cards, ...
+ */
 typedef enum
 {
     AUDIO_NONE    = -1,
@@ -35,18 +51,26 @@ typedef enum
     
 } AUDIO_OUTPUT;
 
+/* **** **** **** **** */
 
+//! Notifications sent to SchedulerDelegate instance ( optionnal ).
+/*
+    These notifications are async and sent when possible :
+    Its garranted that they will be fired on time, or possibly after a short delay, but _NEVER_ before the event! 
+ */
 typedef enum
 {
-    VideoLoaded     = 0,
-    VideoWillStart  = 1,
-    VideoDidStart   = 2,
-    VideoPaused     = 3,
-    VideoDidResume  = 4,
-    VideoWillStop   = 5, // sent when video demuxer is end-of-stream
-    VideoDidStop    = 6,
-    VideoDidReachTC = 7, // notif fired when a registered TC is reached
+    VideoLoaded     = 0, // Sent after the player has been loaded and ready to roll.
+    VideoWillStart  = 1, // Sent when player enters playing loop.
+    VideoDidStart   = 2, // Sent when demuxer sent first frames.
+    VideoPaused     = 3, // Sent when pause command performed.
+    VideoDidResume  = 4, // Sent when resume command performed.
+    VideoWillStop   = 5, // Sent when video demuxer is end-of-stream.
+    VideoDidStop    = 6, // Sent when player did stop, i.e after flushing last frames.
+    VideoDidReachTC = 7, // Notif fired when a registered TC is reached.
 } GXVideoNotification;
+
+/* **** **** **** **** */
 
 class SchedulerDelegate;
 
@@ -65,10 +89,14 @@ public:
     {
         m_player.setDisplayController( controllerToUse );
     }
+    
+    //! register a SchedulerDelegate for GXVideoNotification. Optionnal.
     void setSchedulerDelegate( SchedulerDelegate *delegate)
     {
         _schedulerDelegate = delegate;
     }
+    
+    /* Player options */
     
     bool setVideoFileSource( const std::string &filePath )
     {

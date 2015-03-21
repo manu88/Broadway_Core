@@ -9,6 +9,8 @@
 #include "../GX/GXImage.h"
 #include "../GX/GXTextRenderer.h"
 
+#include "../GX/GXFont.h"
+
 #include "GXUI.h"
 #include "GXUIXML.h"
 
@@ -18,7 +20,7 @@
 
 GXUI::GXUI()
 {
-    
+    className = "GXUI";
 }
 
 GXUI::~GXUI()
@@ -125,6 +127,8 @@ bool GXUI::parseXMLFile( const std::string &file)
 
 bool GXUI::addGXImage( const XMLParser::XMLElement *element )
 {
+    const std::string name = XMLParser::getAttribute( element, ATTR_NAME );
+    printf("\n Element name = '%s'" , name.c_str() );
     
     const std::string filePath = XMLParser::getAttribute( XMLParser::getChildElementNamed( element, SOURCE_NODE_NAME ) , ATTR_FILEPATH );
     
@@ -146,6 +150,8 @@ bool GXUI::addGXImage( const XMLParser::XMLElement *element )
     img->setLayer ( geometry.layer  );
     img->setBounds( geometry.bounds );
     
+    img->setName( name );
+    
     return addUIElement( img );
 }
 
@@ -153,11 +159,20 @@ bool GXUI::addGXImage( const XMLParser::XMLElement *element )
 
 bool GXUI::addGXText( const XMLParser::XMLElement *element )
 {
-    GXTextRenderer *label = new GXTextRenderer();
+
+    
+    const std::string name = XMLParser::getAttribute( element, ATTR_NAME );
+    printf("\n Element name = '%s'" , name.c_str() );
     
     const GXGeometry geometry = getGeometryFromElement( XMLParser::getChildElementNamed( element, GEOMETRY_NODE_NAME ));
     
     const std::string text     = XMLParser::getAttribute( XMLParser::getChildElementNamed( element, TEXT_NODE_NAME ) , ATTR_VALUE );
+    
+    const GXPoint carret = makePoint( std::stoi(XMLParser::getAttribute( XMLParser::getChildElementNamed( element, TEXT_NODE_NAME ) , ATTR_X )),
+                                      std::stoi(XMLParser::getAttribute( XMLParser::getChildElementNamed( element, TEXT_NODE_NAME ) , ATTR_Y ) )
+                                     );
+    
+    
     const std::string fontFile = XMLParser::getAttribute( XMLParser::getChildElementNamed( element, FONT_NODE_NAME ) , ATTR_PATH );
     
     const float size           = std::stof( XMLParser::getAttribute( XMLParser::getChildElementNamed( element, FONT_NODE_NAME ) , ATTR_SIZE ));
@@ -165,9 +180,24 @@ bool GXUI::addGXText( const XMLParser::XMLElement *element )
     printf("\n text = '%s' " , text.c_str() );
     printf("\n font = '%s' size = %f " , fontFile.c_str() ,size );
     
+    GXFont *font = GXFont::loadFont( fontFile );
+    
+
+        
+
+    GXTextRenderer *label = new GXTextRenderer();
+    
+    if (font)
+        label->setFont( font );
     
     label->setLayer ( geometry.layer );
     label->setBounds( geometry.bounds );
+    label->setDisplayedText( text );
+    
+    label->setCarretPosition( carret );
+    label->setSizeInPoints( size );
+    
+    label->setName( name );
     
     return addUIElement( label );
     
@@ -175,11 +205,34 @@ bool GXUI::addGXText( const XMLParser::XMLElement *element )
 
 /* **** **** **** **** **** **** **** **** **** **** **** **** */
 
-bool GXUI::addUIElement( GXElement *element )
+bool GXUI::addGXPath ( const XMLParser::XMLElement *element )
 {
-    return true;// addElement( element );
+    const std::string name = XMLParser::getAttribute( element, ATTR_NAME );
+    printf("\n Element name = '%s'" , name.c_str() );
+    
+    const GXGeometry geometry = getGeometryFromElement( XMLParser::getChildElementNamed( element, GEOMETRY_NODE_NAME ));
+    
+    
+    GXPaintJS *painter = new GXPaintJS();
+    
+    painter->setName( name );
+    painter->setBounds( geometry.bounds );
+    painter->setLayer( geometry.layer );
+    
+    
+    return addUIElement( painter );
+    
 }
 
+/* **** **** **** **** **** **** **** **** **** **** **** **** */
+
+bool GXUI::addUIElement( GXElement *element )
+{
+
+    return addElement( element );
+}
+
+/* **** **** **** **** **** **** **** **** **** **** **** **** */
 
 
 

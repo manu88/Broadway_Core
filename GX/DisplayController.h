@@ -121,7 +121,29 @@ public:
     {
         return _impl.getAudioVideoLatency();
     }
+    
+    /* Load/save config */
 
+    void setSaveOnFile( bool save)
+    {
+        _shouldSaveConfigOnFile = true;
+    }
+    
+    bool saveActivated() const
+    {
+        return _shouldSaveConfigOnFile;
+    }
+    
+    void setSaveFile( const std::string &file)
+    {
+        _fileConfig = file;
+    }
+    
+    const std::string &getSaveFile() const
+    {
+        return _fileConfig;
+    }
+    
     
     /* Commands to send to the display */
     
@@ -171,7 +193,7 @@ public:
     
     /* Utils */
     
-    bool saveCurrentConfiguration( const std::string &file);
+    bool saveCurrentConfiguration( const std::string &file) const;
     bool loadConfigurationFile( const std::string &file);
     
     static Database<std::string> getDisplayInformationsAsDatabase( const DisplayInformations &info);
@@ -180,6 +202,9 @@ public:
     
 private:
     void displayChangeNotification( DisplayNotification notification );
+    
+    bool saveConfigFile() const;
+    bool loadConfigFile();
     
 
     DisplayImpl _impl;
@@ -246,12 +271,10 @@ private:
     Chrono    m_frameRateClock;
     long long m_frameRate;
 
-
-    // add for omxplayer
-
-
-
-
+    /* File config load/save */
+    
+    bool        _shouldSaveConfigOnFile;
+    std::string _fileConfig;
 };
 
 #endif /* defined(__Broadway_test__DisplayController__) */
