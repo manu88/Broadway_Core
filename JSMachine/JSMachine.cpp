@@ -491,7 +491,7 @@ void JSMachine::clearStack()
 
 /*static*/ void JSMachine::js_readDataFile(CScriptVar *v, void *userdata)
 {
-    Database< std::string > data;
+    Database data;
     
     data.parseFile( v->getParameter("filePath")->getString().c_str() , '=');
     
@@ -503,7 +503,7 @@ void JSMachine::clearStack()
         CScriptVar* pair =  new CScriptVar();
         pair->setArray();
         pair->setArrayIndex(0 , new CScriptVar( data.getItemNameAtIndex( i ) ) ); // item name
-        pair->setArrayIndex(1 , new CScriptVar( data.getValueAtIndex<std::string>( i ) ) ); // item value
+        pair->setArrayIndex(1 , new CScriptVar( data.getValueAtIndex( i ).getString() ) ); // item value
         
         vars->setArrayIndex(i , pair);
     }
@@ -749,21 +749,21 @@ std::string JSMachine::getArgumentsAsStringList( const ArgumentsArray &array )
         if ( i>0)
             stream << " , ";
         
-        if (array.isType<int>(i) )
+        const Variant * val = &array.getValueAtIndex(i);
+        
+        if ( val->isInt() )
         {
-            const int val = array.getValueAtIndex<int>( i );
-            stream << val;
+            stream << val->getInt();
         }
-        else if (array.isType<float>(i) )
+        else if ( val->isFloat() )
         {
-            const float val = array.getValueAtIndex<float>( i );
-            stream << val;
+
+            stream << val->getFloat();
         }
         
-        else if (array.isType<std::string>(i) )
+        else if ( val->isString() )
         {
-            const std::string val = array.getValueAtIndex<std::string>( i );
-            stream << "\"" << val << "\"" ;
+            stream << "\"" << val->getString() << "\"" ;
         }
         
         else
@@ -792,21 +792,22 @@ std::string JSMachine::getArgumentsAsJSArrayString( const ArgumentsArray &array 
     {
         if ( i>0)
             stream << " , ";
-        if (array.isType<int>(i) )
+        
+        const Variant * val = &array.getValueAtIndex(i);
+        
+        if ( val->isInt() )
         {
-            const int val = array.getValueAtIndex<int>( i );
-            stream << val;
+
+            stream << val->getInt() ;
         }
-        else if (array.isType<float>(i) )
+        else if ( val->isFloat() )
         {
-            const float val = array.getValueAtIndex<float>( i );
-            stream << val;
+            stream << val->getFloat();
         }
         
-        else if (array.isType<std::string>(i) )
+        else if ( val->isString() )
         {
-            const std::string val = array.getValueAtIndex<std::string>( i );
-            stream << "\"" << val << "\"" ;
+            stream << "\"" << val->getString() << "\"" ;
         }
         
         else
@@ -834,23 +835,25 @@ CScriptVar* JSMachine::getArgumentsAsJSArray( const ArgumentsArray &array )
     
     for (int i =0; i< array.getSize() ; i++)
     {
-        if ( array.isType<int>(i) )
+        
+        const Variant * val = &array.getValueAtIndex(i);
+        
+        if ( val->isInt() )
         {
-            const int val = array.getValueAtIndex<int>( i );
-            ret->setArrayIndex(count, new CScriptVar( val ) );
+            ret->setArrayIndex(count, new CScriptVar( val->getInt() ) );
             count ++;
         }
-        else if ( array.isType<float>(i) )
+        else if ( val->isFloat() )
         {
-            const float val = array.getValueAtIndex<float>( i );
-            ret->setArrayIndex(count, new CScriptVar( val ) );
+
+            ret->setArrayIndex(count, new CScriptVar( val->getFloat() ) );
             count ++;
         }
         
-        else if ( array.isType<std::string>(i) )
+        else if ( val->isString() )
         {
-            const std::string val = array.getValueAtIndex<std::string>( i );
-            ret->setArrayIndex(count, new CScriptVar( val ) );
+
+            ret->setArrayIndex(count, new CScriptVar( val->getString() ) );
             count ++;
         }
         

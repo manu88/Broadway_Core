@@ -203,7 +203,7 @@ public:
     }
     
     template<typename Type>
-    static CScriptVar* getJSArrayFromDatabase( const Database<Type> &data)
+    static CScriptVar* getJSArrayFromDatabase( const Database &data)
     {
         const int size = data.getSize();
         if ( size == 0 )
@@ -231,7 +231,7 @@ public:
     }
 
     template<typename Type>
-    static std::string getDatabaseAsJSArrayString( const Database<Type> &data)
+    static std::string getDatabaseAsJSArrayString( const Database &data)
     {
         std::ostringstream stream;
         
@@ -251,7 +251,7 @@ public:
             stream << "["
             << "\"" << data.getItemNameAtIndex( i ) << "\""
             << ","
-            << "\"" << data.template getValueAtIndex<Type>( i ) << "\""
+            << "\"" << data.getValueAtIndex( i ).getString() << "\""
             << "]";
             
         }

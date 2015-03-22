@@ -11,8 +11,7 @@
 
 Database::~Database()
 {
-    for( auto val : _dataList )
-        delete val.second;
+
 }
 
 /* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
@@ -129,7 +128,7 @@ bool Database::parseFile(const std::string &fileName , const char delim)
                     }
                     
                     count++;
-                    insertValue ( item , Value<std::string>::value( val ) );
+                    insertValue ( item , Variant( val ) );
                     
                     
                     
@@ -176,9 +175,9 @@ bool Database::saveToFile(const std::string &fileName , const char delim  )
     file <<  "\n";
     file <<  "\n";
     
-    for (const std::pair<std::string , Variant *> &pair : _dataList )
+    for (const DataPair &pair : _dataList )
     {
-        file << pair.first << " " << delim << " " << pair.second->getString();
+        file << pair.first << " " << delim << " " << pair.second.getString();
         file <<  "\n";
         file <<  "\n";
         

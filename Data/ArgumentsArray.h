@@ -57,8 +57,6 @@ public:
     ~ArgumentsArray()
     {
 
-        for (auto it : _list )
-            delete it;
     }
 
     ArgumentsArray& operator<<( float rhs )
@@ -74,7 +72,7 @@ public:
     template<typename Type>
     void addValue(Type value)
     {
-        _list.push_back( new Value<Type>( value ) );
+        _list.push_back( Variant( value ) );
     }
     
     int getSize() const
@@ -82,13 +80,9 @@ public:
         return ( int ) _list.size();
     }
     
-    template<typename Type>
-    Type getValueAtIndex(const int index) const
+    const Variant& getValueAtIndex(const int index) const
     {
-        Value<Type> *val = dynamic_cast< Value<Type>* >( _list[index] );
-        
-        return val->getValue();
-
+        return _list.at(index);
     }
     
     /* *** *** *** *** *** *** *** *** */
@@ -96,69 +90,30 @@ public:
     
     float getFloatValueAtIndex( const int index ) const
     {
-        if ( isType<float>( index ) )
-            return getValueAtIndex< float >( index );
-
-        else if ( isType< int >( index ) )
-            return static_cast < float >( getValueAtIndex< int >( index ));
-        
-        // add specific cast
-        assert( false );
-        
-        return 0.;
+        return _list.at(index).getFloat();
     }
     
     /**/
     
     int getIntValueAtIndex( const int index ) const
     {
-        if ( isType< int >( index ) )
-            return getValueAtIndex< int >( index );
-        
-        else if ( isType< float >( index ) )
-            return static_cast < int >( getValueAtIndex< float >( index ));
-        
-        // add specific cast
-        assert( false );
-        
-        return 0;
+        return _list.at(index).getInt();
     }
     
     /**/
     
     const std::string getStringValueAtIndex( const int index ) const
     {
-        if ( isType< std::string >( index ) )
-            return getValueAtIndex< std::string >( index );
-        
-        else if ( isType< float >( index ) )
-            return std::to_string( getValueAtIndex< float >( index ) );
-        
-        else if ( isType< int >( index ) )
-            return std::to_string( getValueAtIndex< int >( index ) );
-        
-        // add specific cast
-        assert( false );
-        
-        return 0;
+        return _list.at(index).getString();
     }
     
-    /* *** *** *** *** *** *** *** *** */
-    // Test variable type
-    
-    template<typename Type>
-    bool isType(const int index) const
-    {
-        // cast will fail if not from tested type
-        return ( dynamic_cast< Value<Type>* >( _list[index] ) ) != nullptr;
 
-    }
 
 
     
 private:
     
-    std::vector< Variant* > _list;
+    std::vector< Variant > _list;
 
 
 };

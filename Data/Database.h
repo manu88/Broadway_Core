@@ -33,6 +33,8 @@
 #include "Value.h"
 
 
+typedef std::pair<std::string , Variant> DataPair;
+
 class Database : public Object
 {
 public:
@@ -48,7 +50,7 @@ public:
         for (const std::pair<std::string ,  std::string> &p : args )
         {
 
-            _dataList.push_back( std::make_pair( p.first , new Value<std::string>( p.second ) ));
+            insertValue(p.first, p.second);
             
         }
 
@@ -79,33 +81,27 @@ public:
     /* **** **** **** **** **** **** **** **** **** **** **** **** **** */
     
 
-    Variant* getValueAtIndex(const int index) const
+    const Variant getValueAtIndex(const int index) const
     {
         return _dataList[index].second;
     }
     
     /* **** **** **** **** **** **** **** **** **** **** **** **** **** */
     
-    Variant* getValueForItemName(const std::string &item) const
+    const Variant* getValueForItemName(const std::string &item)/* const*/
     {
 
-        for (const auto i : _dataList)
-        {
-            if ( i.first == item)
-                return i.second;// reinterpret_cast< Value<T>* >( i.second)->getValue();
-        }
-        
-        return 0;
+        return &( findItemPosition( item)->second );
     }
     
     /* **** **** **** **** **** **** **** **** **** **** **** **** **** */
     
-    bool addValue( const std::string &name , Variant *val )
+    bool addValue( const std::string &name , const Variant &val )
     {
         return setValueForItemName( name, val);
     }
     
-    bool setValueForItemName( const std::string &name , Variant *val )
+    bool setValueForItemName( const std::string &name , const Variant &val )
     {
         auto iter = findItemPosition( name );
         
@@ -129,22 +125,22 @@ public:
     
     inline const std::string getValueForItemNameAsString( const std::string &item ) /* const*/
     {
-        return findItemPosition( item )->second->getString();
+        return findItemPosition( item )->second.getString();
     }
     
     inline float getValueForItemNameAsFloat(const std::string &item) /*const*/
     {
-        return findItemPosition( item )->second->getFloat();
+        return findItemPosition( item )->second.getFloat();
     }
     
     inline int getValueForItemNameAsInt(const std::string &item) /*const*/
     {
-        return findItemPosition( item )->second->getInt();
+        return findItemPosition( item )->second.getInt();
     }
     
     inline bool getValueForItemNameAsBool(const std::string &item) /*const*/
     {
-        return findItemPosition( item )->second->getBool();
+        return findItemPosition( item )->second.getBool();
     }
     
     inline const std::vector< Variant* > getValueForItemNameAsVector( const std::string &item) /*const*/
@@ -200,12 +196,12 @@ public:
 
 private:    
     
-    void insertValue( const std::string &name , Variant* val )
+    void insertValue( const std::string &name , const  Variant &val )
     {
         _dataList.push_back( std::make_pair( name , val ) );
     }
     
-    typename std::vector< std::pair<std::string , Variant*> >::iterator findItemPosition( const std::string &item )
+    typename std::vector< DataPair >::iterator findItemPosition( const std::string &item )
     {
         return std::find_if( _dataList.begin(), _dataList.end(),  FindItemPredicate(item) );
     }
@@ -216,7 +212,7 @@ private:
         FindItemPredicate( std::string const& s ) : _s(s)
         {}
         
-        bool operator () (std::pair<std::string, Variant* > const& p)
+        bool operator () ( DataPair const& p)
         {
             return (p.first == _s);
         }
@@ -225,7 +221,7 @@ private:
     };
 
     
-    std::vector< std::pair<std::string , Variant*> > _dataList;
+    std::vector< DataPair > _dataList;
     
     
 };

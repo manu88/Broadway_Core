@@ -362,7 +362,7 @@ int WebServer::event(struct mg_connection *conn, enum mg_event ev)
             if ( pair.size() == 2)
                 val = pair.at(1) ;
             
-            array->addValue(pair.at(0), Value<std::string>::value( val ) );
+            array->addValue(pair.at(0), Variant( val ) );
             
 
         }

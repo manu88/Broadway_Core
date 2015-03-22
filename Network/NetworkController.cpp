@@ -234,20 +234,24 @@ bool NetworkController::sendOSC( const std::string &ip , const int port , const 
 
         for (int i = 0; i< vars.getSize() ; i++)
         {
-            if ( vars.isType< int >(i))
-                p << vars.getValueAtIndex< int >( i );
+            const Variant val = vars.getValueAtIndex(i);
             
-            else if ( vars.isType< std::string >(i))
-                p << vars.getValueAtIndex< std::string >( i ).c_str() ;
+            if ( val.isInt())
+                p << val.getInt();
             
+            else if ( val.isString() )
+                p << val.getString().c_str();
+
+            /*
             else if ( vars.isType< const char* >(i))
                 p << vars.getValueAtIndex<const char* >( i ) ;
+            */
             
-            else if ( vars.isType< float >(i))
-                p << vars.getValueAtIndex< float >( i );
+            else if ( val.isFloat() )
+                p << val.getFloat();
             
-            else if ( vars.isType< double >(i))
-                p << (float) vars.getValueAtIndex< double >( i );
+            else if ( val.isDouble() )
+                p << val.getDouble();
             
             else
                 Log::log("error while parsing ArgumentsArray -> OSCMessage, type not handled");
