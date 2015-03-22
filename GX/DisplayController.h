@@ -196,8 +196,8 @@ public:
     bool saveCurrentConfiguration( const std::string &file) const;
     bool loadConfigurationFile( const std::string &file);
     
-    static Database<std::string> getDisplayInformationsAsDatabase( const DisplayInformations &info);
-    static DisplayInformations   getDisplayInformationsFromDatabase( const Database<std::string> &data);
+    static Database getDisplayInformationsAsDatabase( const DisplayInformations &info);
+    static DisplayInformations   getDisplayInformationsFromDatabase( Database &data);
 
     
 private:

@@ -31,7 +31,7 @@ protected:
     virtual std::string getRequest( const std::string &ipAddress ,
                                     const int port,
                                     const std::string &addressPattern,
-                                    const Database<std::string> &arguments) = 0;
+                                    const Database &arguments) = 0;
 };
 
 
@@ -76,7 +76,7 @@ public:
     static const std::string getDecodedUrl( const std::string &buffer);
     
     // will return uri parameters' as a Database
-    static std::unique_ptr<Database< std::string> > getUriArguments( const std::string &uri);
+    static std::unique_ptr<Database > getUriArguments( const std::string &uri);
     
 
     

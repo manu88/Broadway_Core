@@ -339,7 +339,7 @@ bool DisplayController::saveCurrentConfiguration( const std::string &file) const
 
 bool DisplayController::loadConfigurationFile( const std::string &file)
 {
-    Database<std::string> data;
+    Database data;
     
     if ( data.parseFile( file, '=') )
         return setVideoModeTo( getDisplayInformationsFromDatabase( data ));
@@ -350,7 +350,7 @@ bool DisplayController::loadConfigurationFile( const std::string &file)
 
 /* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
 
-/*static*/ Database<std::string> DisplayController::getDisplayInformationsAsDatabase( const DisplayInformations &info)
+/*static*/ Database DisplayController::getDisplayInformationsAsDatabase( const DisplayInformations &info)
 {
 
 
@@ -366,7 +366,7 @@ bool DisplayController::loadConfigurationFile( const std::string &file)
 
 /* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
 
-/*static*/ DisplayInformations DisplayController::getDisplayInformationsFromDatabase( const Database<std::string> &data)
+/*static*/ DisplayInformations DisplayController::getDisplayInformationsFromDatabase( Database &data)
 {
     return  DisplayInformations {  /* native*/               data.getValueForItemNameAsBool("NATIVE") ,
                                    /* Type*/  (DisplayType)  data.getValueForItemNameAsInt ("TYPE"),

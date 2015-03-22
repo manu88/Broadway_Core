@@ -341,10 +341,10 @@ int WebServer::event(struct mg_connection *conn, enum mg_event ev)
     return ret;
 }
 
-/*static*/ std::unique_ptr<Database< std::string> > WebServer::getUriArguments( const std::string &uri)
+/*static*/ std::unique_ptr<Database > WebServer::getUriArguments( const std::string &uri)
 {
     
-    Database<std::string>* array = new Database<std::string>();
+    Database* array = new Database();
     
     if (!uri.empty())
     {
@@ -362,13 +362,13 @@ int WebServer::event(struct mg_connection *conn, enum mg_event ev)
             if ( pair.size() == 2)
                 val = pair.at(1) ;
             
-                array->addValue(pair.at(0),  val );
+            array->addValue(pair.at(0), Value<std::string>::value( val ) );
             
 
         }
     }
     
-    return std::unique_ptr<Database<std::string>>( array );
+    return std::unique_ptr< Database >( array );
 }
 
 

@@ -17,10 +17,17 @@
 
 typedef enum
 {
-    Event_Timer  = 0, // implemented by TimedEvent
-    Event_Input  = 1, // implemented by GpioEvent
-    Event_Video  = 2, // implemented by GXVideo
-    Event_Action = 3  // implemented in GXUI system
+    Event_Timer   = 0,   // implemented by TimedEvent
+    
+    Event_Input   = 100, // implemented by GpioEvent
+    
+    Event_Network = 200,
+    Event_OSC     = 201,
+    
+    Event_GET     = 230,
+    
+    Event_Video   = 300,   // implemented by GXVideo
+    Event_Action  = 400    // implemented in GXUI system
     
 } EventType;
 

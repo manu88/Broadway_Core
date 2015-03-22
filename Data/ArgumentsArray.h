@@ -18,7 +18,7 @@
 #include <memory>
 
 #include "../Internal/Object.h"
-
+#include "Value.h"
 
 
 
@@ -28,54 +28,7 @@ class ArgumentsArray  : public Object
 {
 private:
     
-    /* **** **** **** **** **** **** **** **** **** **** */
-    //! Base Class for arguments stored in ArgumentsArray.
-    class BaseArg : public Object
-    {
-    public:
-        BaseArg()
-        {
-            className = "BaseArg";
-        }
-        virtual ~BaseArg()
-        {}
-    };
-    
-    //! Template Class for arguments stored in ArgumentsArray
-    template <typename T>
-    class Argument : public BaseArg
-    {
-    public:
         
-        Argument(T value) :
-        _data( value )
-        {
-            className = "ArgumentsArray";            
-        }
-        
-        ~Argument()
-        {
-        }
-        
-        T getValue() const
-        {
-            return _data;
-        }
-        
-        
-        template<typename Type>
-        bool isType() const
-        {
-            return ( typeid( _data ) == typeid ( Type ) );
-        }
-        
-        
-    private:
-        T _data;
-    };
-    
-    /* **** **** **** **** **** **** **** **** **** **** */    
-    
 public:
     
     //! Will return a list from the content of a specified folder.
@@ -121,7 +74,7 @@ public:
     template<typename Type>
     void addValue(Type value)
     {
-        _list.push_back( new Argument<Type>( value ) );
+        _list.push_back( new Value<Type>( value ) );
     }
     
     int getSize() const
@@ -132,7 +85,7 @@ public:
     template<typename Type>
     Type getValueAtIndex(const int index) const
     {
-        Argument<Type> *val = dynamic_cast< Argument<Type>* >( _list[index] );
+        Value<Type> *val = dynamic_cast< Value<Type>* >( _list[index] );
         
         return val->getValue();
 
@@ -197,7 +150,7 @@ public:
     bool isType(const int index) const
     {
         // cast will fail if not from tested type
-        return ( dynamic_cast< Argument<Type>* >( _list[index] ) ) != nullptr;
+        return ( dynamic_cast< Value<Type>* >( _list[index] ) ) != nullptr;
 
     }
 
@@ -205,7 +158,7 @@ public:
     
 private:
     
-    std::vector< BaseArg* > _list;
+    std::vector< Variant* > _list;
 
 
 };

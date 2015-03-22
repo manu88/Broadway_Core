@@ -30,6 +30,27 @@
 #include "../Internal/AbstractController.h"
 
 
+/* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
+
+class OSCEvent : public Event
+{
+public :
+    OSCEvent(const std::string &_ip , const int _port , const std::string &_address , const ArgumentsArray *_vars) :
+    Event( Event_OSC   ),
+    ip      ( _ip      ),
+    port    ( _port    ),
+    address ( _address )
+    {}
+    
+    ~OSCEvent();
+    
+    const std::string ip;
+    const int         port;
+    const std::string address;
+    
+    ArgumentsArray *vars;
+    
+};
 
 
 
