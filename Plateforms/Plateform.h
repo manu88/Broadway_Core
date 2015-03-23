@@ -11,11 +11,13 @@
 
 #ifdef TARGET_RASPBERRY_PI
     #include "RaspberryPI/RaspberryPI.h"
-    #define EXTERNAL_EXTENTION "br_arm"
 
 #elif defined __APPLE__
     #include "MacOS/MacOS.h"
-    #define EXTERNAL_EXTENTION "br_darwin"
+
+    #ifdef USE_OPENMAXIL
+    #undef USE_OPENMAXIL
+    #endif
 
 #elif defined TARGET_CUBIE2
     #include "CubieBoard/CubieBoard.h"

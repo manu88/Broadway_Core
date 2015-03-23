@@ -17,8 +17,8 @@
 
 #ifdef USE_OPENMAXIL
 
-#include "OMXCore.h"   // def COMXCore
-#include "linux/RBP.h" // def CRBP
+    #include "OMXCore.h"   // def COMXCore
+    #include "linux/RBP.h" // def CRBP
 
 #endif /* USE_OPENMAXIL */
 
@@ -187,7 +187,7 @@ private:  /* attributes */
     EGL_DISPMANX_WINDOW_T _nativewindow; // rpi
 #endif
     
-#ifdef USE_OPENMAXIL
+#ifdef USE_OPENMAXIL 
     
     static CRBP     s_RBP;
     static COMXCore s_OMX;
