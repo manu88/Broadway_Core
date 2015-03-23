@@ -79,7 +79,7 @@ public:
     
     void sendGpo(const int pinNumber , const GpioState state);
     
-    GpioEvent* getGpioEventByPin( const int pin);
+    GpioEvent* getGpioEventByPin( const unsigned int pin);
 
     /* Serial part */
     

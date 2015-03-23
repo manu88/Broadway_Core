@@ -385,7 +385,7 @@ const std::unique_ptr< ArgumentsArray > NetworkTools::getArrayFromOSCMessage(con
             
             else if ( (it)->IsInt32() )
             {
-                array->addValue( (it)->AsInt32() );
+                array->addValue( (int) (it)->AsInt32() );
             }
             
             else if ( (it)->IsInt64() )

@@ -41,8 +41,6 @@ public :
     bool changed();
     GpioState read();
     
-    unsigned int pin;
-    GpioState state;
     
     static void setGpio( const int pin , const GpioState state);
     
@@ -60,15 +58,29 @@ public :
     {
     }
     
+    const GpioState &getState() const
+    {
+        return _state;
+    }
+    
+    unsigned int getPin() const
+    {
+        return _pin;
+    }
+    
 private:
     
     // actual plateform specific implementation
     GpioPlateformImplementation _impl;
     
-    GpioState _lastState;
+    unsigned int _pin;
     
+    GpioState _state;
+    GpioState _lastState;
+
+    long      _debounceDelay;    
     long      _lastDebounceTime;
-    long      _debounceDelay;
+
     
 };
 

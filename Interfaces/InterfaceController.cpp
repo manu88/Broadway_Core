@@ -163,7 +163,7 @@ void InterfaceController::removeAllInputs()
 
 /* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
 
-GpioEvent* InterfaceController::getGpioEventByPin( const int pin)
+GpioEvent* InterfaceController::getGpioEventByPin( const unsigned int pin)
 {
     for ( auto i : m_inputs )
     {
@@ -171,7 +171,7 @@ GpioEvent* InterfaceController::getGpioEventByPin( const int pin)
         {
             GpioEvent * gpio = dynamic_cast< GpioEvent*>( i );
             
-            if ( gpio->pin == pin)
+            if ( gpio->getPin() == pin)
                 return gpio;
         }
     }

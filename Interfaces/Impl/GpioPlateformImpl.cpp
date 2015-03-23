@@ -30,6 +30,7 @@ _pin        ( pin  ),
 _inputType  ( type )
 {
     internalPinSetupInput( _inputType );
+    
 }
 
 GpioPlateformImplementation::~GpioPlateformImplementation()

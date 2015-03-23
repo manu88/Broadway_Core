@@ -56,21 +56,6 @@ private:
     
 };
 
-/* **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
 
-class MousePointer : public GXElement
-{
-public:
-    MousePointer();
-    ~MousePointer();
-private:
-    virtual void paint( const GXRect &rect );
-    virtual void prepareRessources();
-    virtual void deleteRessources();
-    
-    virtual void changed();
-    
-    GXPath *m_path;    
-};
 
 #endif /* defined(__Broadway_test__GraphicsComponents__) */

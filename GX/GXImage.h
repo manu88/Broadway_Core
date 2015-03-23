@@ -49,9 +49,10 @@ private:
     
     std::string m_filename;
     
+    /*
     float       m_scaleX;
     float       m_scaleY;
-    
+    */
     GXSize      m_imageSize;
     bool        m_autoScale;
 

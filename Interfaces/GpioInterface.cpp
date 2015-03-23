@@ -18,8 +18,8 @@ GpioEvent::GpioEvent(int pinToUse , GPioInputType typeOfInput) :
 InterfaceEvent( Event_Gpio ),
 _impl( pinToUse , typeOfInput ),
 
-pin                ( pinToUse  ),
-state              ( undefined ),
+_pin                ( pinToUse  ),
+_state              ( undefined ),
 _lastState        ( undefined ),
 
 _debounceDelay     ( 10        ), // default val
@@ -57,9 +57,9 @@ bool GpioEvent::changed()
     
     if ( ( Scheduler::getTimeInMs() - _lastDebounceTime) > _debounceDelay)
     {
-        if (newState != state)
+        if (newState != _state)
         {
-            state = newState;
+            _state = newState;
             _lastState = newState;
             /*
              if (    (               m_transition == Changed )
@@ -82,7 +82,7 @@ bool GpioEvent::changed()
 
 GpioState GpioEvent::read()
 {
-    return state;
+    return _state;
 }
 
 

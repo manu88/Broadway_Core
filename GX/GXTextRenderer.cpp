@@ -20,8 +20,8 @@ m_size      ( 10.f ),
 m_text      (  ""  ),
 m_font      ( nullptr ),
 m_carret    ( makePointNULL() ),
-m_textPath  ( nullptr ),
-m_textColor ( makeColor(255, 255, 255) )
+m_textColor ( makeColor(255, 255, 255) ),
+m_textPath  ( nullptr )
 {
     m_sizeCoef = 1.0f/3000.f;
     

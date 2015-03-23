@@ -28,8 +28,12 @@ extern "C"
 
 GXImage::GXImage( const std::string &filename ):
 m_filename     ( filename ),
+
+/*
 m_scaleX       ( 1.f ),
 m_scaleY       ( 1.f ),
+ */
+
 m_imageSize    ( makeSizeNULL() ),
 m_autoScale    ( true ),
 m_image        ( 0 )
