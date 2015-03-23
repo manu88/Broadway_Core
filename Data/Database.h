@@ -176,11 +176,13 @@ private:
         _dataList.push_back( std::make_pair( name , val ) );
     }
     
+    //! const find method
     typename std::vector< DataPair >::const_iterator findItemPosition( const std::string &item ) const
     {
         return std::find_if( _dataList.begin(), _dataList.end(),  FindItemPredicate(item) );
     }
-    
+
+    //! find method    
     typename std::vector< DataPair >::iterator findItemPosition( const std::string &item ) 
     {
         return std::find_if( _dataList.begin(), _dataList.end(),  FindItemPredicate(item) );

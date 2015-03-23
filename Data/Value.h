@@ -33,7 +33,9 @@ public:
 
     // Added to prevent litterals c—strings from being implicitly converted to bool
     Variant( const char* val );
-    Variant( bool val );    
+    
+    Variant( bool val );
+    
     /* copy & assignment ctors */
     
     Variant ( const Variant &val );
@@ -53,7 +55,7 @@ public:
 
     
     
-    //! careful! The type wil not be checked, and reinterpret_cast may fail!
+    //! careful! The type will not be checked, and reinterpret_cast may fail!
     template <typename T> T getValue() const;
     
     template <typename T>  bool isType() const;

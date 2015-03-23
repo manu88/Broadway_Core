@@ -98,9 +98,9 @@ public:
         return ( int ) _list.size();
     }
     
-    const Variant& getValueAtIndex(const int index) const
+    const Variant* getValueAtIndex(const int index) const
     {
-        return _list.at(index);
+        return &_list.at(index);
     }
     
 private:
