@@ -130,7 +130,7 @@ bool FontParser::parseFontFile(GXFont *font ,  const std::string &filename )
     if (descent <0)
         descent *= -1;
     
-    font->m_lineSpace = face->ascender + face->descender +  face->height;
+    font->m_lineSpace = face->ascender + descent +  face->height;
 
     for(int cc = 0 ; cc<256 ; cc++ )
     {

@@ -60,6 +60,7 @@
 
 #include "Log/Log.h"
 
+#include "Application/ApplicationBase.h"
 
 
 /* JSON Parser*/

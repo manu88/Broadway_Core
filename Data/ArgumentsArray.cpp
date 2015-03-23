@@ -21,40 +21,40 @@
 /*
     simple way to create single Arguments
  */
-ArgumentsArray::ArgumentsArray( const std::string &argument)
+ArgumentsArray::ArgumentsArray( const Variant &var)
 {
     ArgumentsArray();
-    addValue< std::string >( argument );
+    addValue( var );
 }
 
 ArgumentsArray::ArgumentsArray( const char* &argument)
 {
     ArgumentsArray();
-    addValue< const char* >( argument );
+    addValue( argument );
 }
 
 ArgumentsArray::ArgumentsArray( const float argument)
 {
     ArgumentsArray();
-    addValue< float >( argument );
+    addValue( argument );
 }
 
 ArgumentsArray::ArgumentsArray( const double argument)
 {
     ArgumentsArray();
-    addValue< double >( argument );
+    addValue( argument );
 }
 
 ArgumentsArray::ArgumentsArray( const int argument)
 {
     ArgumentsArray();
-    addValue< int >( argument );
+    addValue( argument );
 }
 
 ArgumentsArray::ArgumentsArray( const bool argument)
 {
     ArgumentsArray();
-    addValue< bool >( argument );
+    addValue( argument );
 }
 
 

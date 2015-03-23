@@ -707,13 +707,13 @@ bool has_suffix(const std::string &str, const std::string &suffix)
     if ( size == 0)
     {
         if (vars->isInt() )
-            array->addValue< int >( vars->getInt() );
+            array->addValue( vars->getInt() );
         
         else if (vars->isDouble() )
-            array->addValue< double >( vars->getDouble() );
+            array->addValue( vars->getDouble() );
         
         else if (vars->isString() )
-            array->addValue< std::string >( vars->getString() );
+            array->addValue( vars->getString() );
         
     }
     
@@ -724,13 +724,13 @@ bool has_suffix(const std::string &str, const std::string &suffix)
             CScriptVar *var =vars->getArrayIndex( i );
             
             if (var->isInt() )
-                array->addValue< int >( var->getInt() );
+                array->addValue( var->getInt() );
             
             else if (var->isDouble() )
-                array->addValue< double >( var->getDouble() );
+                array->addValue( var->getDouble() );
             
             else if (var->isString() )
-                array->addValue< std::string >( var->getString() );
+                array->addValue( var->getString() );
         }
     }
     

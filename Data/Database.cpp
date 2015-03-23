@@ -154,7 +154,7 @@ bool Database::parseFile(const std::string &fileName , const char delim)
 
 /* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
 
-bool Database::saveToFile(const std::string &fileName , const char delim  )
+bool Database::saveToFile(const std::string &fileName , const char delim  ) const
 {
     
     std::ofstream file;

@@ -18,28 +18,56 @@ public:
     virtual ~ApplicationBase();
     
     /* Application configuration base */
-    /*
-    
-    bool configValueExists( const std::string &item ) const
+    const Database &getDatabase() const
     {
-        return _appData.itemExists( item);
+        return _appData;
     }
     
-    const std::string getConfigValue( const std::string &item ) const
+    bool initializeApp();
+    bool start();
+    bool releaseApp();
+    
+    /* *** *** */
+    // quit signal
+    
+    void sendQuitSignal()
     {
-        return _appData.getValueForItemNameAsString( item );
+        _shouldQuit = true;
     }
     
-*/
+    bool shouldQuit() const
+    {
+        return _shouldQuit;
+    }
     
+    bool isRunning() const
+    {
+        return !_shouldQuit;
+    }
+
+    /* *** *** */
     
+    const Database &getConfig() const
+    {
+        return _appData;
+    }
+    
+    bool saveConfig() const;
+    bool reloadConfig();
+    
+    /* *** *** */
 protected:
     
-    ApplicationBase();
+    ApplicationBase( const std::string &fileConfig);
+    
+    bool parseConfig();
     
 private:
-    Database _appData;
+    Database               _appData;
     std::string           _fileConfig;
+    
+    bool  _shouldQuit;
+    bool  _hasQuit;
     
 };
 

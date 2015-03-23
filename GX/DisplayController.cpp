@@ -368,15 +368,15 @@ bool DisplayController::loadConfigurationFile( const std::string &file)
 
 /*static*/ DisplayInformations DisplayController::getDisplayInformationsFromDatabase( Database &data)
 {
-    return  DisplayInformations {  /* native*/               data.getValueForItemNameAsBool("NATIVE") ,
-                                   /* Type*/  (DisplayType)  data.getValueForItemNameAsInt ("TYPE"),
+    return  DisplayInformations {  /* native*/               data.getValueForItemName("NATIVE")->getBool() ,
+                                   /* Type*/  (DisplayType)  data.getValueForItemName("TYPE")->getInt(),
         
-                                   /* size*/ makeSize( data.getValueForItemNameAsInt ("WIDTH") ,
-                                                       data.getValueForItemNameAsInt ("HEIGHT")
+                                   /* size*/ makeSize( data.getValueForItemName("WIDTH")->getInt() ,
+                                                       data.getValueForItemName("HEIGHT")->getInt()
                                                       ),
         
-                                   /* frate*/     data.getValueForItemNameAsInt ("FRAMERATE") ,
-                                   /* aspect ratio*/  data.getValueForItemNameAsFloat ("RATIO")
+                                   /* frate*/     data.getValueForItemName("FRAMERATE")->getInt() ,
+                                   /* aspect ratio*/  data.getValueForItemName("RATIO")->getFloat()
                                 };
 }
 

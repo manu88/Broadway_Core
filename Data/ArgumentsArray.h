@@ -46,33 +46,51 @@ public:
     }
     
     // simple way to create single Arguments
-    ArgumentsArray( const std::string &argument);
+    ArgumentsArray( const Variant &var);
+    
+    
     ArgumentsArray( const char* &argument);
     ArgumentsArray( const float argument);
     ArgumentsArray( const double argument);
     ArgumentsArray( const int argument);
     ArgumentsArray( const bool argument);
 
+    //! Create an ArgumentArray with an initializer list.
+    /*
+     Use this when returning an ArgumentsArray or passing it to a method
+     { 1,12.1,true,"foo"}
+     is eq to
+     ArgumentArray array;
+     array.addValue(1);
+     array.addValue(12.1);
+     array.addValue(true);
+     array.addValue("foo");
+     
+     
+     */
+    ArgumentsArray( std::initializer_list< Variant > args)
+    {
+        for (const Variant &val : args )
+            addValue( val );
+    }
     
     ~ArgumentsArray()
     {
 
     }
 
+    /*
     ArgumentsArray& operator<<( float rhs )
     {
         addValue<float>( rhs );
         
         return *this;
     }
+*/
 
-    
-
-    
-    template<typename Type>
-    void addValue(Type value)
+    void addValue( const Variant &value )
     {
-        _list.push_back( Variant( value ) );
+        _list.push_back(  value );
     }
     
     int getSize() const
@@ -84,32 +102,6 @@ public:
     {
         return _list.at(index);
     }
-    
-    /* *** *** *** *** *** *** *** *** */
-    // Specialized methods to ensure explicit convertion
-    
-    float getFloatValueAtIndex( const int index ) const
-    {
-        return _list.at(index).getFloat();
-    }
-    
-    /**/
-    
-    int getIntValueAtIndex( const int index ) const
-    {
-        return _list.at(index).getInt();
-    }
-    
-    /**/
-    
-    const std::string getStringValueAtIndex( const int index ) const
-    {
-        return _list.at(index).getString();
-    }
-    
-
-
-
     
 private:
     

@@ -9,6 +9,8 @@
 #ifndef _ValueImpl_h
 #define _ValueImpl_h
 
+#include <sstream>
+
 class ValueImpl : public Object
 {
 public:
@@ -20,7 +22,6 @@ public:
     
     int release()
     {
-
         return --_refCount;
     }
     
@@ -39,6 +40,7 @@ public:
     virtual bool isDouble() const = 0;
     virtual bool isString() const = 0;
     virtual bool isBool() const = 0;
+
 protected:
     
     int _refCount;
@@ -50,39 +52,13 @@ protected:
     }
 };
 
-//! Template Class for arguments stored in ArgumentsArray
+/* **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
+
 template <typename T>
 class Value : public ValueImpl
 {
 public:
-    
-    /* Values factory */
-    
-    static Value<std::string>* value( const std::string &val)
-    {
-        return new Value<std::string>( val );
-    }
-    
-    static Value<int>* value( int val)
-    {
-        return new Value< int >( val );
-    }
-    
-    static Value< float >* value( float val)
-    {
-        return new Value< float >( val );
-    }
-    
-    static Value< double >* value( double val)
-    {
-        return new Value< double >( val );
-    }
-    
-    static Value< bool >* value( bool val)
-    {
-        return new Value< bool >( val );
-    }
-    
+        
     /**/
     
     Value(T value) :
@@ -136,19 +112,19 @@ public:
     std::string getString() const
     {
         if ( isString() )
-            return (reinterpret_cast<const Value<std::string>*>(this) )->getValue();
+            return (reinterpret_cast<const Value< std::string >*>(this) )->getValue();
         
         else if ( isFloat() )
-            return std::to_string( getFloat() );
+            return std::to_string( (reinterpret_cast<const Value< float >*>(this) )->getValue() );
         
         else if ( isDouble() )
-            return std::to_string( getDouble() );
+            return std::to_string( (reinterpret_cast<const Value< double >*>(this) )->getValue() );
         
         else if ( isBool() )
-            return std::to_string( getBool() );
+            return std::to_string( (reinterpret_cast<const Value< bool >*>(this) )->getValue() );
         
         else if ( isInt() )
-            return std::to_string( getInt() );
+            return std::to_string( (reinterpret_cast<const Value< int >*>(this) )->getValue() );
         
         
         return "undefined";
@@ -159,16 +135,30 @@ public:
         if (isBool() )
             return (reinterpret_cast<const Value< bool >*>(this) )->getValue();
         
-        return false;
+        
+        else if (isInt() )
+            return (reinterpret_cast<const Value< int >*>(this) )->getValue();
+        
+        else if ( isString() )
+            return getIntFromStr( (reinterpret_cast<const Value<std::string>*>(this) )->getValue() );
+        
+        else  if (isFloat() )
+            return (int) (reinterpret_cast<const Value< float >*>(this) )->getValue();
+        
+        else  if (isDouble() )
+            return (int) (reinterpret_cast<const Value< double >*>(this) )->getValue();
+        
+        return false; // interpret as int
     }
     
     int getInt() const
     {
-        if (isInt() )
+        if (isInt() || isBool() )
             return (reinterpret_cast<const Value< int >*>(this) )->getValue();
         
+        
         else if ( isString() )
-            return std::stoi( (reinterpret_cast<const Value<std::string>*>(this) )->getValue() );
+            return getIntFromStr( (reinterpret_cast<const Value<std::string>*>(this) )->getValue() );
         
         else  if (isFloat() )
             return (int) (reinterpret_cast<const Value< float >*>(this) )->getValue();
@@ -184,10 +174,13 @@ public:
         if (isFloat() )
             return (reinterpret_cast<const Value< float >*>(this) )->getValue();
         
-        else if ( isString() )
-            return std::stof( (reinterpret_cast<const Value<std::string>*>(this) )->getValue() );
+        if (isDouble() )
+            return (float)(reinterpret_cast<const Value< double >*>(this) )->getValue();
         
-        else  if (isInt() )
+        else if ( isString() )
+            return getFloatFromStr( (reinterpret_cast<const Value<std::string>*>(this) )->getValue() );
+        
+        else  if (isInt() || isBool() )
             return (float) (reinterpret_cast<const Value< int >*>(this) )->getValue();
         
         return 0.f;
@@ -200,9 +193,9 @@ public:
             return (reinterpret_cast<const Value< double >*>(this) )->getValue();
         
         else if ( isString() )
-            return std::stod( (reinterpret_cast<const Value<std::string>*>(this) )->getValue() );
+            return getDoubleFromStr( (reinterpret_cast<const Value<std::string>*>(this) )->getValue() );
         
-        else  if (isInt() )
+        else  if (isInt() || isBool() )
             return (double) (reinterpret_cast<const Value< int >*>(this) )->getValue();
         
         else  if (isFloat() )
@@ -212,6 +205,7 @@ public:
         
     }
     
+    
     template<typename Type>
     bool isType() const
     {
@@ -220,6 +214,65 @@ public:
     
     
 private:
+    inline const std::vector<Variant> breakInList( const ValueImpl* val) const
+    {
+        std::vector< Variant > list;
+        
+        std::istringstream f( (reinterpret_cast<const Value<std::string>*>(this) )->getValue() );
+        std::string s;
+        
+        while (getline(f, s, ' '))
+        {
+            if ( !s.empty() )
+                list.push_back( s );
+        }
+        
+        return list;
+    }
+    
+    
+    /* *** *** *** *** *** *** *** *** *** */
+    
+    inline static int getIntFromStr( const std::string &str) noexcept
+    {
+        try
+        {
+            return std::stoi( str );
+                             
+        } catch (const std::invalid_argument& err)
+        {
+            return 0;
+        }
+    }
+    
+    /* *** *** *** *** *** *** *** *** *** */
+    
+    inline static float getFloatFromStr( const std::string &str) noexcept
+    {
+        try
+        {
+            return std::stof( str );
+            
+        } catch (const std::invalid_argument& err)
+        {
+            return 0;
+        }
+    }
+    
+    /* *** *** *** *** *** *** *** *** *** */
+    
+    inline static double getDoubleFromStr( const std::string &str) noexcept
+    {
+        try
+        {
+            return std::stod( str );
+            
+        } catch (const std::invalid_argument& err)
+        {
+            return 0;
+        }
+    }
+    
     T _data;
 };
 

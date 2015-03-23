@@ -32,8 +32,11 @@
 
 #include "Value.h"
 
+/**/
 
 typedef std::pair<std::string , Variant> DataPair;
+
+
 
 class Database : public Object
 {
@@ -44,15 +47,11 @@ public:
         className = "Database";
     }
     
-    Database( std::initializer_list< std::pair<std::string , std::string> > args)
+    Database( std::initializer_list< DataPair > args)
     {
 
-        for (const std::pair<std::string ,  std::string> &p : args )
-        {
-
+        for (const DataPair &p : args )
             insertValue(p.first, p.second);
-            
-        }
 
         
     }
@@ -69,7 +68,7 @@ public:
         If you overwrite an already existing database file, this method will
         _NOT_ save any comments, nor any page formatting.
      */
-    bool saveToFile(const std::string &fileName , const char delim  );
+    bool saveToFile(const std::string &fileName , const char delim  ) const;
     
     /* **** **** **** **** **** **** **** **** **** **** **** **** **** */
     
@@ -77,28 +76,18 @@ public:
     {
         return _dataList[index].first;
     }
-    
-    /* **** **** **** **** **** **** **** **** **** **** **** **** **** */
-    
 
     const Variant getValueAtIndex(const int index) const
     {
         return _dataList[index].second;
     }
-    
+
     /* **** **** **** **** **** **** **** **** **** **** **** **** **** */
     
-    const Variant* getValueForItemName(const std::string &item)/* const*/
+    const Variant* getValueForItemName(const std::string &item) const
     {
 
         return &( findItemPosition( item)->second );
-    }
-    
-    /* **** **** **** **** **** **** **** **** **** **** **** **** **** */
-    
-    bool addValue( const std::string &name , const Variant &val )
-    {
-        return setValueForItemName( name, val);
     }
     
     bool setValueForItemName( const std::string &name , const Variant &val )
@@ -117,53 +106,29 @@ public:
         return false;
     }
 
-    /* **** **** **** **** **** **** **** **** **** **** **** **** **** */
-    /*
-        Conversions methods, not checked !
-        use should use itemExists() to test the item before
-     */
-    
-    inline const std::string getValueForItemNameAsString( const std::string &item ) /* const*/
+
+
+    inline const VariantList getValueForItemNameAsVector( const std::string &item)
     {
-        return findItemPosition( item )->second.getString();
-    }
-    
-    inline float getValueForItemNameAsFloat(const std::string &item) /*const*/
-    {
-        return findItemPosition( item )->second.getFloat();
-    }
-    
-    inline int getValueForItemNameAsInt(const std::string &item) /*const*/
-    {
-        return findItemPosition( item )->second.getInt();
-    }
-    
-    inline bool getValueForItemNameAsBool(const std::string &item) /*const*/
-    {
-        return findItemPosition( item )->second.getBool();
-    }
-    
-    inline const std::vector< Variant* > getValueForItemNameAsVector( const std::string &item) /*const*/
-    {
-        std::vector< Variant* > list;
-        /*
-        std::istringstream f( getValueForItemName<T1>( item ) );
+        std::vector< Variant > list;
+
+        std::istringstream f( getValueForItemName( item )->getString() );
         std::string s;
         
         while (getline(f, s, ' '))
         {
             if ( !s.empty() )
-                list.push_back(s);
+                list.push_back( s );
         }
-         */
+
         return list;
         
     }
-    
+
     /* **** **** **** **** **** **** **** **** **** **** **** **** **** */
     
 
-    bool itemExists(const std::string &item) const
+    bool itemExists( const std::string &item ) const
     {
 
         for (const auto i : _dataList)
@@ -189,10 +154,20 @@ public:
         
     }
     
+    /* *** *** *** *** *** *** *** *** *** *** *** *** *** */
+    
+    typedef typename std::vector<DataPair>::iterator iterator;
+    typedef typename std::vector<DataPair>::const_iterator const_iterator;
+    
+    iterator begin() {return _dataList.begin();}
+    const_iterator begin() const {return _dataList.begin();}
+    const_iterator cbegin() const {return _dataList.cbegin();}
+    iterator end() {return _dataList.end();}
+    const_iterator end() const {return _dataList.end();}
+    const_iterator cend() const {return _dataList.cend();}
     
 
     
-
 
 private:    
     
@@ -201,7 +176,12 @@ private:
         _dataList.push_back( std::make_pair( name , val ) );
     }
     
-    typename std::vector< DataPair >::iterator findItemPosition( const std::string &item )
+    typename std::vector< DataPair >::const_iterator findItemPosition( const std::string &item ) const
+    {
+        return std::find_if( _dataList.begin(), _dataList.end(),  FindItemPredicate(item) );
+    }
+    
+    typename std::vector< DataPair >::iterator findItemPosition( const std::string &item ) 
     {
         return std::find_if( _dataList.begin(), _dataList.end(),  FindItemPredicate(item) );
     }

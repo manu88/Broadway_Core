@@ -380,17 +380,17 @@ const std::unique_ptr< ArgumentsArray > NetworkTools::getArrayFromOSCMessage(con
         {
             if ( (it)->IsFloat() )
             {
-                array->addValue< float >( (it)->AsFloat() );
+                array->addValue( (it)->AsFloat() );
             }
             
             else if ( (it)->IsInt32() )
             {
-                array->addValue< int >( (it)->AsInt32() );
+                array->addValue( (it)->AsInt32() );
             }
             
             else if ( (it)->IsInt64() )
             {
-                array->addValue< int >( (int) (it)->AsInt64() );
+                array->addValue( (int) (it)->AsInt64() );
             }
             
             else if ( (it)->IsString() )
@@ -401,7 +401,7 @@ const std::unique_ptr< ArgumentsArray > NetworkTools::getArrayFromOSCMessage(con
                 {
                     str.erase (std::remove(str.begin(), str.end(), chars[i]), str.end());
                 }
-                array->addValue< std::string >( str );
+                array->addValue( str );
             }
             else
             {

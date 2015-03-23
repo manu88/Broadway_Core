@@ -9,14 +9,16 @@
 #include "Value.h"
 #include "ValueImpl.h"
 
+/* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
+
 Variant::Variant( int val):
-_variant ( Value< int >::value(val ) )
+_variant ( new Value< int >( val ) )
 {
 
 }
 
 Variant::Variant( float val ):
-_variant ( Value< float >::value(val ) )
+_variant ( new Value< float >( val ) )
 {
     
 }
@@ -28,17 +30,26 @@ _variant ( new Value< double >( val ) )
 }
 
 Variant::Variant(bool val):
-_variant ( Value<bool>::value(val ) )
+_variant ( new Value< bool >( val ) )
 {
     
 }
 
 
 Variant::Variant(const std::string &val):
-_variant ( Value< std::string >::value(val ))
+_variant ( new Value< std::string >( val ) )
 {
     
 }
+
+Variant::Variant( const char* val ) :
+_variant( new Value<std::string> ( std::string(val) ) )
+{
+
+}
+
+
+/* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
 
 Variant::Variant ( const Variant &val ):
 _variant ( val._variant)
@@ -55,6 +66,8 @@ Variant& Variant::operator=(Variant const& copy)
     return *this;
 }
 
+/* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
+
 
 Variant::~Variant()
 {
@@ -64,11 +77,12 @@ Variant::~Variant()
     }
 }
 
+/* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
+
 int Variant::getInt() const
 {
     return _variant->getInt();
 }
-
 
 float Variant::getFloat() const
 {
@@ -89,6 +103,24 @@ const std::string Variant::getString() const
     return _variant->getString();
 }
 
+/* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
+
+template <typename T>
+T Variant::getValue() const
+{
+    return (reinterpret_cast<const Value< T >*>( _variant) )->getValue() ;
+    
+}
+
+template <typename T>  bool Variant::isType() const
+{
+    return typeid( this ) == typeid(T);
+}
+
+template unsigned long Variant::getValue< unsigned long >() const;
+template bool Variant::isType<unsigned long> () const;
+
+/* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
 
 bool Variant::isInt() const
 {
@@ -113,6 +145,13 @@ bool Variant::isBool() const
 bool Variant::isString() const
 {
     return _variant->isString();
+}
+
+/* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
+
+std::ostream& operator<<( std::ostream& os, const Variant& val)
+{
+    return os << val.getString();
 }
 
 
