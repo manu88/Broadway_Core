@@ -88,10 +88,8 @@ bool Scheduler::removeEvent( TimedEvent* event )
 {
     if ( event == nullptr)
         return false;
-    
-    removeEvent( event->getElementId() );
-    
-    return true;
+
+    return removeEvent( event->getElementId() );
 }
 /* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
 
@@ -120,6 +118,8 @@ bool Scheduler::stop()
 {
 
     wakeUpThread();
+    
+    removeAllEvents();
     
     return stopThread();
 }

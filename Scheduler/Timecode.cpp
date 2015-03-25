@@ -87,7 +87,7 @@ Timecode operator-(const Timecode& lhs, const Timecode& rhs)
     Timecode r;
 
     
-    if ( rhs>lhs )
+    if ( rhs>= lhs )
         return r;
 
     const auto diff = lhs.getInMs() -rhs.getInMs();

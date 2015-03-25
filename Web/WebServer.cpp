@@ -179,8 +179,6 @@ void WebServer::send_reply(struct mg_connection *conn)
 
     const std::string uri(conn->uri);
     
-    printf("\n URL : '%s'" , uri.c_str() );
-    
     ///////////////////////////////////////
     // racine 
     if ( uri == "/" )
@@ -252,16 +250,15 @@ void WebServer::send_reply(struct mg_connection *conn)
         
         std::string ret = _delegate->getRequest( conn->remote_ip  , _port , uri.c_str() , *getUriArguments( content));
         
-        
+/*
         if ( !ret.empty())
-        {
+        {*/
             mg_printf_data(conn,
                            "%s",
                            ret.c_str()
                            );
-        }
-        else
-            printf("\n no data to send back ...");
+        //}
+
 
     }
    
