@@ -174,7 +174,7 @@ std::string WebServer::getHtmlFile( const std::string & filename)
 /* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
 
 
-void WebServer::send_reply(struct mg_connection *conn)
+mg_result WebServer::send_reply(struct mg_connection *conn)
 {
 
     const std::string uri(conn->uri);
@@ -187,7 +187,7 @@ void WebServer::send_reply(struct mg_connection *conn)
         mg_send_data(conn, index.c_str() , ( int ) strlen( index.c_str() ) );
 
         
-        return;
+        return MG_TRUE;
 
         
     }
@@ -208,7 +208,6 @@ void WebServer::send_reply(struct mg_connection *conn)
 
         for (const std::string &tok : filelist)
         {
-//            printf("\n got a file '%s'" , tok.c_str() );
             
             if ( uri == ("/" + tok ) )
             {
@@ -224,18 +223,20 @@ void WebServer::send_reply(struct mg_connection *conn)
         {
             const std::string content = getHtmlFile( m_workingDirectory+ file );
             
-
-            mg_send_data(conn, content.c_str() , ( int ) strlen( content.c_str() ) );
+            printf("\n open file '%s'", (m_workingDirectory+ file ).c_str()  );
+//            mg_send_data(conn, content.c_str() , ( int ) strlen( content.c_str() ) );
+            mg_send_file(conn ,  (m_workingDirectory+ file ).c_str() );
 
             
 
-            return;
+            return MG_MORE;
             
         }
         else
         {
 
             mg_send_data(conn, s_404.c_str() , ( int ) strlen( s_404.c_str() ) );
+            return MG_TRUE;
         }
     }
     else
@@ -259,7 +260,7 @@ void WebServer::send_reply(struct mg_connection *conn)
                            );
         //}
 
-
+        return MG_TRUE;
     }
    
 }
@@ -271,9 +272,9 @@ int WebServer::event(struct mg_connection *conn, enum mg_event ev)
 {
     if (ev == MG_REQUEST)
     {
-        send_reply(conn);
         
-        return MG_TRUE;
+        
+        return send_reply(conn);
     }
     
     else if (ev == MG_AUTH)

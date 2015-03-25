@@ -95,7 +95,7 @@ private:
     // thread's entry point
     void run();
     
-    void send_reply(struct mg_connection *conn);
+    mg_result send_reply(struct mg_connection *conn);
     
     int event(struct mg_connection *conn, enum mg_event ev);
     
