@@ -82,7 +82,7 @@ public:
     /* Safe cast */
     
     template<typename T>
-    static T event_cast( Event* event)
+    static T event_cast( const Event* event)
     {
         return reinterpret_cast<T>(event);
     }

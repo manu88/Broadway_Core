@@ -253,6 +253,11 @@ bool NetworkController::sendOSC( const std::string &ip , const int port , const 
             else if ( val.isDouble() )
                 p << val.getDouble();
             
+            else if ( val.isBool() )
+            {
+                
+            }
+            
             else
                 Log::log("error while parsing ArgumentsArray -> OSCMessage, type not handled");
             

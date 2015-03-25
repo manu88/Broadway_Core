@@ -140,7 +140,7 @@ void WebServer::run()
     
     
     mg_set_option( _server, "listening_port", port.c_str() );
-    
+    mg_set_option( _server, "document_root" , m_workingDirectory.c_str() );
     setReady();
     
     while (!threadShouldStop())
@@ -179,6 +179,8 @@ void WebServer::send_reply(struct mg_connection *conn)
 
     const std::string uri(conn->uri);
     
+    printf("\n URL : '%s'" , uri.c_str() );
+    
     ///////////////////////////////////////
     // racine 
     if ( uri == "/" )
@@ -202,12 +204,13 @@ void WebServer::send_reply(struct mg_connection *conn)
         
         auto filelist =  FileSystem::getFilesListFromFolder(m_workingDirectory, false); //ArgumentsArray::getArrayFromFolder( m_workingDirectory );
         
+
         std::string file = "";
         
-        printf("\n test rep");
+
         for (const std::string &tok : filelist)
         {
-            printf("\n got a file '%s'" , tok.c_str() );
+//            printf("\n got a file '%s'" , tok.c_str() );
             
             if ( uri == ("/" + tok ) )
             {
@@ -219,7 +222,7 @@ void WebServer::send_reply(struct mg_connection *conn)
             
         }
         
-        if (file !="")
+        if (file != "")
         {
             const std::string content = getHtmlFile( m_workingDirectory+ file );
             

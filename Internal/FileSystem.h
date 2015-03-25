@@ -56,6 +56,15 @@ namespace FileSystem
                                                              const std::string withExtention = "*"
                                                             );
     
+    const bool getFilesListFromFolder(
+                                      std::vector< std::string> &vector,
+                                       const std::string &fullPath ,
+                                       const std::string &relPath,
+                                       bool  withFullPath,
+                                       const std::string &beginWith = "" ,
+                                       const std::string withExtention = "*"
+                                       );
+    
     const std::string getFileText( const std::string &fileUrl);
     
     bool setFileText(const std::string &file , const std::string &data);

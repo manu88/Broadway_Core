@@ -183,46 +183,110 @@ const std::vector< std::string > FileSystem::getFilesListFromFolder( const std::
                                                                      const std::string withExtention
                                                                     )
 {
-    DIR * d = nullptr;
-    if ( isFolder( path) && (d = opendir ( path.c_str() ) ))
-    {
-        std::vector< std::string > list;
-        
-        while (1)
-        {
-            struct dirent * entry;
-            
-            entry = readdir (d);
-            
-            if (! entry)
-            {
-                break;
-            }
-            
-            if (   ( strcmp( entry->d_name , "."  ) != 0 )
-                && ( strcmp( entry->d_name , ".." ) != 0 )
-                )
-            {
-                std::string item( entry->d_name );
-                
 
-                
-                if ( (!beginWith.empty() && StringOperations::beginWith( item, beginWith ) ) )
-                {
-                    if (withFullPath)
-                        item.insert( 0 , path);
-                    
-                    list.push_back( item );
-                }
-            
-            }
-        }
-        return list;
+    
+    std::vector< std::string > ret;
+    
+    getFilesListFromFolder( ret, path , "" , withFullPath , beginWith , withExtention);
+    
+    
+    return ret;
+
+    
+}
+
+const bool FileSystem::getFilesListFromFolder(
+                                  std::vector< std::string> &vector,
+                                  const std::string &fullPath ,
+                                  const std::string &relPath ,
+                                  bool  withFullPath,
+                                  const std::string &beginWith,
+                                  const std::string withExtention
+                                  )
+{
+
+    DIR * d;
+    
+    /* Open the directory specified by "dir_name". */
+    
+    const std::string realPath  = fullPath+relPath;
+    
+//    printf("\n entering dir '%s'" , realPath.c_str()  );
+    
+    d = opendir ( realPath.c_str() );
+    
+    /* Check it was opened. */
+    if (! d)
+    {
+        fprintf (stderr, "Cannot open directory '%s': %s\n", realPath.c_str(), strerror (errno));
+        return false;
     }
     
-    // error
-    return  std::vector< std::string >();
-    
+    while (1)
+    {
+        struct dirent * entry;
+        const char * d_name;
+        
+        /* "Readdir" gets subsequent entries from "d". */
+        entry = readdir (d);
+        if (! entry)
+        {
+            /* There are no more entries in this directory, so break
+             out of the while loop. */
+            break;
+        }
+        
+        d_name = entry->d_name;
+        
+        
+        if (   ( strcmp( entry->d_name , "."  ) != 0 )
+            && ( strcmp( entry->d_name , ".." ) != 0 )
+            )
+        {
+            if (entry->d_type & DT_REG)
+            {
+                
+                const std::string item = (withFullPath?fullPath :"") + (relPath.empty()?"":(relPath + "/") ) + std::string( d_name );
+            
+                if ( (beginWith.empty() ) || StringOperations::beginWith( d_name, beginWith ) )
+                {
+                    vector.push_back( item );
+                }
+            }
+
+        
+            else if (entry->d_type & DT_DIR)
+            {
+                
+
+                    int path_length;
+                    char path[PATH_MAX];
+                    
+                    path_length = snprintf (path, PATH_MAX, "%s%s", fullPath.c_str() , d_name);
+
+
+                    
+                    if (path_length >= PATH_MAX)
+                    {
+                        fprintf (stderr, "Path length has got too long.\n");
+
+                        return false;
+                    }
+                    /* Recursively call "list_dir" with the new path. */
+                getFilesListFromFolder(vector, correctPathIfNeeded(fullPath),(relPath.empty()?"":(relPath + "/") ) + std::string( d_name ), withFullPath , beginWith , withExtention);
+                    
+
+
+            }
+            
+        }
+
+    } // end of while
+
+    closedir (d);
+
+    return true;
+
 }
 
 /* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
