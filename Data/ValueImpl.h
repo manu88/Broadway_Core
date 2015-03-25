@@ -15,6 +15,8 @@ class ValueImpl : public Object
 {
 public:
     
+    enum { T_BOOL , T_INT , T_FLOAT , T_DOUBLE , T_STRING };
+    
     int retain()
     {
         return ++_refCount;
@@ -35,21 +37,45 @@ public:
     virtual double       getDouble() const = 0;
     virtual std::string  getString() const = 0;
     
-    virtual bool isInt() const = 0;
-    virtual bool isFloat() const = 0;
-    virtual bool isDouble() const = 0;
-    virtual bool isString() const = 0;
-    virtual bool isBool() const = 0;
+    bool isInt() const
+    {
+        return _type == T_INT;
+    }
+    
+    bool isFloat() const
+    {
+        return _type == T_FLOAT;
+    }
+    
+    bool isDouble() const
+    {
+        return _type == T_DOUBLE;
+    }
+    bool isString() const
+    {
+        return _type == T_STRING;
+    }
+    bool isBool() const
+    {
+        return _type == T_BOOL;
+    }
 
 protected:
     
+
+    
+    int _type;
+    
     int _refCount;
     
-    ValueImpl()
+    ValueImpl( int type ): _type( type )
     {
         _refCount = 1;
         className = "ValueImpl";
     }
+    
+    ValueImpl( const ValueImpl &other) = delete;
+    
 };
 
 /* **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
@@ -61,11 +87,14 @@ public:
         
     /**/
     
-    Value(T value) :
+    Value(T value , int type) :
+    ValueImpl(type),
     _data( value )
     {
     //    className = "Value";
     }
+    
+    Value(const Value &other) = delete;
     
     ~Value()
     {
@@ -81,6 +110,7 @@ public:
         _data = val;
     }
     
+    /*
     bool isInt() const
     {
         return isType<int>();
@@ -105,7 +135,7 @@ public:
     {
         return isType<bool>();
     }
-    
+    */
     
     /* Get value */
     

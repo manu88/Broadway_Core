@@ -12,38 +12,38 @@
 /* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
 
 Variant::Variant( int val):
-_variant ( new Value< int >( val ) )
+_variant ( new Value< int >( val ,ValueImpl::T_INT ) )
 {
 
 }
 
 Variant::Variant( float val ):
-_variant ( new Value< float >( val ) )
+_variant ( new Value< float >( val , ValueImpl::T_FLOAT ) )
 {
     
 }
 
 Variant::Variant( double val ):
-_variant ( new Value< double >( val ) )
+_variant ( new Value< double >( val ,ValueImpl::T_DOUBLE ) )
 {
     
 }
 
 Variant::Variant(bool val):
-_variant ( new Value< bool >( val ) )
+_variant ( new Value< bool >( val ,ValueImpl::T_BOOL ) )
 {
     
 }
 
 
 Variant::Variant(const std::string &val):
-_variant ( new Value< std::string >( val ) )
+_variant ( new Value< std::string >( val , ValueImpl::T_STRING ) )
 {
     
 }
 
 Variant::Variant( const char* val ) :
-_variant( new Value<std::string> ( std::string(val) ) )
+_variant( new Value<std::string> ( std::string( val ) , ValueImpl::T_STRING  ) )
 {
 
 }

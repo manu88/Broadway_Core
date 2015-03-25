@@ -103,6 +103,18 @@ public:
         return &_list.at(index);
     }
     
+    /* *** *** *** *** *** *** *** *** *** *** *** *** *** */
+    
+    typedef typename std::vector<Variant>::iterator iterator;
+    typedef typename std::vector<Variant>::const_iterator const_iterator;
+    
+    iterator begin() {return _list.begin();}
+    const_iterator begin() const {return _list.begin();}
+    const_iterator cbegin() const {return _list.cbegin();}
+    iterator end() {return _list.end();}
+    const_iterator end() const {return _list.end();}
+    const_iterator cend() const {return _list.cend();}
+    
 private:
     
     std::vector< Variant > _list;
