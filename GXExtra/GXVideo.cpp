@@ -91,7 +91,7 @@ Timecode GXVideo::getVideoLength()
 {
     const int dur = m_player.getStreamLength();
 
-    m_length.h     = 0;
+    m_length.h     = dur/3600;
     m_length.min   = (dur/60)%60 ; // dur/3600;
     m_length.sec   = dur%60;
     m_length.milli = 0;

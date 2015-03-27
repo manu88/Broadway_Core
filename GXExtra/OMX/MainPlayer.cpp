@@ -272,10 +272,6 @@ bool MainPlayer::prepare()
     
     std::string mode;
     
-//    //Build default keymap just in case the --key-config option isn't used
-//    map<int,int> keymap = KeyConfig::buildDefaultKeymap();
-    
-    
     
     auto PrintFileNotFound = [](const std::string& path)
     {
@@ -342,23 +338,13 @@ bool MainPlayer::prepare()
         CLog::SetLogLevel(LOG_LEVEL_NONE);
     }
     
-    
-    
-    //      blank_background( true );
-    
-    
-    
     int gpu_mem = get_mem_gpu();
     int min_gpu_mem = 64;
     if (gpu_mem > 0 && gpu_mem < min_gpu_mem)
         printf("Only %dM of gpu_mem is configured. Try running \"sudo raspi-config\" and ensure that \"memory_split\" has a value of %d or greater\n", gpu_mem, min_gpu_mem);
     
-
-    
     m_omxcontrol.init(m_av_clock, &m_player_audio, &m_player_subtitles, &m_omx_reader, m_dbus_name);
     
-
-
     
     m_thread_player = true;
     
@@ -439,6 +425,7 @@ bool MainPlayer::prepare()
     
     
     printf("\n MainPlayer Size %i %i " , m_hints_video.width, m_hints_video.height);
+    
     if (orientation >= 0)
         m_hints_video.orientation = orientation;
     
@@ -551,7 +538,7 @@ bool MainPlayer::prepare()
 
 
     
-    
+    return true;
     
 }
 

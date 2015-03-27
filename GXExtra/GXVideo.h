@@ -117,10 +117,7 @@ public:
 
     bool prepare()
     {
-        if (! m_isPrepared )
-        {
-            
-        }
+
         m_isPrepared = m_player.prepare();
         getVideoLength();
         
@@ -182,6 +179,8 @@ public:
         return Timecode(0,0,0, (unsigned int) m_player.getCurrentTC() );
     }
     
+    
+
     void registerTCNotification( const Timecode &tc);
     
     void showInfosOnScreen( bool show )
@@ -209,6 +208,9 @@ public:
     {
         return _notif;
     }
+
+    
+    
     
 protected:
     

@@ -148,9 +148,7 @@ public:
     void flipVisibilityTo( bool visible);
     
     void seekTo(double timeInS);
-    
-    
-    
+
     bool isRunning() const
     {
         return m_isRunning;

@@ -223,7 +223,7 @@ mg_result WebServer::send_reply(struct mg_connection *conn)
         {
             const std::string content = getHtmlFile( m_workingDirectory+ file );
             
-            printf("\n open file '%s'", (m_workingDirectory+ file ).c_str()  );
+
 //            mg_send_data(conn, content.c_str() , ( int ) strlen( content.c_str() ) );
             mg_send_file(conn ,  (m_workingDirectory+ file ).c_str() );
 
