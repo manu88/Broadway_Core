@@ -310,6 +310,8 @@ private:
     bool    m_shouldPause;
     bool    m_isRunning;
     
+    bool _firstPacket;
+    
     bool _shouldFlipVisibility;
 
     

@@ -477,6 +477,8 @@ bool MainPlayer::prepare()
     
     
     _parent->sig_ready();
+    
+    _firstPacket = true;
 
     printf("\n PREPARE OMX OK \n ");
     return true;
@@ -636,7 +638,7 @@ bool MainPlayer::openVideoPlayer()
 
 void MainPlayer::waitIfNeeded( std::unique_lock<std::mutex> &lock ,const double  startpts )
 {
-    FlushStreams( startpts );
+    //FlushStreams( startpts );
     
     printf("\n Wait in MainPlayer loop \n ");
     
@@ -663,8 +665,8 @@ bool MainPlayer::run()
     bool   send_eos          = false;
     bool   packet_after_seek = false;
     
-
-    bool firstPacket = true;
+    _firstPacket = true;
+    
     m_stop = false;
     
     m_av_clock->OMXReset(m_has_video, m_has_audio);
@@ -1014,10 +1016,10 @@ bool MainPlayer::run()
         // un paquet lu, on n'est pas end-of-stream
         if(m_omx_pkt)
         {
-            if (firstPacket)
+            if ( _firstPacket )
             {
                 _parent->sig_didStart();
-                firstPacket = false;
+                _firstPacket = false;
             }
             send_eos = false;
         }
@@ -1037,8 +1039,8 @@ bool MainPlayer::run()
             
             if (m_loop)
             {
-                m_incr = loop_from - (m_av_clock->OMXMediaTime() ? m_av_clock->OMXMediaTime() / DVD_TIME_BASE : last_seek_pos);
-                _parent->sig_didEnd();
+                //m_incr = loop_from - (m_av_clock->OMXMediaTime() ? m_av_clock->OMXMediaTime() / DVD_TIME_BASE : last_seek_pos);
+               // _parent->sig_didEnd();
                 continue;
             }
             
