@@ -108,7 +108,7 @@ public:
 
 
 
-    inline const VariantList getValueForItemNameAsVector( const std::string &item)
+    inline const VariantList getValueForItemNameAsVector( const std::string &item) const
     {
         std::vector< Variant > list;
 

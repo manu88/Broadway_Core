@@ -65,8 +65,8 @@ typedef enum
     VideoDidStart   = 2, // Sent when demuxer sent first frames.
     VideoPaused     = 3, // Sent when pause command performed.
     VideoDidResume  = 4, // Sent when resume command performed.
-    VideoWillStop   = 5, // Sent when video demuxer is end-of-stream.
-    VideoDidStop    = 6, // Sent when player did stop, i.e after flushing last frames.
+    VideoWillEnd   = 5, // Sent when video demuxer is end-of-stream.
+    VideoDidEnd    = 6, // Sent when player did stop, i.e after flushing last frames.
     VideoDidReachTC = 7, // Notif fired when a registered TC is reached.
 } GXVideoNotification;
 
@@ -128,6 +128,8 @@ public:
     {
         m_player.releasePlayer();
         m_isPrepared = false;
+        
+        
     }
     
     /* **** **** **** **** **** **** **** **** */
@@ -150,6 +152,8 @@ public:
     {
         m_player.stop();
 //        releasePlayer();
+        
+        m_isPrepared = false;
     }
     
     void seekToTC( Timecode tc );
@@ -210,7 +214,27 @@ public:
     }
 
     
+    /**/
     
+    //! Tell the demux. to stop running so changes can be performed
+    /*
+        streams will be flushed.
+     */
+    void willChange()
+    {
+        m_player.signalSourceChange();
+    }
+
+    //! Tell the demux. to start running again after a reinitialization.
+    void didChange()
+    {
+        m_player.signalSourceChanged();
+    }
+    
+    
+    /* Revisited interface */
+    
+    bool changeVideoFileTo( const std::string &file );
     
 protected:
     
@@ -221,16 +245,17 @@ protected:
     
     /* Called by mainPlayer */
     
-    void willStart();
-    void didStart();
+    void sig_ready();
+    void sig_willStart();
+    void sig_didStart();
     
-    void didPause();
-    void didResume();
+    void sig_didPause();
+    void sig_didResume();
     
-    void willEnd();
-    void didEnd();
+    void sig_willEnd();
+    void sig_didEnd();
     
-    void didReachTC( unsigned long millis);
+    void sig_didReachTC( unsigned long millis);
     
     GXVideoNotification _notif;
     

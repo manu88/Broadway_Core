@@ -52,6 +52,7 @@ namespace FileSystem
     
     const std::vector< std::string > getFilesListFromFolder( const std::string &path ,
                                                              bool  withFullPath,
+                                                             bool  sortABC = true,
                                                              const std::string &beginWith = "" ,
                                                              const std::string withExtention = "*"
                                                             );

@@ -22,7 +22,9 @@
 #include <string.h>
 #include <vector>
 
-#define AV_NOWARN_DEPRECATED // ?
+#include <condition_variable>
+
+//#define AV_NOWARN_DEPRECATED // ?
 
 
 
@@ -44,7 +46,9 @@
 #include "OMXPlayerVideo.h"
 #include "OMXPlayerAudio.h"
 #include "OMXPlayerSubtitles.h"
-#include "OMXControl.h"
+
+
+#include "OMXControl.h" // a suppr
 
 #include "OMXThread.h"
 
@@ -137,6 +141,8 @@ public:
     
     void registerTC( unsigned long tc);
     void resetAllRegisteredTC();
+    
+    
     
     
     bool prepare();
@@ -266,9 +272,23 @@ public:
         return _showInfosOnScreen;
     }
 
+    /**/
+    
+    void signalSourceChange()
+    {
+        _sourceWillChange = true;
+    }
+    
+    void signalSourceChanged()
+    {
+        _wakeUp.notify_all();
+    }
 
+    /**/    
 
 protected:
+    
+    void waitIfNeeded( std::unique_lock<std::mutex> &lock ,const double  startpts );
     /* Thread's starting point */
     virtual void Process();
     
@@ -302,6 +322,12 @@ private:
     bool    m_new_win_pos; // flag to signal new win;
     
     bool _showInfosOnScreen;
+    
+    
+    volatile bool _sourceWillChange;
+    std::mutex  _sync;
+    
+    std::condition_variable _wakeUp;
 
     /* *** *** *** *** *** *** */
     
@@ -317,7 +343,7 @@ private:
     COMXStreamInfo    m_hints_video;
     
     /* Relatifs au player en général */
-    static void sig_handler(int s);
+    //static void sig_handler(int s);
 
     
     
@@ -328,7 +354,7 @@ private:
     enum PCMChannels  *m_pChannelMap;
 
     // a virer
-    OMXControl          m_omxcontrol;
+
     OMXPlayerSubtitles  m_player_subtitles;
 
 
@@ -415,7 +441,7 @@ private:
     enum {ERROR=-1,SUCCESS,ONEBYTE};
     
     /* Statics */
-    static volatile sig_atomic_t g_abort;
+    //static volatile sig_atomic_t g_abort;
 
 };
 

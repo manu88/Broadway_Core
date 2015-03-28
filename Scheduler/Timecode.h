@@ -158,7 +158,7 @@ public:
         if ( displayMilli )
             stream << "::"<< StringOperations::Formatter('0' , 3) << milli ;
         
-        return stream.str();// StringOperations::stringWithFormat("%2i:%2i:%2i:%3i" ,h , min , sec, milli);
+        return stream.str();
     }
     
 

@@ -9,6 +9,8 @@
 #include "GXVideo.h"
 #include "../Log/Log.h"
 
+#include "../Internal/Thread.h"
+
 GXVideo::GXVideo() :
     Event   ( Event_Video ),
     m_player     ( this   ),
@@ -120,7 +122,50 @@ void GXVideo::registerTCNotification( const Timecode &tc )
 
 /* **** **** **** **** **** **** **** **** **** **** **** **** **** */
 
-void GXVideo::willStart()
+bool GXVideo::changeVideoFileTo( const std::string &file )
+{
+    willChange();
+    
+    //Thread::sleepForMs( 1000 );
+    
+    releasePlayer();
+    
+    //Thread::sleepForMs( 1000 );
+    
+    setVideoFileSource( file  );
+    
+    printf("\n load next file : '%s'", file.c_str() );
+    
+    //Thread::sleepForMs( 1000 );
+    
+    if (prepare() )
+        printf("\n PREPARE VIDEO IN CHANGE FILE OK \n");
+    
+    else
+        printf("\n PREPARE VIDEO IN CHANGE FILE ___PAS____ OK \n");
+
+    //Thread::sleepForMs( 1000 );
+    
+    didChange();
+    
+    return true;
+}
+
+/* **** **** **** **** **** **** **** **** **** **** **** **** **** */
+/*
+    Callback from MainPlayer to SchedulerDelegate
+ */
+/* **** **** **** **** **** **** **** **** **** **** **** **** **** */
+
+void GXVideo::sig_ready()
+{
+    _notif = VideoLoaded;
+    
+    if (_schedulerDelegate )
+        _schedulerDelegate->scheduledEventReceived( *this);
+}
+
+void GXVideo::sig_willStart()
 {
     _notif = VideoWillStart;
     
@@ -129,7 +174,7 @@ void GXVideo::willStart()
     
 }
 
-void GXVideo::didStart()
+void GXVideo::sig_didStart()
 {
     _notif = VideoDidStart;
     
@@ -137,7 +182,7 @@ void GXVideo::didStart()
         _schedulerDelegate->scheduledEventReceived( *this);
 }
 
-void GXVideo::didPause()
+void GXVideo::sig_didPause()
 {
     _notif = VideoPaused;
     
@@ -145,7 +190,7 @@ void GXVideo::didPause()
         _schedulerDelegate->scheduledEventReceived( *this);
 }
 
-void GXVideo::didResume()
+void GXVideo::sig_didResume()
 {
     _notif = VideoDidResume;
     
@@ -153,23 +198,24 @@ void GXVideo::didResume()
         _schedulerDelegate->scheduledEventReceived( *this);
 }
 
-void GXVideo::willEnd()
+void GXVideo::sig_willEnd()
 {
-    _notif = VideoWillStop;
+
+    _notif = VideoWillEnd;
     
     if (_schedulerDelegate )
         _schedulerDelegate->scheduledEventReceived( *this);
 }
-void GXVideo::didEnd()
+void GXVideo::sig_didEnd()
 {
-    _notif = VideoDidStop;
+    _notif = VideoDidEnd;
     
     if (_schedulerDelegate )
         _schedulerDelegate->scheduledEventReceived( *this);
 
 }
 
-void GXVideo::didReachTC( unsigned long millis)
+void GXVideo::sig_didReachTC( unsigned long millis)
 {
     _notif = VideoDidReachTC;
     

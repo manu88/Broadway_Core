@@ -173,6 +173,16 @@ public:
         return _showInfosOnScreen;
     }
     
+    void signalSourceChange()
+    {
+
+    }
+    
+    void signalSourceChanged()
+    {
+        
+    }
+    
 private:
     GXVideo *_parent;
     float m_volumeAudio;

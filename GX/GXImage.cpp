@@ -8,16 +8,25 @@
 
 
 
-#ifdef TARGET_RASPBERRY_PI
+
 
 extern "C"
 {
     #include <stdio.h>
     #include <cstddef>
+
+#ifdef HAVE_JPEG_LIB
     #include <jpeglib.h>
+#endif
+    
+#ifdef HAVE_PNG_LIB
+    #define PNG_DEBUG 3
+#endif
+    
+    #include <png.h>
 }
 
-#endif
+
 
 #include <assert.h>
 
@@ -96,7 +105,7 @@ void GXImage::prepareRessources()
     
     else if (   extension == "png" )
     {
-        printf("Image is PNG -> impl in progress");
+        m_image = createImageFromPng( m_filename.c_str() , m_imageSize.width , m_imageSize.height );
         
     }
 
@@ -148,7 +157,7 @@ void GXImage::changed()
     unsigned int width = -1;
     unsigned int height = -1;
     
-#ifdef TARGET_RASPBERRY_PI
+#ifdef HAVE_JPEG_LIB
     FILE       *infile;
     struct     jpeg_decompress_struct jdc;
     struct     jpeg_error_mgr jerr;
@@ -276,7 +285,9 @@ void GXImage::changed()
 {
     VGImage img = 0;
     
+#ifdef HAVE_PNG_LIB
     
+#endif
     return img;
     
 }

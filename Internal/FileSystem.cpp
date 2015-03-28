@@ -179,6 +179,7 @@ const std::string FileSystem::locateFolderFromFoldersList( const std::string &fo
 
 const std::vector< std::string > FileSystem::getFilesListFromFolder( const std::string &path ,
                                                                      bool  withFullPath,
+                                                                     bool  sortABC,
                                                                      const std::string &beginWith ,
                                                                      const std::string withExtention
                                                                     )
@@ -189,6 +190,8 @@ const std::vector< std::string > FileSystem::getFilesListFromFolder( const std::
     
     getFilesListFromFolder( ret, path , "" , withFullPath , beginWith , withExtention);
     
+    if ( sortABC )
+        std::sort(ret.begin(), ret.end() );
     
     return ret;
 
