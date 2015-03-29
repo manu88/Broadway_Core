@@ -44,7 +44,6 @@ public:
         return m_segments[ index ];
     }
     
-    void dump();
     
     float getAdvanceX() const
     {
@@ -132,13 +131,11 @@ public:
         if ( vectorIt != m_glyphes.end() )
             return vectorIt->second;
         
-//        Log::log("\n char '%c' not found in font '%s'" , c , m_fontName.c_str() );
         
         return nullptr;
 
     }
     
-    void dump();
 
 protected:
     GXFont();

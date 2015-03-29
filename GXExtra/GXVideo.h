@@ -186,6 +186,7 @@ public:
     
 
     void registerTCNotification( const Timecode &tc);
+    void resetAllTCNotification();
     
     void showInfosOnScreen( bool show )
     {

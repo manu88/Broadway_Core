@@ -163,6 +163,11 @@ public:
         
     }
     
+    void resetAllRegisteredTC()
+    {
+        
+    }
+    
     void showInfosOnScreen( bool show )
     {
         _showInfosOnScreen = show;

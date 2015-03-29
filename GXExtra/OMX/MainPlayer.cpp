@@ -236,7 +236,6 @@ void MainPlayer::FlushStreams(double pts)
 bool MainPlayer::prepare()
 {
 
-    printf("\n PREPARE OMXPLAYER \n");
     bool                  refresh             = false ;
     
     float audio_fifo_size  = 0.0; // zero means use default
@@ -399,7 +398,7 @@ bool MainPlayer::prepare()
     
     
     
-    printf("\n MainPlayer Size %i %i " , m_hints_video.width, m_hints_video.height);
+//    printf("\n MainPlayer Size %i %i " , m_hints_video.width, m_hints_video.height);
     
     if (orientation >= 0)
         m_hints_video.orientation = orientation;
@@ -480,7 +479,6 @@ bool MainPlayer::prepare()
     
     _firstPacket = true;
 
-    printf("\n PREPARE OMX OK \n ");
     return true;
     
 }
@@ -521,6 +519,7 @@ void MainPlayer::registerTC( unsigned long tc)
 
 void MainPlayer::resetAllRegisteredTC()
 {
+
     for ( TCMark &t : _registeredTCNotif )
     {
         t.fired = false;
@@ -640,12 +639,11 @@ void MainPlayer::waitIfNeeded( std::unique_lock<std::mutex> &lock ,const double 
 {
     //FlushStreams( startpts );
     
-    printf("\n Wait in MainPlayer loop \n ");
+
     
     _sourceWillChange = false;
     _wakeUp.wait( lock );
     
-    printf("\n Wait in MainPlayer loop _ENDED_ \n ");
     
     m_av_clock->OMXReset(m_has_video, m_has_audio);
     m_av_clock->OMXStateExecute();
@@ -689,7 +687,6 @@ bool MainPlayer::run()
         {
             waitIfNeeded( lock , startpts );
             
-            printf("\n wait after SOURCE CHANGE ENDED \n");
             
             
         }
@@ -730,7 +727,7 @@ bool MainPlayer::run()
         // seek flush
         if( m_seek_flush || m_incr != 0)
         {
-            printf("\n SEEK FLUSH \n");
+
             double seek_pos     = 0;
             double pts          = 0;
             /*
@@ -783,7 +780,7 @@ bool MainPlayer::run()
             if(    m_has_video && !openVideoPlayer() )
                     return false;
             
-            printf("Seeked %.0f %.0f %.0f\n", DVD_MSEC_TO_TIME(seek_pos), startpts, m_av_clock->OMXMediaTime() );
+//            printf("Seeked %.0f %.0f %.0f\n", DVD_MSEC_TO_TIME(seek_pos), startpts, m_av_clock->OMXMediaTime() );
             
             m_av_clock->OMXPause();
             
@@ -801,7 +798,7 @@ bool MainPlayer::run()
         
         else if( packet_after_seek && TRICKPLAY(m_av_clock->OMXPlaySpeed()) )
         {
-            printf("\n PACKET AFTER SEEK \n");
+
             double seek_pos     = 0;
             double pts          = 0;
             
@@ -813,11 +810,11 @@ bool MainPlayer::run()
             if(m_omx_reader.SeekTime((int)seek_pos, m_av_clock->OMXPlaySpeed() < 0, &startpts))
                 ; //FlushStreams(DVD_NOPTS_VALUE);
             
-            printf("Seeked %.0f %.0f %.0f\n", DVD_MSEC_TO_TIME(seek_pos), startpts, m_av_clock->OMXMediaTime());
+//            printf("Seeked %.0f %.0f %.0f\n", DVD_MSEC_TO_TIME(seek_pos), startpts, m_av_clock->OMXMediaTime());
             
             //unsigned t = (unsigned)(startpts*1e-6);
             unsigned t = (unsigned)(pts*1e-6);
-            printf("Seek to: %02d:%02d:%02d\n", (t/3600), (t/60)%60, t%60);
+//            printf("Seek to: %02d:%02d:%02d\n", (t/3600), (t/60)%60, t%60);
             packet_after_seek = false;
         }
         
@@ -871,6 +868,8 @@ bool MainPlayer::run()
             {
                 static int count;
                 if ((count++ & 7) == 0)
+                {
+                    /*
                     printf("M:%8.0f V:%6.2fs %6dk/%6dk A:%6.2f %6.02fs/%6.02fs Cv:%6dk Ca:%6dk                            \r", stamp,
                             video_fifo,
                             (m_player_video.GetDecoderBufferSize()-m_player_video.GetDecoderFreeSpace())>>10,
@@ -880,6 +879,8 @@ bool MainPlayer::run()
                             m_player_video.GetCached()>>10,
                             m_player_audio.GetCached()>>10
                            );
+                     */
+                }
             }
             
             /*
@@ -950,7 +951,7 @@ bool MainPlayer::run()
 
                     if (m_av_clock->OMXIsPaused())
                     {
-
+                        /*
                         printf( "Resume %.2f,%.2f (%d,%d,%d,%d) EOF:%d PKT:%p\n",
                                    audio_fifo,
                                    video_fifo,
@@ -961,7 +962,7 @@ bool MainPlayer::run()
                                    m_omx_reader.IsEof(),
                                    m_omx_pkt
                                   );
-                        
+                        */
                         m_av_clock->OMXResume();
                         
                         _parent->sig_didResume();
@@ -976,7 +977,7 @@ bool MainPlayer::run()
                 {
                     if (!m_Pause)
                         threshold = std::min(2.0f * threshold, 16.0f);
-                    
+                    /*
                     printf("Pause %.2f,%.2f (%d,%d,%d,%d) %.2f\n",
                                audio_fifo,
                                video_fifo,
@@ -986,7 +987,7 @@ bool MainPlayer::run()
                                video_fifo_high,
                                threshold
                               );
-                    
+                    */
                     m_av_clock->OMXPause();
                     
                     _parent->sig_didPause();
@@ -1002,7 +1003,7 @@ bool MainPlayer::run()
         
         if ( !sentStarted )
         {
-            printf("COMXPlayer::HandleMessages - player started RESET");
+            //printf("COMXPlayer::HandleMessages - player started RESET");
             m_av_clock->OMXReset(m_has_video, m_has_audio);
             sentStarted = true;
         }
@@ -1070,7 +1071,7 @@ bool MainPlayer::run()
                 continue;
             }
             
-            printf("\n EOF & NO PACKETS LEFT \n");
+//            printf("\n EOF & NO PACKETS LEFT \n");
             
             
             _parent->sig_didEnd();
@@ -1149,7 +1150,6 @@ bool MainPlayer::run()
     
     /* **** **** **** **** **** **** **** **** **** */
     
-    printf("\n AFTER MAIN VIDEO LOOP \n");
     
     _parent->sig_didEnd();
 
@@ -1170,7 +1170,6 @@ void MainPlayer::releasePlayer()
         printf("Stopped at: %02d:%02d:%02d\n", (t/3600), (t/60)%60, t%60);
     }
     
-    printf("\n RELEASE OMXPLAYER \n ");
     
     m_av_clock->OMXStop();
     m_av_clock->OMXStateIdle();

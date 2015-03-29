@@ -208,13 +208,9 @@ const bool FileSystem::getFilesListFromFolder(
                                   )
 {
 
-    DIR * d;
-    
-    /* Open the directory specified by "dir_name". */
+    DIR * d = nullptr ;
     
     const std::string realPath  = fullPath+relPath;
-    
-//    printf("\n entering dir '%s'" , realPath.c_str()  );
     
     d = opendir ( realPath.c_str() );
     

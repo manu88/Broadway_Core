@@ -129,10 +129,6 @@ bool Database::parseFile(const std::string &fileName , const char delim)
                     
                     count++;
                     insertValue ( item , Variant( val ) );
-                    
-                    
-                    
-                    //                        printf("\n add value '%s' for '%s'" , value.c_str() , item.c_str());
                 }
             }
             

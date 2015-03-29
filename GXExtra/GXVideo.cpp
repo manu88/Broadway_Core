@@ -115,9 +115,16 @@ void GXVideo::seekToTC( Timecode tc )
     m_player.seekTo( tcInS );
 }
 
+/* **** **** **** **** **** **** **** **** **** **** **** **** **** */
+
 void GXVideo::registerTCNotification( const Timecode &tc )
 {
     m_player.registerTC (tc.getInMs() );
+}
+
+void GXVideo::resetAllTCNotification()
+{
+    m_player.resetAllRegisteredTC();
 }
 
 /* **** **** **** **** **** **** **** **** **** **** **** **** **** */

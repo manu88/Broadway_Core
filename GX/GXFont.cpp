@@ -27,17 +27,6 @@ GXGlyph::~GXGlyph()
     m_segments.clear();
 }
 
-void GXGlyph::dump()
-{
-    printf("\n got %li segments", m_segments.size() );
-    
-    for (auto i : m_segments )
-    {
-        i->dump();
-    }
-    
-}
-
 /* **** **** **** **** **** **** **** **** **** **** **** **** **** */
 
 void GXGlyph::addSegment( Curve_float *curve)
@@ -147,14 +136,3 @@ void GXFont::changeGlyphesSize()
     
 }
 
-void GXFont::dump()
-{
-    printf("\n got %li glyphes", m_glyphes.size() );
-    
-    for (auto i : m_glyphes )
-    {
-
-        i.second->dump();
-        
-    }
-}
