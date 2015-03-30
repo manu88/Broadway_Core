@@ -749,7 +749,7 @@ std::string JSMachine::getArgumentsAsStringList( const ArgumentsArray &array )
         if ( i>0)
             stream << " , ";
         
-        const Variant * val = &array.getValueAtIndex(i);
+        const Variant * val = array.getValueAtIndex(i);
         
         if ( val->isInt() )
         {
@@ -793,7 +793,7 @@ std::string JSMachine::getArgumentsAsJSArrayString( const ArgumentsArray &array 
         if ( i>0)
             stream << " , ";
         
-        const Variant * val = &array.getValueAtIndex(i);
+        const Variant * val = array.getValueAtIndex(i);
         
         if ( val->isInt() )
         {
@@ -836,7 +836,7 @@ CScriptVar* JSMachine::getArgumentsAsJSArray( const ArgumentsArray &array )
     for (int i =0; i< array.getSize() ; i++)
     {
         
-        const Variant * val = &array.getValueAtIndex(i);
+        const Variant * val = array.getValueAtIndex(i);
         
         if ( val->isInt() )
         {

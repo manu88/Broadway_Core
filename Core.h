@@ -39,6 +39,11 @@
  USE_GRAPHICS_HELPERS
  USE_GRAPHICS_EXTRA 
  USE_XML_PARSER
+ 
+ 
+ 
+ HAVE_PNG_LIB
+ HAVE_JPEG_LIB
 
  */
 
@@ -51,10 +56,12 @@
 
 /* Core Headers */
 
+
 #include "Data/ArgumentsArray.h"
 #include "Data/Database.h"
 
 #include "Internal/FileSystem.h"
+#include "Internal/Utils.h"
 
 #include "Scheduler/Scheduler.h"
 

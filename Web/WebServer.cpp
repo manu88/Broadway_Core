@@ -179,6 +179,7 @@ mg_result WebServer::send_reply(struct mg_connection *conn)
 
     const std::string uri(conn->uri);
     
+
     ///////////////////////////////////////
     // racine 
     if ( uri == "/" )
