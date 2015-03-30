@@ -262,9 +262,12 @@ void InterfaceController::mainLoop()
         
         if ( m_inputs.empty() )
         {
+            printf("\n WAIT FOREVER IN INTERFACES CTRLR \n");
             wait( lock );
+            
+            printf("\n after lock");
         }
-        
+
 
         for ( auto i : m_inputs )
         {
