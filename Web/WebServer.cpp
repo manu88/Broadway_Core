@@ -86,7 +86,7 @@ bool WebServer::start()
     m_defaultContent = getHtmlFile( m_workingDirectory+ "index.html" );
     
     _server = mg_create_server(this, ev_handler);
-    printf("\n after create server \n");
+
     return startThread();
 }
 
@@ -145,7 +145,7 @@ void WebServer::run()
     
     Controllers::waitForAllControllersToBeReady();
     
-    printf("\n start web thread\n");
+
     while (!threadShouldStop())
     {
         mg_poll_server( _server, 1000);
@@ -257,13 +257,10 @@ mg_result WebServer::send_reply(struct mg_connection *conn)
         
         if (_delegate->delegateReadyForController( this ) )
         {
-            printf("\n Web delegate ready \n");
+
             ret = _delegate->getRequest( conn->remote_ip  , _port , uri.c_str() , *getUriArguments( content));
         }
-        else
-        {
-            printf("\n Web delegate not ready \n");
-        }
+
 
         
         

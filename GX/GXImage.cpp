@@ -107,7 +107,7 @@ GXImage::~GXImage()
 
 void GXImage::prepareRessources()
 {
-    printf("\n create IMAGE");
+
     
     const std::string extension = StringOperations::toLowerCase( FileSystem::getFileExtension( m_filename) );
     
@@ -176,9 +176,9 @@ void GXImage::changed()
     
     unsigned int width = -1;
     unsigned int height = -1;
-    printf("\n createJPEG IMAGE");
+
 #ifdef HAVE_JPEG_LIB
-    printf("\n DO createJPEG IMAGE");
+
 
     FILE       *infile = nullptr;
     struct     jpeg_decompress_struct jdc;
@@ -406,7 +406,7 @@ void GXImage::changed()
         {
             png_bytep px = &(row[x * 4]);
             // Do something awesome for each pixel here...
-            printf("%4d, %4d = RGBA(%3d, %3d, %3d, %3d)\n", x, y, px[0], px[1], px[2], px[3]);
+          //  printf("%4d, %4d = RGBA(%3d, %3d, %3d, %3d)\n", x, y, px[0], px[1], px[2], px[3]);
         }
     }
     

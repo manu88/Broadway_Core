@@ -141,15 +141,12 @@ bool GXVideo::changeVideoFileTo( const std::string &file )
     
     setVideoFileSource( file  );
     
-    printf("\n load next file : '%s'", file.c_str() );
+
     
     //Thread::sleepForMs( 1000 );
     
-    if (prepare() )
-        printf("\n PREPARE VIDEO IN CHANGE FILE OK \n");
-    
-    else
-        printf("\n PREPARE VIDEO IN CHANGE FILE ___PAS____ OK \n");
+    if (!prepare() )
+        Log::log("PREPARE VIDEO IN CHANGE FILE ___PAS____ OK \n");
 
     //Thread::sleepForMs( 1000 );
     
