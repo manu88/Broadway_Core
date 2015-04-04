@@ -5,7 +5,7 @@
  *  \version   0
  *  \date      2014
  *  \pre       .
- *  \bug       .
+ *  \bug       Broadcast messages don't work on Unix( tested on RPI only)
  *  \warning   .
  *  \copyright GNU Public License.
  */

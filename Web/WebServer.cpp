@@ -86,7 +86,7 @@ bool WebServer::start()
     m_defaultContent = getHtmlFile( m_workingDirectory+ "index.html" );
     
     _server = mg_create_server(this, ev_handler);
-    
+    printf("\n after create server \n");
     return startThread();
 }
 
@@ -143,6 +143,9 @@ void WebServer::run()
     mg_set_option( _server, "document_root" , m_workingDirectory.c_str() );
     setReady();
     
+    Controllers::waitForAllControllersToBeReady();
+    
+    printf("\n start web thread\n");
     while (!threadShouldStop())
     {
         mg_poll_server( _server, 1000);
@@ -250,7 +253,12 @@ mg_result WebServer::send_reply(struct mg_connection *conn)
         if ( conn->query_string )
             content = conn->query_string;
         
-        std::string ret = _delegate->getRequest( conn->remote_ip  , _port , uri.c_str() , *getUriArguments( content));
+        std::string ret = "";
+        
+        if (_delegate->isReady() )
+             ret = _delegate->getRequest( conn->remote_ip  , _port , uri.c_str() , *getUriArguments( content));
+
+        
         
 /*
         if ( !ret.empty())

@@ -13,6 +13,7 @@
 
 #include "../Internal/Thread.h"
 #include "../Internal/AbstractController.h"
+#include "../Internal/AbstractDelegate.h"
 #include "../Internal/FileSystem.h"
 #include "../Data/Database.h"
 #include "../Data/ArgumentsArray.h"
@@ -20,7 +21,7 @@
 
 /* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
 
-class WebServerDelegate
+class WebServerDelegate : public AbstractDelegate
 {
     friend class WebServer;
 public:

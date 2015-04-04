@@ -47,6 +47,8 @@
 #include <oscpack/osc/OscOutboundPacketStream.h>
 #include <oscpack/osc/OscTypes.h>
 
+#include <oscpack/osc/OscException.h>
+
 #include <oscpack/ip/UdpSocket.h>
 
 #include "../Log/Log.h"
@@ -228,9 +230,12 @@ bool NetworkController::sendOSC( const std::string &ip ,
     try
     {    
 
-        UdpTransmitSocket transmitSocket( IpEndpointName( ip.c_str() , port ) );
+        UdpSocket transmitSocket;
         
-        transmitSocket.SetEnableBroadcast( broadcast );
+        transmitSocket.SetEnableBroadcast( broadcast );        
+        transmitSocket.Connect( IpEndpointName( ip.c_str() , port ));
+        
+
         char buffer[ Output_Buffer_Size ];
         osc::OutboundPacketStream p( buffer, Output_Buffer_Size );
         
@@ -268,14 +273,22 @@ bool NetworkController::sendOSC( const std::string &ip ,
         p<< osc::EndMessage;
         
         transmitSocket.Send( p.Data(), p.Size() );
-        
+//        transmitSocket.SendTo( IpEndpointName( ip.c_str() , port ), p.Data(), p.Size() );
+
         return true;
         
     }
-    catch (...)
+    catch ( const osc::Exception &excep/*  ... */)
     {
-        Log::log("\n caught execption on Osc::send");
+        Log::log("\n caught exception on Osc::send : %s" , excep.what() );
     }
+    
+    catch ( ... )
+    {
+        Log::log("\n caught unknown exception on Osc::send");
+    }
+    
+    
     return false;
 }
 
