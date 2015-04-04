@@ -218,7 +218,11 @@ SocketUdpIn* NetworkController::getSocketForPort( int port )
 /* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
 
 
-bool NetworkController::sendOSC( const std::string &ip , const int port , const std::string &address , const ArgumentsArray &vars )
+bool NetworkController::sendOSC( const std::string &ip ,
+                                 const int port ,
+                                 const std::string &address ,
+                                 const ArgumentsArray &vars ,
+                                bool broadcast /*false*/)
 {
     // try catch runtime error
     try
@@ -226,6 +230,7 @@ bool NetworkController::sendOSC( const std::string &ip , const int port , const 
 
         UdpTransmitSocket transmitSocket( IpEndpointName( ip.c_str() , port ) );
         
+        transmitSocket.SetEnableBroadcast( broadcast );
         char buffer[ Output_Buffer_Size ];
         osc::OutboundPacketStream p( buffer, Output_Buffer_Size );
         

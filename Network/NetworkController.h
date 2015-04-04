@@ -149,7 +149,7 @@ public:
     bool start();
     bool stop();
     
-    bool sendOSC( const std::string &ip , const int port , const std::string &address , const ArgumentsArray &vars  );
+    bool sendOSC( const std::string &ip , const int port , const std::string &address , const ArgumentsArray &vars , bool broadcast = false );
     
     bool addPort    ( int port );
     void removePort ( int port );
