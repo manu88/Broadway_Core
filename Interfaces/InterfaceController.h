@@ -16,7 +16,7 @@
 #include "../Scheduler/Event.h"
 
 #include "../Internal/AbstractController.h"
-
+#include "../Internal/AbstractDelegate.h"
 
 
 #include "SerialInterface.h"
@@ -28,7 +28,7 @@
 /* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
 /* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
 
-class InterfaceControllerDelegate
+class InterfaceControllerDelegate : public AbstractDelegate
 {
     friend class InterfaceController;
     

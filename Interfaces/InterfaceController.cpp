@@ -272,7 +272,7 @@ void InterfaceController::mainLoop()
         for ( auto i : m_inputs )
         {
             
-            if ( i->changed() )
+            if ( i->changed() &&  m_delegate->delegateReadyForController( this )  )
             {
                 m_delegate->inputChanged ( i );
             }

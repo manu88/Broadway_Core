@@ -302,7 +302,8 @@ void NetworkController::ProcessMessage( const osc::ReceivedMessage& m, const IpE
     
 //    ArgumentsArray *array =  ;
     
-    _delegate->oscReceived( ip, remoteEndpoint.port , m.AddressPattern(), *NetworkTools::getArrayFromOSCMessage(m) );
+    if ( _delegate->delegateReadyForController( this ))
+        _delegate->oscReceived( ip, remoteEndpoint.port , m.AddressPattern(), *NetworkTools::getArrayFromOSCMessage(m) );
     
 
 }

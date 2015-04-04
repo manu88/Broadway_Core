@@ -30,6 +30,7 @@
 
 
 #include "../Internal/AbstractController.h"
+#include "../Internal/AbstractDelegate.h"
 #include "../Internal/Thread.h"
 #include "../Scheduler/Scheduler.h"
 #include "../Plateforms/Plateform.h"
@@ -56,7 +57,9 @@ typedef enum
     
 } FORMAT_3D_T;
 
-class DisplayControllerDelegate
+/* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
+
+class DisplayControllerDelegate : public AbstractDelegate
 {
     friend class DisplayController;
     

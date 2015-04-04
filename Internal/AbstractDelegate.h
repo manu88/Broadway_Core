@@ -21,6 +21,9 @@ public:
 protected:
     AbstractDelegate();
     
+    
+    //! Controllers will call this method to check if everything is ok.
+    //! When false is return, the callback is ignored, and this incomming event is lost.
     virtual bool delegateReadyForController( const AbstractController* controller ) = 0;
     
     

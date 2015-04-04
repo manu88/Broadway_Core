@@ -157,8 +157,10 @@ void Scheduler::run()
                 
                 // Call the handler
                 lock.unlock();
-
-                m_delegate->scheduledEventReceived( instance );
+                
+                if ( m_delegate->delegateReadyForController(this ) )
+                    m_delegate->scheduledEventReceived( instance );
+                
                 lock.lock();
                 
                 if ( threadShouldStop() )

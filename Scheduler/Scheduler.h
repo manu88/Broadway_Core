@@ -28,6 +28,7 @@
 #include "../Internal/Object.h"
 #include "../Internal/Thread.h"
 #include "../Internal/AbstractController.h"
+#include "../Internal/AbstractDelegate.h"
 
 #include "Timecode.h"
 #include "Event.h"
@@ -147,7 +148,7 @@ private:
 
 /* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
 
-class SchedulerDelegate
+class SchedulerDelegate : public AbstractDelegate
 {
     friend class Scheduler;
 public:

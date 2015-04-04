@@ -244,7 +244,7 @@ void DisplayController::run()
 void DisplayController::displayChangeNotification( DisplayNotification notification )
 {
     
-    if ( _delegate )
+    if ( _delegate && _delegate->delegateReadyForController( this ) )
         _delegate->displayDidChange( notification );
     
     
