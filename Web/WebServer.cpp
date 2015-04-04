@@ -255,8 +255,15 @@ mg_result WebServer::send_reply(struct mg_connection *conn)
         
         std::string ret = "";
         
-        if (_delegate->isReady() )
-             ret = _delegate->getRequest( conn->remote_ip  , _port , uri.c_str() , *getUriArguments( content));
+        if (_delegate->delegateReadyForController( this ) )
+        {
+            printf("\n Web delegate ready \n");
+            ret = _delegate->getRequest( conn->remote_ip  , _port , uri.c_str() , *getUriArguments( content));
+        }
+        else
+        {
+            printf("\n Web delegate not ready \n");
+        }
 
         
         

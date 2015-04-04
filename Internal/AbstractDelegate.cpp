@@ -7,10 +7,10 @@
 //
 
 #include "AbstractDelegate.h"
+#include <assert.h>
 
 
-AbstractDelegate::AbstractDelegate() :
-_ready ( false ) 
+AbstractDelegate::AbstractDelegate()
 {
     
 }
@@ -21,9 +21,7 @@ AbstractDelegate::~AbstractDelegate()
     
 }
 
-
-
-void AbstractDelegate::setReady( bool ready )
+bool AbstractDelegate::delegateReadyForController( const AbstractController* controller )
 {
-    _ready = ready;
+    assert( false );
 }

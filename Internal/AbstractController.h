@@ -14,7 +14,7 @@
 #include "Thread.h"
 
 
-class AbstractController
+class AbstractController 
 {
 public:
     

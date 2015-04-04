@@ -9,26 +9,23 @@
 #ifndef __MediaCenter__AbstractDelegate__
 #define __MediaCenter__AbstractDelegate__
 
+class AbstractController;
+
 class AbstractDelegate
 {
 public:
 
     virtual ~AbstractDelegate();
-    
-    bool isReady() const
-    {
-        return _ready;
-    }
+
 
 protected:
     AbstractDelegate();
     
-    void setReady( bool ready );
+    virtual bool delegateReadyForController( const AbstractController* controller ) = 0;
     
     
-private:
+
     
-    bool _ready;
     
 };
 

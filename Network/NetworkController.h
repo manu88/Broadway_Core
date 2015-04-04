@@ -24,6 +24,8 @@
 #include "../Internal/ThreadLock.h"
 #include "../Internal/Object.h"
 
+#include "../Internal/AbstractDelegate.h"
+
 #include "../Scheduler/Event.h"
 #include "../Data/ArgumentsArray.h"
 
@@ -61,7 +63,7 @@ class NetworkController;     // forward
 class NetworkControllerLock; // forward
 
 
-class NetworkControllerDelegate : public Object
+class NetworkControllerDelegate : public Object , public AbstractDelegate
 {
     friend class NetworkController;
 public:
