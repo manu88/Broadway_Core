@@ -17,7 +17,8 @@
 
 /* **** **** **** **** **** **** **** **** **** **** **** */
 
-GXElement::GXElement() : 
+GXElement::GXElement() :
+    _elementName              ( ""      ),
     _layer                    ( 0       ),
     _prepared                 ( false   ),
     _shouldBeRemoved          ( false   ),
@@ -27,7 +28,7 @@ GXElement::GXElement() :
     _hidden                   ( false   ),
 
     _layerChanged             ( false   ),
-    m_changed_flag            ( false   ),
+    _changed_flag            ( false   ),
     m_callChangedOnGUIThread  ( true    ),
 
     _parentElement            ( nullptr ),
@@ -191,12 +192,12 @@ void GXElement::elementChanged()
     if ( !m_callChangedOnGUIThread )
     {
         changed();
-        m_changed_flag  = false;
+        _changed_flag  = false;
     }
     
     // set flag to perform call later on GUI Thread
     else
-        m_changed_flag  = true;
+        _changed_flag  = true;
 
 
     if (_parentElement)

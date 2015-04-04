@@ -14,8 +14,8 @@
 
 namespace Utils
 {
-    static bool checkLittleEndian();
-    static bool checkBigEndian();
+    bool checkLittleEndian();
+    bool checkBigEndian();
 
 }
 

@@ -11,11 +11,14 @@
 
 #include <sstream>
 
+
+#include "ArgumentsArray.h"
+
 class ValueImpl : public Object
 {
 public:
     
-    enum { T_BOOL , T_INT , T_FLOAT , T_DOUBLE , T_STRING };
+    enum { T_BOOL , T_INT , T_FLOAT , T_DOUBLE , T_STRING , T_LIST };
     
     int retain()
     {
@@ -35,7 +38,8 @@ public:
     virtual int         getInt() const = 0;
     virtual float       getFloat() const = 0;
     virtual double       getDouble() const = 0;
-    virtual std::string  getString() const = 0;
+    virtual const std::string  getString() const = 0;
+    
     
     bool isInt() const
     {
@@ -58,6 +62,11 @@ public:
     bool isBool() const
     {
         return _type == T_BOOL;
+    }
+    
+    bool isList() const
+    {
+        return _type == T_LIST;
     }
 
 protected:
@@ -139,7 +148,7 @@ public:
     
     /* Get value */
     
-    std::string getString() const
+    const std::string getString() const
     {
         if ( isString() )
             return (reinterpret_cast<const Value< std::string >*>(this) )->getValue();
@@ -235,6 +244,7 @@ public:
         
     }
     
+
     
     template<typename Type>
     bool isType() const
@@ -305,6 +315,8 @@ private:
     
     T _data;
 };
+
+
 
 
 

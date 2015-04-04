@@ -204,10 +204,10 @@ void GXScene::updateElementInRect( GXElement *element , const GXRect &rect )
     
     
     
-    if ( element->m_changed_flag && element->m_callChangedOnGUIThread)
+    if ( element->_changed_flag && element->m_callChangedOnGUIThread)
     {
         element->changed();
-        element->m_changed_flag = false;
+        element->_changed_flag = false;
         
     }
     

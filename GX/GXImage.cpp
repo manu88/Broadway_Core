@@ -5,7 +5,7 @@
 //  Created by Manuel Deneu on 23/09/14.
 //  Copyright (c) 2014 Manuel Deneu. All rights reserved.
 //
-
+#include "../Internal/Utils.h"
 
 
 
@@ -53,6 +53,16 @@ m_image        ( 0 )
 }
 
 
+void GXImage::setImage( const std::string &filename )
+{
+    if ( m_filename != filename)
+    {
+        m_filename = filename;
+        setUnprepared();
+        changed();
+    }
+}
+
 void GXImage::fitImageToBounds( bool autoScale )
 {
     
@@ -60,6 +70,7 @@ void GXImage::fitImageToBounds( bool autoScale )
 
 void GXImage::paint( const GXRect &rect , GXAnimation* anim )
 {
+
     if ( m_image == VG_INVALID_HANDLE )
         return ;
     
@@ -96,6 +107,8 @@ GXImage::~GXImage()
 
 void GXImage::prepareRessources()
 {
+    printf("\n create IMAGE");
+    
     const std::string extension = StringOperations::toLowerCase( FileSystem::getFileExtension( m_filename) );
     
     if (   extension == "jpg"
@@ -145,7 +158,12 @@ void GXImage::deleteRessources()
 
 void GXImage::changed()
 {
-    // notif if bounds changed. 
+    // notif if bounds changed.
+
+    /*
+    deleteRessources();
+    prepareRessources();
+     */
     
 }
 
@@ -158,8 +176,10 @@ void GXImage::changed()
     
     unsigned int width = -1;
     unsigned int height = -1;
-    
+    printf("\n createJPEG IMAGE");
 #ifdef HAVE_JPEG_LIB
+    printf("\n DO createJPEG IMAGE");
+
     FILE       *infile = nullptr;
     struct     jpeg_decompress_struct jdc;
     struct     jpeg_error_mgr jerr;
@@ -297,7 +317,8 @@ void GXImage::changed()
     
 
 #ifdef HAVE_PNG_LIB
-    
+
+    printf("\n create PNG  IMAGE");    
     VGImageFormat rgbaFormat;
     
     

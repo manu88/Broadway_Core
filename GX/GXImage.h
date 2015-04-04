@@ -37,6 +37,8 @@ public:
     GXImage(const std::string &filename);
     ~GXImage();
     
+    void setImage( const std::string &filename );
+    
 
     void fitImageToBounds( bool autoScale );
 

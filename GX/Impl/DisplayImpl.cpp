@@ -403,7 +403,7 @@ void DisplayImpl::update()
         
     }
      */
-    assert( ret == VG_NO_ERROR );
+//    assert( ret == VG_NO_ERROR );
     
     // fix for raspberry : rendering freezes after a short time ...
 //    glFinish();
@@ -421,7 +421,41 @@ void DisplayImpl::checkErrors()
 {
 #ifdef TARGET_RASPBERRY_PI
     VGErrorCode ret = vgGetError();
-    assert( ret == VG_NO_ERROR );
+    
+/*
+        switch (ret) {
+            case VG_BAD_HANDLE_ERROR:
+                printf("\nVG_BAD_HANDLE_ERROR");
+                break;
+            case VG_ILLEGAL_ARGUMENT_ERROR:
+                printf("\nVG_ILLEGAL_ARGUMENT_ERROR");
+                break;
+            case VG_OUT_OF_MEMORY_ERROR:
+                printf("\nVG_OUT_OF_MEMORY_ERROR");
+                break;
+            case VG_PATH_CAPABILITY_ERROR:
+                printf("\nVG_PATH_CAPABILITY_ERROR");
+                break;
+            case VG_UNSUPPORTED_IMAGE_FORMAT_ERROR:
+                printf("\nVG_UNSUPPORTED_IMAGE_FORMAT_ERROR");
+                break;
+            case VG_UNSUPPORTED_PATH_FORMAT_ERROR:
+                printf("\nVG_UNSUPPORTED_PATH_FORMAT_ERROR");
+                break;
+            case VG_IMAGE_IN_USE_ERROR:
+                printf("\nVG_IMAGE_IN_USE_ERROR");
+                break;
+            case VG_NO_CONTEXT_ERROR:
+                printf("\nVG_NO_CONTEXT_ERROR");
+                break;
+            default:
+                printf("\nUNKNOWN_ERROR");
+        }
+
+*/
+    
+    
+   // assert( ret == VG_NO_ERROR );
 #endif
 }
 

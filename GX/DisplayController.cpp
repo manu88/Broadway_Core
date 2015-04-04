@@ -188,11 +188,12 @@ void DisplayController::run()
                 break;
             }
             
-            if ( m_currentElement->m_changed_flag && m_currentElement->m_callChangedOnGUIThread)
+            if ( m_currentElement->_changed_flag && m_currentElement->m_callChangedOnGUIThread)
             {
 //                Lock();
                 m_currentElement->changed();
-                m_currentElement->m_changed_flag = false;
+                
+                m_currentElement->_changed_flag = false;
 //                UnLock();
                 
             }

@@ -22,10 +22,25 @@
 #include "../GXDataType/GXColors.h"
 
 class GXAnimation; // forward
+class DisplayController;
+
 
 class GXElement : public virtual Element
 {
 public:
+    
+    //! Temp. function
+    const GXElement* getTop() const
+    {
+        return getTopElement();
+    }
+    
+    const DisplayController* getController() const
+    {
+        return getTopController();
+    }
+    
+    /**/
     
     friend class DisplayController;
     friend class GXScene;
@@ -175,6 +190,7 @@ protected:
     // can be called synchronusly on caller's thread,
     // or on GUI thread if performChangedSignalOnGUIThread( true ) is called.
     virtual void changed() = 0;
+
     
     virtual void childRemoved(GXElement *element);
     
@@ -202,6 +218,11 @@ protected:
         return nullptr;
     }
     
+    const DisplayController* getTopController() const
+    {
+        return ( DisplayController* ) getTopElement();
+    }
+    
 
 
 private:
@@ -222,7 +243,7 @@ private:
     bool            _hidden;
     bool            _layerChanged;
     
-    bool            m_changed_flag;
+    bool            _changed_flag;
     bool            m_callChangedOnGUIThread;
     
     GXElement       *_parentElement;

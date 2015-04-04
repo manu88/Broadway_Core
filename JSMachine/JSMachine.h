@@ -230,7 +230,6 @@ public:
         return ret;
     }
 
-    template<typename Type>
     static std::string getDatabaseAsJSArrayString( const Database &data)
     {
         std::ostringstream stream;

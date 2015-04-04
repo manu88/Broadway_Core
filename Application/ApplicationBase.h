@@ -17,15 +17,51 @@ class ApplicationBase
 public:
     virtual ~ApplicationBase();
     
-    /* Application configuration base */
+    /* *** *** */
+    // Main mechanims
+    
+    bool initializeApp();
+    bool start();
+    bool releaseApp();
+    
+    
+    /* *** *** */
+    // Application configuration base
+    
+    //! Perform a deep reload of the Database. Everything will be erased prior to read!
+    inline bool reloadDatabase()
+    {
+        return parseConfig();
+    }
+    
+    //! return the database object.
+    /* See @class Database. */
     const Database &getDatabase() const
     {
         return _appData;
     }
     
-    bool initializeApp();
-    bool start();
-    bool releaseApp();
+    const Variant* getDataValue( const std::string &name , const Variant &def )
+    {
+        if ( _appData.itemExists( name ) )
+            return _appData.getValueForItemName( name );
+        else
+            return &def;
+        
+        
+    }
+    
+    //! Change the application datafile. ReloadDatabase needs to be called in order to parse the new file
+    void changeDataFile( const std::string &file )
+    {
+        _fileConfig = file;
+    }
+    
+    //! get the app datafile's  full path
+    const std::string &getDataFile() const
+    {
+        return _fileConfig;
+    }
     
     /* *** *** */
     // quit signal

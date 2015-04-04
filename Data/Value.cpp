@@ -9,6 +9,11 @@
 #include "Value.h"
 #include "ValueImpl.h"
 
+#include "ArgumentsArray.h"
+
+#ifdef USE_JAVA_INTERPRETER
+#include "../JSMachine/JSMachine.h"
+#endif
 /* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
 
 Variant::Variant( int val):
@@ -34,6 +39,62 @@ _variant ( new Value< bool >( val ,ValueImpl::T_BOOL ) )
 {
     
 }
+
+/*
+Variant::Variant( VariantList_ val):
+_variant ( new Value< ArgumentArray >( val ,ValueImpl::T_LIST ) )
+{
+    
+}
+*/
+/* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
+
+#ifdef USE_JAVA_INTERPRETER
+Variant::Variant ( CScriptVar* var )
+{
+    if ( var->isInt() )
+        Variant ( var->getInt() );
+    
+    else if ( var->isBool() )
+        Variant ( var->getBool() );
+    
+    else if ( var->isDouble() )
+        Variant ( var->getDouble() );
+
+    else if ( var->isString() )
+        Variant ( var->getString() );
+    
+    else if ( var->isArray() )
+    {
+        const int size = var->getArrayLength();
+        
+        for( int i = 0; i< size ; i++)
+        {
+            
+        }
+    }
+    /*
+
+
+     bool isNumeric()
+     bool isFunction()
+     bool isObject() {
+     bool isArray() {
+     bool isNative() {
+     bool isUndefined
+     bool isNull()
+     bool isBasic()
+     */
+    
+    
+    
+
+    
+}
+
+#endif
+
+/* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
 
 
 Variant::Variant(const std::string &val):
@@ -103,6 +164,7 @@ const std::string Variant::getString() const
     return _variant->getString();
 }
 
+
 /* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
 
 template <typename T>
@@ -145,6 +207,11 @@ bool Variant::isBool() const
 bool Variant::isString() const
 {
     return _variant->isString();
+}
+
+bool Variant::isList() const
+{
+    return _variant->isList();
 }
 
 /* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */

@@ -15,9 +15,11 @@
 /* This is the public part of Variant/Value implementation */
 
 class ValueImpl;
+class ArgumentArray;
 
 class Variant;
 typedef std::vector<Variant> VariantList;
+typedef ArgumentArray VariantList_;
 
 class Variant
 {
@@ -36,6 +38,16 @@ public:
     
     Variant( bool val );
     
+    Variant( VariantList_ val);
+    
+#ifdef USE_JAVA_INTERPRETER
+    class CScriptVar;
+    
+    Variant ( const CScriptVar* var );
+#endif
+    
+    /* **** **** */
+    
     /* copy & assignment ctors */
     
     Variant ( const Variant &val );
@@ -52,6 +64,8 @@ public:
     double getDouble() const;
     bool   getBool() const;
     const  std::string getString() const;
+    
+    const VariantList_ &getList() const;
 
     
     
@@ -67,6 +81,7 @@ public:
     bool isDouble() const;
     bool isBool() const;
     bool isString() const;
+    bool isList() const;
 
     
 
