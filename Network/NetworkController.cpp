@@ -280,12 +280,12 @@ bool NetworkController::sendOSC( const std::string &ip ,
     }
     catch ( const osc::Exception &excep/*  ... */)
     {
-        Log::log("\n caught exception on Osc::send : %s" , excep.what() );
+//        Log::log("\n caught exception on Osc::send : %s" , excep.what() );
     }
     
     catch ( ... )
     {
-        Log::log("\n caught unknown exception on Osc::send");
+//        Log::log("\n caught unknown exception on Osc::send");
     }
     
     
