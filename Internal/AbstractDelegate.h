@@ -23,8 +23,9 @@ protected:
     
     
     //! Controllers will call this method to check if everything is ok.
-    //! When false is return, the callback is ignored, and this incomming event is lost.
-    virtual bool delegateReadyForController( const AbstractController* controller ) = 0;
+    //! When false is returned, the callback is ignored, and this incomming event is lost.
+    //! when not reimplemented by sub-classes, the defaulf impl. will always return true;
+    virtual bool delegateReadyForController( const AbstractController* controller );
     
     
 

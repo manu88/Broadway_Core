@@ -9,6 +9,7 @@
 
 #include <assert.h>
 #include "DisplayController.h"
+#include "../Plateforms/Plateform.h"
 #include "../Internal/ThreadLock.h"
 #include "../Log/Log.h"
 
@@ -381,3 +382,39 @@ bool DisplayController::loadConfigurationFile( const std::string &file)
                                 };
 }
 
+
+/*static*/ void DisplayController::dumpImplementation()
+{
+    Log::log("###################################");
+    Log::log("GX Implementated functions");
+    Log::log("Plateform : %s", ScopedPlateformConfig::getPlateformName().c_str() );
+    /* **** **** **** **** **** **** **** **** */
+#ifdef USE_GRAPHICS
+    Log::log("USE_GRAPHICS Ok ");
+#else
+    Log::log("USE_GRAPHICS not installed ");
+#endif
+    /* **** **** **** **** **** **** **** **** */
+    /* **** **** **** **** **** **** **** **** */
+#ifdef USE_GRAPHICS_HELPERS
+    Log::log("USE_GRAPHICS_HELPERS Ok ");
+#else
+    Log::log("USE_GRAPHICS_HELPERS not installed ");
+#endif
+    
+    Log::log("Images support : ");
+    #ifdef HAVE_JPEG_LIB
+        Log::log("\tJpeg Lib ");
+    #endif
+    #ifdef HAVE_PNG_LIB
+        Log::log("\tPng Lib ");
+    #endif
+    
+    #if  !defined( HAVE_JPEG_LIB ) && !defined( HAVE_PNG_LIB )
+        Log::log("\tNo image support ");
+    #endif
+
+    /* **** **** **** **** **** **** **** **** */
+
+    Log::log("###################################");
+}

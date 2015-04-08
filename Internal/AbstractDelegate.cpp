@@ -21,7 +21,8 @@ AbstractDelegate::~AbstractDelegate()
     
 }
 
+
 bool AbstractDelegate::delegateReadyForController( const AbstractController* controller )
 {
-    assert( false );
+    return true;
 }

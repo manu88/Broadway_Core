@@ -81,6 +81,20 @@ public:
         deInitializePlateform();
     }
     
+    static std::string getPlateformName()
+    {
+        #ifdef TARGET_RASPBERRY_PI
+            return "RaspberryPi";
+        #elif defined __APPLE__
+            return "MacOs";
+        #elif defined TARGET_CUBIE2
+            return "CubieBoard2";
+        #elif defined TARGET_BEAGLEBONE_BLACK
+            return "BeagleBoneBlack";
+        #endif
+        
+            return "Unknown";
+    }
 
 };
 

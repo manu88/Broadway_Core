@@ -201,6 +201,10 @@ public:
     
     static Database getDisplayInformationsAsDatabase( const DisplayInformations &info);
     static DisplayInformations   getDisplayInformationsFromDatabase( Database &data);
+    
+    
+    //! Will write on logging system infos regarding the currentlt implemented GXGraphics functions
+    static void dumpImplementation();
 
     
 private:
