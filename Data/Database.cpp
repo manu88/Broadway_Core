@@ -8,7 +8,6 @@
 
 #include "Database.h"
 
-
 Database::~Database()
 {
 
@@ -186,6 +185,23 @@ bool Database::saveToFile(const std::string &fileName , const char delim  ) cons
 }
 
 
+
+const VariantList Database::getValueForItemNameAsVector( const std::string &item) const
+{
+    VariantList list;
+    
+    std::istringstream f( getValueForItemName( item )->getString() );
+    std::string s;
+    
+    while (getline(f, s, ' '))
+    {
+        if ( !s.empty() )
+            list.push_back( s );
+    }
+    
+    return list;
+    
+}
 
 
 

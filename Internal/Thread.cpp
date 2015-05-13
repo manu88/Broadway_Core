@@ -69,6 +69,7 @@ bool Thread::startThread()
 
                                                    self->_shouldStop = false;
                                                    
+                                                   self->setThreadID();
                                                    self->run();
                                                    
                                                    // after thread's task
@@ -83,14 +84,20 @@ bool Thread::startThread()
     return false;
 }
 
+void Thread::setThreadID()
+{
+    _threadID = std::this_thread::get_id();
+}
+
 bool Thread::stopThread()
 {
+    _shouldStop = true;
     
     if ( _thread )
     {
         wakeUpThread();
         
-        _shouldStop = true;
+
 
         _thread->join();
         
@@ -158,7 +165,7 @@ void Thread::threadEnded()
 
 bool Thread::calledFromThisThread() const noexcept
 {
-    return std::this_thread::get_id() == _thread->get_id();
+    return std::this_thread::get_id() == _threadID;// _thread->get_id();
 }
 
 /* **** **** **** **** **** **** **** **** **** **** **** **** */

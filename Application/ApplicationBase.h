@@ -10,19 +10,41 @@
 #define __MediaCenter__ApplicationBase__
 
 #include "../Data/Database.h"
+#include "../Scheduler/Scheduler.h"
 
-class ApplicationBase
+class ApplicationBase : public SchedulerDelegate
 {
     
 public:
     virtual ~ApplicationBase();
     
+    virtual void eventReceived( const Event &event) = 0;
+
+    
     /* *** *** */
     // Main mechanims
     
-    bool initializeApp();
+
     bool start();
-    bool releaseApp();
+    bool sendQuitSignal()
+    {
+        if (!_isInitialized )
+        
+            return false;
+        
+        _shouldQuit = true;
+        releaseApp();
+
+        return true;
+    }
+    
+    
+    Scheduler &getScheduler() 
+    {
+        return _scheduler;
+    }
+    
+    
     
     
     /* *** *** */
@@ -66,19 +88,23 @@ public:
     /* *** *** */
     // quit signal
     
-    void sendQuitSignal()
-    {
-        _shouldQuit = true;
-    }
+
     
-    bool shouldQuit() const
+    bool shouldQuit()
     {
+        releaseApp();
+        
         return _shouldQuit;
     }
     
     bool isRunning() const
     {
         return !_shouldQuit;
+    }
+    
+    bool isInitialized() const
+    {
+        return _isInitialized;
     }
 
     /* *** *** */
@@ -96,14 +122,32 @@ protected:
     
     ApplicationBase( const std::string &fileConfig);
     
+    bool sendCommand( const std::string & addressPattern, const VariantList &arguments);
+    
     bool parseConfig();
+    
+    bool initializeApp();
+    bool releaseApp();
+    
+    virtual bool applicationWillStart();
+    virtual void applicationDidStart();
+    virtual void applicationWillStop();
+    virtual void applicationDidStop();
+    
+    
+    void scheduledEventReceived( Event &event);
+
     
 private:
     Database               _appData;
     std::string           _fileConfig;
     
+    bool  _isInitialized;
     bool  _shouldQuit;
     bool  _hasQuit;
+    
+    Scheduler _scheduler;
+    int _didStartEvent;
     
 };
 

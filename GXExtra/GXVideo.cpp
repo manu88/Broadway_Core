@@ -32,6 +32,9 @@ GXVideo::GXVideo() :
 GXVideo::~GXVideo()
 {
     stop();
+    
+    if (m_isPrepared )
+        releasePlayer();
 }
 
 /* **** **** **** **** **** **** **** **** **** **** **** **** **** */
@@ -113,6 +116,20 @@ void GXVideo::seekToTC( Timecode tc )
     double tcInS = tc.getInMs() / 1000.0f;
     
     m_player.seekTo( tcInS );
+}
+
+/* **** **** **** **** **** **** **** **** **** **** **** **** **** */
+
+void GXVideo::setSpeed( float speed )
+{
+    m_player.SetSpeed( (int ) speed );
+}
+
+/* **** **** **** **** **** **** **** **** **** **** **** **** **** */
+
+float GXVideo::getSpeed() const
+{
+    return 1.0f;
 }
 
 /* **** **** **** **** **** **** **** **** **** **** **** **** **** */

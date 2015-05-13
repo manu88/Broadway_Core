@@ -43,6 +43,9 @@ public:
         return !_isInactive;
     }
     
+    static bool allControllersUnReady();
+    static bool allControllersReady();
+    
 
     
 protected:
@@ -91,12 +94,11 @@ protected:
 private:
     static bool waitForAllControllersToBeReady(int timeOut = 10 /*SECS*/);
     static bool waitForControllerToBeReady( AbstractController*controller , int timeOut = 10 /*SECS*/);
-    static bool allControllersReady();
+    static bool waitForControllerToFinish( AbstractController*controller , int timeOut = 10 /*SECS*/);
     
     static int countReadyControllers();
     
     static bool waitForAllControllersToFinish(int timeOut = 10 /*SECS*/);
-    static bool allControllersUnReady();
 
     bool _isReady;
     bool _isInactive;

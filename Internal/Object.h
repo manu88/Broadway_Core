@@ -10,10 +10,14 @@
 #define __Broadway_test__Object__
 
 #include <iostream>
-//#include <unordered_set>
 #include <vector>
 #include <set>
 #include <mutex>
+
+#include "../Data/Variant.h"
+
+
+
 
 /* **** **** **** **** **** **** **** **** **** **** **** **** **** */
 class Object;
@@ -46,9 +50,25 @@ private:
 /* **** **** **** **** **** **** **** **** **** **** **** **** **** */
 
 
+
 class Object
 {
     friend class ObjectWatcher;
+public:
+    
+    int getId() const
+    {
+        return num_obj;
+    }
+    
+    const std::string &getClassName() const
+    {
+        return className;
+    }
+    
+    const Variant performSelectorWithArguments( const std::string &selector , const Variant  &arguments) ;
+    const Variant performSelectorWithArguments( const std::string &selector , const Variant  &arguments) const;
+    
     
 protected:
     Object();
@@ -58,9 +78,9 @@ protected:
     virtual ~Object();
     
     //! A good way to keep track of objects.
-    /* 
-     className will be printed when an error occur in Object's management,
-     e.g when ObjectWatcher has to remove any instance.
+    /* \
+       \ className will be printed when an error occur in Object's management,
+       \ e.g when ObjectWatcher has to remove any instance.
      */
     std::string className;
     

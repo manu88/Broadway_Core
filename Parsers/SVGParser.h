@@ -19,7 +19,7 @@
 // forward
 struct NSVGimage;
 struct NSVGpaint;
-class GXPaintJS;
+class GXAsyncPainter;
 
 class SVGParser : public Object
 {
@@ -29,7 +29,7 @@ public:
     
     bool parseSvgFile( const std::string &filename );
     
-    bool populateGXPaintJS( GXPaintJS* element , bool shouldCleanBefore);
+    bool populateGXPaintJS( GXAsyncPainter* element , bool shouldCleanBefore);
     
     void dump();
     

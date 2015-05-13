@@ -158,6 +158,9 @@ public:
     
     void seekToTC( Timecode tc );
     
+    void setSpeed( float speed );
+    float getSpeed() const;
+    
     /* **** **** **** **** **** **** **** **** */
     // accessors
     

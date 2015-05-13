@@ -9,6 +9,8 @@
 #ifndef Broadway_test_Plateform_h
 #define Broadway_test_Plateform_h
 
+#include <string>
+
 #ifdef TARGET_RASPBERRY_PI
     #include "RaspberryPI/RaspberryPI.h"
 

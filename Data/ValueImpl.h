@@ -11,14 +11,25 @@
 
 #include <sstream>
 
-
-#include "ArgumentsArray.h"
+/* **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
+/* Bas class for Value*/
 
 class ValueImpl : public Object
 {
+    friend class Variant;
 public:
     
-    enum { T_BOOL , T_INT , T_FLOAT , T_DOUBLE , T_STRING , T_LIST };
+    enum {
+        T_NULL ,
+        T_BOOL ,
+        T_INT ,
+        T_FLOAT ,
+        T_DOUBLE ,
+        T_STRING ,
+        T_LIST,
+        T_BYTES
+
+         };
     
     int retain()
     {
@@ -30,16 +41,28 @@ public:
         return --_refCount;
     }
     
+    int refCount() const
+    {
+        return _refCount;
+    }
+    
     
     virtual ~ValueImpl()
     {}
     
-    virtual bool        getBool() const = 0;
-    virtual int         getInt() const = 0;
-    virtual float       getFloat() const = 0;
-    virtual double       getDouble() const = 0;
-    virtual const std::string  getString() const = 0;
+    /* **** **** **** **** **** **** **** **** **** **** **** */
     
+    virtual bool               getBool() const = 0;
+    virtual int                getInt() const = 0;
+    virtual float              getFloat() const = 0;
+    virtual double             getDouble() const = 0;
+    virtual const std::string  getString() const = 0;
+    virtual const VariantList  &getList() const = 0;
+    virtual       VariantList  &getList() = 0;
+    
+    virtual const std::vector< uint8_t > getByteArray() const = 0;
+    
+    /* **** **** **** **** **** **** **** **** **** **** **** */
     
     bool isInt() const
     {
@@ -68,11 +91,26 @@ public:
     {
         return _type == T_LIST;
     }
+    
+    bool isNull() const
+    {
+        return _type == T_NULL;
+    }
+    
+    bool isByteArray() const
+    {
+        return _type == T_BYTES;
+    }
+    
+    int getType() const
+    {
+        return _type;
+    }
+    
+    /* **** **** **** **** **** **** **** **** **** **** **** */
 
 protected:
-    
 
-    
     int _type;
     
     int _refCount;
@@ -109,42 +147,29 @@ public:
     {
     }
     
-    const T getValue() const
+    const T &getValue() const
     {
         return _data;
     }
     
+    T &getValue()
+    {
+        return _data;
+    }
+    
+    
+    VariantList  &getList()
+    {
+        return ( reinterpret_cast< Value < VariantList > * >( this ) )->getValue();
+    }
+
+
+
     void setValue( T val)
     {
         _data = val;
     }
-    
-    /*
-    bool isInt() const
-    {
-        return isType<int>();
-    }
-    
-    bool isFloat() const
-    {
-        return isType<float>();
-    }
-    
-    bool isDouble() const
-    {
-        return isType<double>();
-    }
-    
-    bool isString() const
-    {
-        return isType<std::string>();
-    }
-    
-    bool isBool() const
-    {
-        return isType<bool>();
-    }
-    */
+
     
     /* Get value */
     
@@ -164,6 +189,7 @@ public:
         
         else if ( isInt() )
             return std::to_string( (reinterpret_cast<const Value< int >*>(this) )->getValue() );
+        
         
         
         return "undefined";
@@ -244,14 +270,32 @@ public:
         
     }
     
-
+    const VariantList  &getList() const
+    {
+        return (reinterpret_cast<const Value< VariantList >*>(this) )->getValue();
+    }
     
+    const std::vector< uint8_t > getByteArray() const
+    {
+        std::vector< uint8_t> ret;
+        
+        if (isString() )
+        {
+            for (const auto &c : getString() )
+            {
+                ret.push_back( ( uint8_t ) c);
+            }
+        }
+        return ret;
+    }
+
+
+
     template<typename Type>
     bool isType() const
     {
         return ( typeid( _data ) == typeid ( Type ) );
     }
-    
     
 private:
     inline const std::vector<Variant> breakInList( const ValueImpl* val) const

@@ -114,9 +114,7 @@ void JSMachine::prepareEnvironment()
     
     _machine.addNative( "function dump()"                      , &js_dumpStack, this);
     _machine.addNative( "function print(text)"                 , &js_print, 0);
-    _machine.addNative( "function getIP() "                    , &js_getIP,0);
     _machine.addNative( "function readDataFile( filePath )"    , &js_readDataFile, 0);
-    _machine.addNative( "function readDir( directoryPath , extensions )"    , &js_readDir,0);
     
     _machine.addNative( "function system( command )"           , &js_system, this );
     _machine.addNative( "function getTime()"                   , &js_getTime,0);
@@ -183,12 +181,12 @@ bool JSMachine::executeBuffer( const std::string &buffer )
 }
 
 /* **** **** **** **** **** **** **** **** **** **** **** **** **** */
-/*
+
 CScriptVarLink JSMachine::evaluate( const std::string &buffer)
 {
     try
     {
-        return m_machine.evaluateComplex( buffer );
+        return _machine.evaluateComplex( buffer );
     }
     
     catch (CScriptException *e)
@@ -198,7 +196,7 @@ CScriptVarLink JSMachine::evaluate( const std::string &buffer)
     
     return CScriptVarLink(new CScriptVar()); // undefined
 }
- */
+
 
 std::string JSMachine::evaluateAsString(const std::string &buffer)
 {
@@ -220,10 +218,41 @@ std::string JSMachine::evaluateAsString(const std::string &buffer)
     {
         
     }
-        
+    
 
-   
+
+    
     return ret;
+}
+
+void JSMachine::test()
+{
+    CScriptVarLink *child = _machine.root->findChild("timer1");
+    
+    if (child )
+    {
+        CScriptVar *var =  child->var;
+        
+        if ( var->isObject() )
+        {
+            printf("\n is object");
+            CScriptVarLink *v =var->firstChild;
+            while (v)
+            {
+                if ((v->name.compare("test")==0))// && v->var->isInt() )
+                {
+                    
+                }
+                v = v->nextSibling;
+            }
+            
+            
+        }
+        printf("\n child name '%s'" , child->name.c_str() );
+    }
+    else
+        printf("\n NO child ");
+    
 }
 
 /* **** **** **** **** **** **** **** **** **** **** **** **** **** */
@@ -432,60 +461,7 @@ void JSMachine::clearStack()
     }
 }
 
-/* **** **** **** **** **** **** **** **** **** **** **** **** **** */
 
-/*static*/ void JSMachine::js_getIP(CScriptVar *v, void *userdata)
-{
-    struct ifaddrs * ifAddrStruct = NULL;
-    struct ifaddrs * ifa          = NULL;
-    void * tmpAddrPtr             = NULL;
-    
-    getifaddrs( &ifAddrStruct );
-    
-    for (ifa = ifAddrStruct; ifa != NULL; ifa = ifa->ifa_next)
-    {
-        if (!ifa->ifa_addr)
-        {
-            continue;
-        }
-        
-        // check it is IP4
-        if (ifa->ifa_addr->sa_family == AF_INET)
-        {
-            // is a valid IP4 Address
-            tmpAddrPtr= &( ( struct sockaddr_in * ) ifa->ifa_addr )->sin_addr;
-
-            char addressBuffer[INET_ADDRSTRLEN];
-            
-            inet_ntop(AF_INET, tmpAddrPtr, addressBuffer, INET_ADDRSTRLEN);
-
-            v->setReturnVar( new CScriptVar( addressBuffer ) );
-            
-            if (strcmp(ifa->ifa_name, "eth0") == 0)
-                v->setReturnVar( new CScriptVar( addressBuffer ) );
-            
-            //Log::log("%s IP4 Address %s\n", ifa->ifa_name, addressBuffer);
-            
-        }
-
-        // check it is IP6
-        else if (ifa->ifa_addr->sa_family == AF_INET6)
-        {
-            // is a valid IP6 Address
-            tmpAddrPtr= &( ( struct sockaddr_in6 * ) ifa->ifa_addr )->sin6_addr;
-
-            char addressBuffer[INET6_ADDRSTRLEN];
-            inet_ntop(AF_INET6, tmpAddrPtr, addressBuffer, INET6_ADDRSTRLEN);
-            
-            
-            if (strcmp(ifa->ifa_name, "eth0") == 0)
-                v->setReturnVar( new CScriptVar( addressBuffer ) );
-            
-//            Log::log("%s IP6 Address %s\n", ifa->ifa_name, addressBuffer);
-        }
-    }
-    if (ifAddrStruct!=NULL) freeifaddrs(ifAddrStruct);
-}
 
 /* **** **** **** **** **** **** **** **** **** **** **** **** **** */
 
@@ -511,135 +487,6 @@ void JSMachine::clearStack()
     v->setReturnVar( vars );
     
 }
-
-/* **** **** **** **** **** **** **** **** **** **** **** **** **** */
-
-/*static*/ void JSMachine::js_readDir( CScriptVar *v, void *userdata )
-{
-    DIR * d;
-
-    
-    /* Open the current directory. */
-    
-    const char* dir_name = v->getParameter("directoryPath")->getString().c_str();
-    
-    std::vector<std::string> extensions;
-    
-    bool checkExtentions = true;
-    
-    
-    // une seule extension
-    if ( v->getParameter("extensions")->isString()  )
-    {
-        if (v->getParameter("extensions")->getString() == "*" )
-            checkExtentions = false;
-        else
-            extensions.push_back( v->getParameter("extensions")->getString() );
-    }
-    
-    // plusieurs extensions sous forme d'un array
-    else if ( v->getParameter("extensions")->isArray()  )
-    {
-        for (int i = 0; i<v->getParameter("extensions")->getArrayLength() ; i++ )
-        {
-            if (v->getParameter("extensions")->getArrayIndex(i)->getString() != "*" )
-                extensions.push_back( v->getParameter("extensions")->getArrayIndex(i)->getString() );
-        }
-    }
-    
-    /*
-    printf("\n Check files for : ");
-    
-    for (auto e : extensions)
-        printf(" '%s' ,",e.c_str() );
-    */
-    
-    d = opendir ( dir_name );
-
-    CScriptVar* vars =  new CScriptVar();
-    
-    if ( !d )
-    {
-        Log::log ( "Cannot open directory '%s': %s",
-                 dir_name, strerror (errno));
-        
-        v->setReturnVar( vars ); // undef
-        return;
-    }
-    
-    // ok
-    
-    vars->setArray();
-    
-    int count = 0;
-    
-    while ( 1 )
-    {
-        struct dirent * entry;
-        
-        entry = readdir (d);
-        
-        if (! entry)
-        {
-            break;
-        }
-        
-        if (   ( strcmp( entry->d_name , "."  ) != 0 )
-            && ( strcmp( entry->d_name , ".." ) != 0 )
-            )
-        {
-            
-            if (checkExtentions)
-                for (auto e : extensions)
-                {
-                    if (has_suffix(entry->d_name, e))
-                    {
-                        vars->setArrayIndex( count , new CScriptVar( std::string( entry->d_name ) ) );
-                        count++;
-                    }
-                }
-            else
-            {
-                vars->setArrayIndex( count , new CScriptVar( std::string( entry->d_name ) ) );
-                count++;
-            }
-
-            
-        }
-    }
-    
-    // ABC Sort
-    
-    for ( int i = 0; i < count - 1 ; i++)
-    {
-        for (int j = i + 1; j < count; j++)
-        {
-            
-            if (strcmp( vars->getArrayIndex( i )->getString( ).c_str() , vars->getArrayIndex( j )->getString( ).c_str()  ) > 0)
-            {
-                const std::string temp =  vars->getArrayIndex( i )->getString( );
-                
-                vars->getArrayIndex( i )->setString( vars->getArrayIndex( j )->getString( ) );
-                
-                vars->getArrayIndex( j )->setString( temp );
-            }
-        }
-    }
-    
-    // end of sort
-    
-    v->setReturnVar( vars );
-    
-    /* Close the directory. */
-    if ( closedir (d) )
-    {
-        Log::log ("Could not close '%s': %s",
-                 dir_name, strerror (errno));
-        return;
-    }
-}
-
-/* **** **** **** **** **** **** **** **** **** **** **** **** **** */
 
 /*static*/ void JSMachine::js_system( CScriptVar *v, void *userdata )
 {
@@ -684,22 +531,11 @@ void JSMachine::clearStack()
     }
 }
 
-
-/* **** **** **** **** **** **** **** **** **** **** **** **** **** */
-
-bool has_suffix(const std::string &str, const std::string &suffix)
-{
-    return str.size() >= suffix.size() &&
-    str.compare(str.size() - suffix.size(), suffix.size(), suffix) == 0;
-}
-
-
 /* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
 
-/*static*/ std::unique_ptr<ArgumentsArray> JSMachine::getArgumentsFromJSArray( CScriptVar *vars )
+/*static*/ VariantList JSMachine::getArgumentsFromJSArray( CScriptVar *vars )
 {
-    // TODO: rendre le bordel récursif
-    ArgumentsArray* array = new ArgumentsArray();
+    VariantList ret;
     
     const int size  = vars->getArrayLength();
     
@@ -707,13 +543,13 @@ bool has_suffix(const std::string &str, const std::string &suffix)
     if ( size == 0)
     {
         if (vars->isInt() )
-            array->addValue( vars->getInt() );
+            ret.push_back( vars->getInt() );
         
         else if (vars->isDouble() )
-            array->addValue( vars->getDouble() );
+            ret.push_back( vars->getDouble() );
         
         else if (vars->isString() )
-            array->addValue( vars->getString() );
+            ret.push_back( vars->getString() );
         
     }
     
@@ -724,46 +560,47 @@ bool has_suffix(const std::string &str, const std::string &suffix)
             CScriptVar *var =vars->getArrayIndex( i );
             
             if (var->isInt() )
-                array->addValue( var->getInt() );
+                ret.push_back( var->getInt() );
             
             else if (var->isDouble() )
-                array->addValue( var->getDouble() );
+                ret.push_back( var->getDouble() );
             
             else if (var->isString() )
-                array->addValue( var->getString() );
+                ret.push_back( var->getString() );
         }
     }
     
-    return std::unique_ptr<ArgumentsArray>( array );
+    return ret;
 }
 
 /* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
 
-std::string JSMachine::getArgumentsAsStringList( const ArgumentsArray &array )
+std::string JSMachine::getArgumentsAsStringList( const VariantList &list )
 {
     std::ostringstream stream;
     
+    int i = 0;
 
-    for (int i =0; i<array.getSize() ; i++)
+    for (const Variant &val : list )
     {
         if ( i>0)
             stream << " , ";
         
-        const Variant * val = array.getValueAtIndex(i);
+
         
-        if ( val->isInt() )
+        if ( val.isInt() )
         {
-            stream << val->getInt();
+            stream << val.getInt();
         }
-        else if ( val->isFloat() )
+        else if ( val.isFloat() )
         {
 
-            stream << val->getFloat();
+            stream << val.getFloat();
         }
         
-        else if ( val->isString() )
+        else if ( val.isString() )
         {
-            stream << "\"" << val->getString() << "\"" ;
+            stream << "\"" << val.getString() << "\"" ;
         }
         
         else
@@ -772,6 +609,7 @@ std::string JSMachine::getArgumentsAsStringList( const ArgumentsArray &array )
             DEBUG_ASSERT(false);
         }
         
+        i++;
 
     }
     
@@ -783,31 +621,33 @@ std::string JSMachine::getArgumentsAsStringList( const ArgumentsArray &array )
 
 /* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
 
-std::string JSMachine::getArgumentsAsJSArrayString( const ArgumentsArray &array )
+std::string JSMachine::getArgumentsAsJSArrayString( const VariantList &list )
 {
     std::ostringstream stream;
     
     stream << " [ ";
-    for (int i =0; i<array.getSize() ; i++)
+    int i = 0;
+    
+    for (const Variant &val : list )
     {
         if ( i>0)
             stream << " , ";
         
-        const Variant * val = array.getValueAtIndex(i);
+
         
-        if ( val->isInt() )
+        if ( val.isInt() )
         {
 
-            stream << val->getInt() ;
+            stream << val.getInt() ;
         }
-        else if ( val->isFloat() )
+        else if ( val.isFloat() )
         {
-            stream << val->getFloat();
+            stream << val.getFloat();
         }
         
-        else if ( val->isString() )
+        else if ( val.isString() )
         {
-            stream << "\"" << val->getString() << "\"" ;
+            stream << "\"" << val.getString() << "\"" ;
         }
         
         else
@@ -826,34 +666,32 @@ std::string JSMachine::getArgumentsAsJSArrayString( const ArgumentsArray &array 
 }
 
 /* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
-CScriptVar* JSMachine::getArgumentsAsJSArray( const ArgumentsArray &array )
+CScriptVar* JSMachine::getArgumentsAsJSArray( const VariantList &list )
 {
     CScriptVar *ret = new CScriptVar();
     ret->setArray();
     
     int count = 0;
     
-    for (int i =0; i< array.getSize() ; i++)
+    for (const Variant &val : list )
     {
         
-        const Variant * val = array.getValueAtIndex(i);
-        
-        if ( val->isInt() )
+        if ( val.isInt() )
         {
-            ret->setArrayIndex(count, new CScriptVar( val->getInt() ) );
+            ret->setArrayIndex(count, new CScriptVar( val.getInt() ) );
             count ++;
         }
-        else if ( val->isFloat() )
+        else if ( val.isFloat() )
         {
 
-            ret->setArrayIndex(count, new CScriptVar( val->getFloat() ) );
+            ret->setArrayIndex(count, new CScriptVar( val.getFloat() ) );
             count ++;
         }
         
-        else if ( val->isString() )
+        else if ( val.isString() )
         {
 
-            ret->setArrayIndex(count, new CScriptVar( val->getString() ) );
+            ret->setArrayIndex(count, new CScriptVar( val.getString() ) );
             count ++;
         }
         

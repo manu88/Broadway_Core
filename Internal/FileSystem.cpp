@@ -214,10 +214,10 @@ const bool FileSystem::getFilesListFromFolder(
     
     d = opendir ( realPath.c_str() );
     
-    /* Check it was opened. */
+    
     if (! d)
     {
-        fprintf (stderr, "Cannot open directory '%s': %s\n", realPath.c_str(), strerror (errno));
+        //fprintf (stderr, "Cannot open directory '%s': %s\n", realPath.c_str(), strerror (errno));
         return false;
     }
     
@@ -229,11 +229,8 @@ const bool FileSystem::getFilesListFromFolder(
         /* "Readdir" gets subsequent entries from "d". */
         entry = readdir (d);
         if (! entry)
-        {
-            /* There are no more entries in this directory, so break
-             out of the while loop. */
             break;
-        }
+
         
         d_name = entry->d_name;
         
@@ -242,7 +239,33 @@ const bool FileSystem::getFilesListFromFolder(
             && ( strcmp( entry->d_name , ".." ) != 0 )
             )
         {
-            if (entry->d_type & DT_REG)
+            if (entry->d_type & DT_DIR)
+            {
+                
+                
+                int path_length;
+                char path[PATH_MAX];
+                
+                path_length = snprintf (path, PATH_MAX, "%s%s", fullPath.c_str() , d_name);
+                
+                
+                
+                if (path_length >= PATH_MAX)
+                {
+                    fprintf (stderr, "Path length has got too long.\n");
+                    
+                    return false;
+                }
+                
+                getFilesListFromFolder( vector,
+                                       correctPathIfNeeded(fullPath),
+                                       ( relPath.empty() ?"" : ( relPath + "/" ) ) + std::string( d_name ),
+                                       withFullPath ,
+                                       beginWith ,
+                                       withExtention
+                                       );
+            }
+            else //if (entry->d_type & DT_REG)
             {
                 
                 const std::string item = (withFullPath?fullPath :"") + (relPath.empty()?"":(relPath + "/") ) + std::string( d_name );
@@ -254,29 +277,7 @@ const bool FileSystem::getFilesListFromFolder(
             }
 
         
-            else if (entry->d_type & DT_DIR)
-            {
-                
-
-                    int path_length;
-                    char path[PATH_MAX];
-                    
-                    path_length = snprintf (path, PATH_MAX, "%s%s", fullPath.c_str() , d_name);
-
-
-                    
-                    if (path_length >= PATH_MAX)
-                    {
-                        fprintf (stderr, "Path length has got too long.\n");
-
-                        return false;
-                    }
-                    /* Recursively call "list_dir" with the new path. */
-                getFilesListFromFolder(vector, correctPathIfNeeded(fullPath),(relPath.empty()?"":(relPath + "/") ) + std::string( d_name ), withFullPath , beginWith , withExtention);
-                    
-
-
-            }
+            
             
         }
 

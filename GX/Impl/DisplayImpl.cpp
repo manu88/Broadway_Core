@@ -106,7 +106,10 @@ bool DisplayImpl::initDisplay()
 	// create an EGL window surface
 	success = graphics_get_display_size(0 /* LCD */ , &screen_width,&screen_height);
 	assert( success >= 0 );
-    
+    /* 
+     On raspberry PI, this assertion usualy means bcm_host_init() was not called priori to this :
+     Don't forget to create an instance of ScopedPlateformConfig at the app startup! 
+     */
     
     
     

@@ -6,12 +6,14 @@
 //  Copyright (c) 2014 Manuel Deneu. All rights reserved.
 //
 
-#include <fcntl.h>
-#include <unistd.h>
-#include <cstring>
 
-#include <termios.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdio.h>
 #include <unistd.h>
+#include <fcntl.h>
+
+#include <sys/ioctl.h>
 
 #include "SerialInterface.h"
 
@@ -21,10 +23,12 @@
 SerialEvent::SerialEvent( const std::string port ) :
 InterfaceEvent( Event_Serial ),
 
-_isOpen     ( false ),
-_port       ( port  ),
-_fd         ( -1    ),
-_hasChanged ( false ),
+_isOpen      ( false ),
+_port        ( port  ),
+_fd          ( -1    ),
+_bytesToRead ( 1     ),
+_numBytes    ( 0     ),
+_hasChanged  ( false ),
 
 _speed      ( Serial_9600 )
 {
@@ -43,16 +47,14 @@ bool SerialEvent::openPort()
     if ( _isOpen )
         return true;
 
-    _fd = open( _port.c_str(), O_RDWR | O_NOCTTY | O_NDELAY);
+    _fd = open( _port.c_str(), O_RDWR | O_NONBLOCK);
     
     if ( _fd == -1)
-    {
-        Log::log(" ERROR : unable to open port '%s' ." , _port.c_str() );        
-        return false;
-    }
+        Log::log(" ERROR : unable to open port '%s' ." , _port.c_str() );
 
-    _isOpen = true;
-    return true;
+
+    _isOpen = _fd != -1;
+    return _isOpen;
 }
 
 /* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
@@ -64,68 +66,158 @@ bool SerialEvent::closePort()
         int ret = close( _fd );
         
         if ( ret != 0 )
-        {
             return false;
-        }
         
         _isOpen = false;
             
     }
+    
     return true;
 }
 
 /* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
 
-void SerialEvent::setSpeed ( const SerialSpeed speed )
+bool SerialEvent::setSpeed ( const SerialSpeed speed )
 {
     if ( speed != _speed)
     {
         _speed = speed;
         
         struct termios options;
+        
+        
     
         tcgetattr( _fd, &options);
         
-        /*
-         * Set the baud rates to 19200...
-         */
+        cfsetispeed( &options, getInternalSpeed( _speed ) );
+        cfsetospeed( &options, getInternalSpeed( _speed ) );
         
-        cfsetispeed(&options, _speed);
-        cfsetospeed(&options, _speed);
+        options.c_cflag = CS8|CREAD|CLOCAL;// |= (CLOCAL | CREAD);
+
+        options.c_iflag=0;
+        options.c_oflag=0;
         
-        options.c_cflag |= (CLOCAL | CREAD);
+        options.c_lflag=0;
+        options.c_cc[VMIN]=1;
+        options.c_cc[VTIME]=5;
+
+        const int ret =  tcsetattr( _fd, TCSANOW, &options);
         
-        tcsetattr( _fd, TCSANOW, &options);
+        
+        if ( getSerialSpeed( cfgetispeed( &options ) ) !=  _speed )
+        {
+            Log::log("Error ispeed");
+        }
+        
+        if ( getSerialSpeed( cfgetospeed( &options ) ) != _speed )
+        {
+            Log::log("Error ospeed");            
+        }
+
+        
+        if ( ret == -1 )
+        {
+
+            
+            return false;
+        }
 
     }
+    
+    return true;
 }
+
+/* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
+
+/*static*/ speed_t SerialEvent::getInternalSpeed( const SerialSpeed speed )
+{
+    switch (speed)
+    {
+        case Serial_1200:
+            return B1200;
+        case Serial_2400:
+            return B2400;
+        case Serial_4800:
+            return B4800;
+        case Serial_9600:
+            return B9600;
+        case Serial_19200:
+            return B19200;
+        case Serial_38400:
+            return B38400;
+        case Serial_57600:
+            return B57600;
+        case Serial_115200:
+            return B115200;
+
+
+            
+        default:
+            break;
+    }
+    
+    return B0; // default
+}
+
+/*static*/ SerialSpeed SerialEvent::getSerialSpeed( speed_t internalSpeed )
+{
+    switch ( internalSpeed )
+    {
+        case B1200:
+            return Serial_1200;
+        case B2400:
+            return Serial_2400;
+        case B4800:
+            return Serial_4800;
+        case B9600:
+            return Serial_9600;
+        case B19200:
+            return Serial_19200;
+        case B38400:
+            return Serial_38400;
+        case B57600:
+            return Serial_57600;
+        case B115200:
+            return Serial_115200;
+            
+            
+            
+        default:
+            break;
+    }
+    
+    return Serial_0;
+}
+
 
 /* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
 
 bool SerialEvent::changed()
 {
-    return _hasChanged =  fcntl( _fd, F_SETFL, FNDELAY) >0;
+    ioctl( _fd, FIONREAD, &_numBytes);
+
+    return _hasChanged =  _numBytes  >= _bytesToRead;
 }
 
 /* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
 
-const std::string SerialEvent::readDatas()
+const Variant SerialEvent::read() const
 {
-    std::string ret;
+    if ( _numBytes > 0)
+    {
 
-    char buf = '\0';
-    long  n = -1;
-
-  
-    char buffer[2];
-    n = read( _fd, buffer, sizeof(buffer));
+        
+        char in[ _numBytes+1 ];
+        ::read( _fd, in, _numBytes );
+        in[ _numBytes ] = 0;
+        
+        _numBytes = 0;
+        return Variant( in );
+    }
     
-    if ( n<=0 )
-        return "";
-  
-//    printf("size %i" , n);
+    return Variant::null();
+    
 
-    return  std::string(buffer);// ret;
 }
 
 /* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
@@ -135,7 +227,7 @@ bool SerialEvent::send( const char* datas)
     if ( !_isOpen )
         return false;
     
-    int numWritten = ( int ) write( _fd, datas , strlen( datas ) );
+    int numWritten = ( int ) ::write( _fd, datas ,strlen( datas ) );
     
     
     return numWritten > 0;
@@ -157,11 +249,11 @@ bool SerialEvent::send( int val)
 {
 #ifdef __APPLE__
     
-    auto list =  FileSystem::getFilesListFromFolder("/dev/",true ,"tty." );
+    auto list =  FileSystem::getFilesListFromFolder("/dev/",true ,true,"tty."  );
     
 #elif defined __unix__
 
-    auto list =  FileSystem::getFilesListFromFolder("/dev/",true ,"tty" );
+    auto list =  FileSystem::getFilesListFromFolder("/dev/",true, true ,"tty" );
     
 #endif
     

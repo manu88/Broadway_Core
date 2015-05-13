@@ -81,6 +81,29 @@ public:
 
     static void addLogger( Log* logToUse );
     static void removeLogger( Log* logToUse );
+    
+    static int getNumLoggers()
+    {
+        return (int) s_logList.size();
+    }
+    
+    static const Log* at( int index)
+    {
+        return s_logList.at( index );
+    }
+    
+    /* *** *** *** *** *** *** *** *** *** *** *** *** *** */
+    
+    typedef typename std::vector<Log*>::iterator iterator;
+    typedef typename std::vector<Log*>::const_iterator const_iterator;
+    
+ //   static iterator begin() {return s_logList.begin();}
+    static const_iterator begin()  {return s_logList.begin();}
+    static const_iterator cbegin() {return s_logList.cbegin();}
+   // static iterator end() {return s_logList.end();}
+    static const_iterator end()  {return s_logList.end();}
+    static const_iterator cend()  {return s_logList.cend();}
+    
 protected:
     // subclasses only
     Log();
@@ -90,11 +113,7 @@ protected:
 
 
 private:
-    
-    
 
-    
-    
     static std::vector<Log*> s_logList;
     
 };

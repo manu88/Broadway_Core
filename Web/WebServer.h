@@ -16,12 +16,11 @@
 #include "../Internal/AbstractDelegate.h"
 #include "../Internal/FileSystem.h"
 #include "../Data/Database.h"
-#include "../Data/ArgumentsArray.h"
 
 
 /* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
 
-class WebServerDelegate : public AbstractDelegate
+class WebServerDelegate : public virtual AbstractDelegate
 {
     friend class WebServer;
 public:

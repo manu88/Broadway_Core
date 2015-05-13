@@ -28,7 +28,6 @@ public:
     bool stopThread();
     bool isRunning() const;
 
-
     void Lock();
     void UnLock();
     
@@ -81,6 +80,7 @@ protected:
     void waitForCreation();
     
     
+    void setThreadID();
     
 
     
@@ -98,6 +98,7 @@ private:
     
     /* thread pool */
     std::thread *_thread;
+    std::thread::id           _threadID;
     
     static  std::vector< Thread* > s_threadsPool ;
     

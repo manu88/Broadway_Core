@@ -15,9 +15,14 @@
 
 #include <iostream>
 #include <unordered_set>
+#include <set>
+
+#include "../Log/Log.h"
+#include "../Config.h"
 
 #include <oscpack/osc/OscReceivedElements.h>
 #include <oscpack/osc/OscPacketListener.h>
+#include <oscpack/osc/OscOutboundPacketStream.h>
 #include <oscpack/ip/UdpSocket.h>
 #include <oscpack/ip/PacketListener.h>
 
@@ -27,32 +32,10 @@
 #include "../Internal/AbstractDelegate.h"
 
 #include "../Scheduler/Event.h"
-#include "../Data/ArgumentsArray.h"
 
 #include "../Internal/AbstractController.h"
 
 
-/* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
-
-class OSCEvent : public Event
-{
-public :
-    OSCEvent(const std::string &_ip , const int _port , const std::string &_address , const ArgumentsArray *_vars) :
-    Event( Event_OSC   ),
-    ip      ( _ip      ),
-    port    ( _port    ),
-    address ( _address )
-    {}
-    
-    ~OSCEvent();
-    
-    const std::string ip;
-    const int         port;
-    const std::string address;
-    
-    ArgumentsArray *vars;
-    
-};
 
 
 
@@ -63,7 +46,7 @@ class NetworkController;     // forward
 class NetworkControllerLock; // forward
 
 
-class NetworkControllerDelegate : public Object , public AbstractDelegate
+class NetworkControllerDelegate : public Object , public virtual AbstractDelegate
 {
     friend class NetworkController;
 public:
@@ -73,7 +56,7 @@ public:
 protected:
     NetworkControllerDelegate() {}
     
-    virtual void oscReceived(const std::string &ipAddress , const int port,const std::string & addressPattern, const ArgumentsArray &arguments) = 0;
+    virtual void oscReceived(const std::string &ipAddress , const int port,const std::string & addressPattern, const VariantList &arguments) = 0;
 
 };
 
@@ -151,7 +134,7 @@ public:
     bool start();
     bool stop();
     
-    bool sendOSC( const std::string &ip , const int port , const std::string &address , const ArgumentsArray &vars , bool broadcast = false );
+    bool sendOSC( const std::string &ip , const int port , const std::string &address , const VariantList &vars = {} , bool broadcast = false );
     
     bool addPort    ( int port );
     void removePort ( int port );
@@ -159,6 +142,63 @@ public:
     void removeAllSockets();
     
     void ProcessMessage( const osc::ReceivedMessage& m, const IpEndpointName& remoteEndpoint );
+    
+    
+    inline static VariantList getVariantListFromOSCMsg( const osc::ReceivedMessage& m )
+    {
+        VariantList ret;
+        
+        try
+        {
+            
+            
+            for (auto it = m.ArgumentsBegin() ; it != m.ArgumentsEnd() ; it++ )
+            {
+                if ( (it)->IsFloat() )
+                {
+                    ret.push_back( (it)->AsFloat() );
+                }
+                
+                else if ( (it)->IsInt32() )
+                {
+                    ret.push_back( (int) (it)->AsInt32() );
+                }
+                
+                else if ( (it)->IsInt64() )
+                {
+                    ret.push_back( (int) (it)->AsInt64() );
+                }
+                
+                else if ( (it)->IsString() )
+                {
+                    char chars[] = "\"";
+                    std::string str = (it)->AsString();
+                    for (unsigned int i = 0; i < strlen(chars); ++i)
+                    {
+                        str.erase (std::remove(str.begin(), str.end(), chars[i]), str.end());
+                    }
+                    ret.push_back( str );
+                }
+                else
+                {
+                    // No parsing method for this type, to be added ...
+                    DEBUG_ASSERT( false );
+                }
+                
+                //            it++;
+                
+            }
+            
+        }
+        
+        catch( osc::Exception& e )
+        {
+            Log::log("\n error while parsing message: %s " , e.what() );
+        }
+
+        
+        return ret;
+    }
 
     
 private:
@@ -191,10 +231,44 @@ private:
 
 };
 
+static inline osc::OutboundPacketStream& operator<<( osc::OutboundPacketStream& p, const Variant& val)
+{
+    if ( val.isInt())
+        p << val.getInt();
+    
+    else if ( val.isString() )
+        p << val.getString().c_str();
+    
+    else if ( val.isFloat() )
+        p << val.getFloat();
+    
+    else if ( val.isDouble() )
+        p << val.getDouble();
+    
+    
+    else if ( val.isBool() )
+    {
+        p << val.getBool();
+    }
+    
+    else if ( val.isList() )
+    {
+        for ( const Variant &v : val.getList() )
+            p<< v;
+    }
+    
+    return p;
+
+}
+
 namespace NetworkTools
 {
-    const std::unique_ptr< ArgumentsArray > getArrayFromOSCMessage(const osc::ReceivedMessage& m);
+//    const std::unique_ptr< Variant > getArrayFromOSCMessage(const osc::ReceivedMessage& m);
     bool changeIpAddressTo(const std::string ip , const std::string netmask , const std::string interface );
+
+    const std::set< std::string > getInterfacesList();
+    const std::string getIpAddress( const std::string &interfaceName, bool ipV6 = false);
+
     bool isConnected();
 };
 

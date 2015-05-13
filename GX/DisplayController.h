@@ -59,7 +59,7 @@ typedef enum
 
 /* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
 
-class DisplayControllerDelegate : public AbstractDelegate
+class DisplayControllerDelegate : public virtual AbstractDelegate
 {
     friend class DisplayController;
     

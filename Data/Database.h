@@ -30,7 +30,7 @@
 #include "../Scheduler/TimeDefs.h"
 #include "../Scheduler/Timecode.h"
 
-#include "Value.h"
+#include "Variant.h"
 
 /**/
 
@@ -108,22 +108,7 @@ public:
 
 
 
-    inline const VariantList getValueForItemNameAsVector( const std::string &item) const
-    {
-        std::vector< Variant > list;
-
-        std::istringstream f( getValueForItemName( item )->getString() );
-        std::string s;
-        
-        while (getline(f, s, ' '))
-        {
-            if ( !s.empty() )
-                list.push_back( s );
-        }
-
-        return list;
-        
-    }
+    const VariantList getValueForItemNameAsVector( const std::string &item) const;
 
     /* **** **** **** **** **** **** **** **** **** **** **** **** **** */
     

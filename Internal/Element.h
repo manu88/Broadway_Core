@@ -49,6 +49,11 @@ public:
         return s_elementIDCounter;
     }
     
+#ifdef ENABLE_ELEMENT_SELECTOR
+    virtual const Variant performSelectorWithArguments( const std::string &selector , const Variant  &arguments) ;
+    virtual const Variant performSelectorWithArguments( const std::string &selector , const Variant  &arguments) const;
+#endif
+    
 protected:
     Element();    
     

@@ -12,7 +12,7 @@
 
 #include "../GXDataType/GXGeometry.h"
 
-#include "../GX/GXPaintJS.h"
+#include "../GX/GXAsyncPainter.h"
 
 #include "../Internal/FileSystem.h"
 
@@ -50,7 +50,7 @@ bool SVGParser::parseSvgFile( const std::string &filename )
     return true;
 }
 
-bool SVGParser::populateGXPaintJS(GXPaintJS* element , bool shouldCleanBefore)
+bool SVGParser::populateGXPaintJS( GXAsyncPainter* element , bool shouldCleanBefore)
 {
     if ( ! (_image && element ) )
         return false;

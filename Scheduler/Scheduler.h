@@ -148,7 +148,7 @@ private:
 
 /* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
 
-class SchedulerDelegate : public AbstractDelegate
+class SchedulerDelegate : public virtual AbstractDelegate
 {
     friend class Scheduler;
 public:
@@ -278,6 +278,9 @@ private:
             
 
     Timecode _deltaTC;
+    
+    
+    bool _otherThread;
     
 };
             

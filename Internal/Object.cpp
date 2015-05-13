@@ -13,6 +13,9 @@
 #include "Object.h"
 #include "../Config.h"
 
+
+
+
 void ObjectWatcher::removeObject( Object* obj )
 {
     
@@ -73,4 +76,27 @@ Object::~Object()
     s_watcher.removeObject( this );
     
 
+}
+
+/* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
+/* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
+
+const Variant Object::performSelectorWithArguments( const std::string &selector ,const Variant  &arguments)
+{
+
+    
+    
+    return Variant();
+}
+
+const Variant Object::performSelectorWithArguments( const std::string &selector , const Variant  &arguments) const
+{
+    if (selector == "getId")
+        return getId();
+    
+    else if (selector == "getClassName")
+        return getClassName();
+    
+    
+    return Variant();
 }

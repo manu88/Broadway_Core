@@ -28,7 +28,7 @@
 /* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
 /* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
 
-class InterfaceControllerDelegate : public AbstractDelegate
+class InterfaceControllerDelegate : public virtual AbstractDelegate
 {
     friend class InterfaceController;
     

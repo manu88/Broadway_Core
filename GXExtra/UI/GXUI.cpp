@@ -18,7 +18,8 @@
 
 /* **** **** **** **** **** **** **** **** **** **** **** **** */
 
-GXUI::GXUI()
+GXUI::GXUI() :
+_delegate( nullptr )
 {
     className = "GXUI";
 }
@@ -50,12 +51,15 @@ bool GXUI::parseXMLFile( const std::string &file)
                                       std::stoi( p.getAttributeForTag( BACKGROUND_COLOR_NODE_NAME, "a") )
                                      );
     
-    
+    /*
     printf("\n title = '%s'" , ui_name.c_str() );
     printf("\n bounds = %i %i %i %i" , x , y , w , h);
     printf("\n background color = %i %i %i %i" , bColor.r , bColor.g , bColor.b , bColor.a);
-    
+    */
 
+    
+    setBounds( x, y, w, h);
+    setBackgroundColor( bColor );
     
     const XMLParser::XMLElement *uiChildNode = XMLParser::getChildElementNamed( p.getRootElement(), ELEMENTS_ROOT_NODE_NAME );
     
@@ -63,9 +67,13 @@ bool GXUI::parseXMLFile( const std::string &file)
     {
         for (const auto element : XMLParser::getChilds( uiChildNode ) )
         {
+//            printf("\n name '%s'", XMLParser::getName( element).c_str() );
+            
+            addUIActionList( getActionsFromElement(element ) );
+            
             if ( XMLParser::getName(element) == GXIMAGE_NODE_NAME )
             {
-                printf("\n got an image");
+//                printf("\n got an image");
                 
                 if ( !addGXImage( element ) )
                     printf("\n erreur Image ");
@@ -75,7 +83,7 @@ bool GXUI::parseXMLFile( const std::string &file)
             
             else if ( XMLParser::getName(element) == GXTEXT_NODE_NAME )
             {
-                printf("\n got a text label");
+//                printf("\n got a text label");
                 
                 if ( !addGXText( element ) )
                     printf("\n erreur Text ");
@@ -84,7 +92,8 @@ bool GXUI::parseXMLFile( const std::string &file)
             
             else if ( XMLParser::getName(element) == GXPATH_NODE_NAME )
             {
-                printf("\n got a path");
+                if ( !addGXPath( element ) )
+                    printf("\n erreur path");
             }
             
 
@@ -122,20 +131,55 @@ bool GXUI::parseXMLFile( const std::string &file)
     
 }
 
+/* **** **** **** **** **** **** **** **** **** **** **** **** */
+
+/*static*/ ActionList GXUI::getActionsFromElement( const XMLParser::XMLElement *element )
+{
+    ActionList ret;
+    
+    if (element )
+    {
+        const std::string emitter = XMLParser::getAttribute( element, ATTR_NAME );
+        
+        const auto *actionClicNode =XMLParser::getChildElementNamed( element, ACTIONCLIC_NODE_NAME );
+        
+        if( actionClicNode )
+        {
+            const std::string selector = XMLParser::getAttribute(actionClicNode, ATTR_ACTION_SELECTOR );
+            const std::string target = XMLParser::getAttribute(actionClicNode, ATTR_ACTION_TARGET );
+            
+
+            
+            ret.push_back({ getGeometryFromElement( XMLParser::getChildElementNamed( element, GEOMETRY_NODE_NAME )) ,
+                            UIAction_clic ,
+                            selector ,
+                            target ,
+                            emitter
+                            });
+            
+        }
+        
+        
+    }
+    
+    return ret;
+}
+
 
 /* **** **** **** **** **** **** **** **** **** **** **** **** */
 
 bool GXUI::addGXImage( const XMLParser::XMLElement *element )
 {
     const std::string name = XMLParser::getAttribute( element, ATTR_NAME );
-    printf("\n Element name = '%s'" , name.c_str() );
+
     
     const std::string filePath = XMLParser::getAttribute( XMLParser::getChildElementNamed( element, SOURCE_NODE_NAME ) , ATTR_FILEPATH );
     
     const GXGeometry geometry = getGeometryFromElement( XMLParser::getChildElementNamed( element, GEOMETRY_NODE_NAME ));
     
-    printf("\n filepath : '%s'" , filePath.c_str() );
-    
+//    printf("\n filepath : '%s'" , filePath.c_str() );
+  
+    /*
     printf("\n bounds = %i %i %i %i" , geometry.bounds.origin.x ,
            geometry.bounds.origin.y ,
            geometry.bounds.size.width ,
@@ -144,7 +188,7 @@ bool GXUI::addGXImage( const XMLParser::XMLElement *element )
     
     printf("\n layer = %i" , geometry.layer);
     
-    
+    */
     
     GXImage *img = new GXImage( filePath );
     img->setLayer ( geometry.layer  );
@@ -162,7 +206,7 @@ bool GXUI::addGXText( const XMLParser::XMLElement *element )
 
     
     const std::string name = XMLParser::getAttribute( element, ATTR_NAME );
-    printf("\n Element name = '%s'" , name.c_str() );
+
     
     const GXGeometry geometry = getGeometryFromElement( XMLParser::getChildElementNamed( element, GEOMETRY_NODE_NAME ));
     
@@ -177,9 +221,10 @@ bool GXUI::addGXText( const XMLParser::XMLElement *element )
     
     const float size           = std::stof( XMLParser::getAttribute( XMLParser::getChildElementNamed( element, FONT_NODE_NAME ) , ATTR_SIZE ));
     
+    /*
     printf("\n text = '%s' " , text.c_str() );
     printf("\n font = '%s' size = %f " , fontFile.c_str() ,size );
-    
+    */
     GXFont *font = GXFont::loadFont( fontFile );
     
 
@@ -208,12 +253,12 @@ bool GXUI::addGXText( const XMLParser::XMLElement *element )
 bool GXUI::addGXPath ( const XMLParser::XMLElement *element )
 {
     const std::string name = XMLParser::getAttribute( element, ATTR_NAME );
-    printf("\n Element name = '%s'" , name.c_str() );
+//    printf("\n Element name = '%s'" , name.c_str() );
     
     const GXGeometry geometry = getGeometryFromElement( XMLParser::getChildElementNamed( element, GEOMETRY_NODE_NAME ));
     
     
-    GXPaintJS *painter = new GXPaintJS();
+    GXAsyncPainter *painter = new GXAsyncPainter();
     
     painter->setName( name );
     painter->setBounds( geometry.bounds );
@@ -234,8 +279,47 @@ bool GXUI::addUIElement( GXElement *element )
 
 /* **** **** **** **** **** **** **** **** **** **** **** **** */
 
+bool GXUI::addUIActionList( const ActionList &list )
+{
+    _actionList.insert( _actionList.end() , list.begin() , list.end() );
+    
+    
+    return true;
+}
+
+/* **** **** **** **** **** **** **** **** **** **** **** **** */
 
 
+const UIAction& GXUI::performClicAtPoint( const GXPoint &pt)
+{
+    
+    for ( const auto &action : _actionList )
+    {
+        /*
+        printf("\n Action : ");
+        printf("\n\tBounds %i %i %i %i" , action.zone.bounds.origin.x ,
+                                                  action.zone.bounds.origin.y ,
+                                                  action.zone.bounds.size.width ,
+                                                  action.zone.bounds.size.height
+               );
+        printf("\n\tSelector = '%s'" , action.selector.c_str() );
+        printf("\n\tTarget = '%s'" ,   action.target.c_str() );
+        printf("\n\tEmitter = '%s'" ,  action.emitter.c_str() );
+        printf("\n\tType %i" ,         action.type);
+        */
+        
+        if ( rectContainsPoint(action.zone.bounds, pt))
+        {
+            if (_delegate)
+                _delegate->uiActionReceived( action);
+            
+            return action;
+        }
+    }
+    
+    return action_invalid;
+    
+}
 
 
 

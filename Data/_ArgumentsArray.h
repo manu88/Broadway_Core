@@ -8,6 +8,7 @@
 
 #ifndef ____ArgumentsArray__
 #define ____ArgumentsArray__
+/*
 #include <assert.h>
 
 #include <stdio.h>
@@ -23,21 +24,12 @@
 
 
 
-
 class ArgumentsArray  : public Object
 {
 private:
     
         
 public:
-    
-    //! Will return a list from the content of a specified folder.
-    /*!
-     \param   A filder's path.
-     \return  A scoped pointer with the list (ABC sorted) of files and/or folders.
-     */
-    /* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
-//    static std::unique_ptr<ArgumentsArray> getArrayFromFolder( const std::string &folder);
 
 
     ArgumentsArray()
@@ -54,20 +46,9 @@ public:
     ArgumentsArray( const double argument);
     ArgumentsArray( const int argument);
     ArgumentsArray( const bool argument);
+    
+    ArgumentsArray( const void *ptr);
 
-    //! Create an ArgumentArray with an initializer list.
-    /*
-     Use this when returning an ArgumentsArray or passing it to a method
-     { 1,12.1,true,"foo"}
-     is eq to
-     ArgumentArray array;
-     array.addValue(1);
-     array.addValue(12.1);
-     array.addValue(true);
-     array.addValue("foo");
-     
-     
-     */
     ArgumentsArray( std::initializer_list< Variant > args)
     {
         for (const Variant &val : args )
@@ -79,14 +60,11 @@ public:
 
     }
 
-    /*
-    ArgumentsArray& operator<<( float rhs )
-    {
-        addValue<float>( rhs );
-        
-        return *this;
-    }
-*/
+    // copy & assignment ctors
+    
+    ArgumentsArray ( const ArgumentsArray &val );
+    ArgumentsArray& operator=(ArgumentsArray const& copy);
+//    const ArgumentsArray& operator=(ArgumentsArray const& copy) const;
 
     void addValue( const Variant &value )
     {
@@ -103,7 +81,7 @@ public:
         return &_list.at(index);
     }
     
-    /* *** *** *** *** *** *** *** *** *** *** *** *** *** */
+
     
     typedef typename std::vector<Variant>::iterator iterator;
     typedef typename std::vector<Variant>::const_iterator const_iterator;
@@ -121,7 +99,7 @@ private:
 
 
 };
-
+*/
 
 
 

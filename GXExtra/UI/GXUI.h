@@ -12,13 +12,20 @@
 #include <iostream>
 
 #include <map>
+#include <vector>
+
 
 #include "../../GX/GXScene.h"
-#include "../../GX/GXPaintJS.h"
+#include "../../GX/GXAsyncPainter.h"
 
 #include "../../Parsers/XMLParser.h"
 
 #include "../../GXDataType/GXGeometry.h"
+#include "../../Scheduler/Event.h"
+
+#include "../../Internal/AbstractController.h"
+#include "../../Internal/AbstractDelegate.h"
+
 
 /* **** **** **** **** **** ****  */
 
@@ -31,9 +38,58 @@ typedef struct
 
 /* **** **** **** **** **** ****  */
 
-// Forwards
+typedef enum
+{
+    UIAction_none       = 0,
+    UIAction_clic       = 1,
+    UIAction_doubleClic = 2
+    
+} UIActionType;
 
-class GXButton;
+/* **** **** **** **** **** ****  */
+
+typedef struct
+{
+    GXGeometry zone;
+    
+    UIActionType type;
+    
+    std::string selector;
+    std::string target;
+    std::string emitter;
+    
+} UIAction;
+
+static UIAction action_invalid = { { makeRectNULL() , -1} , UIAction_none };
+
+
+typedef std::vector<UIAction> ActionList;
+
+
+
+/* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
+class GXUI; // Forwards
+
+class UIDelegate : public virtual AbstractDelegate
+{
+    friend class GXUI;
+public:
+    virtual ~UIDelegate() {}
+    
+    
+protected:
+    UIDelegate() {}
+    
+    // !override this method to get user interactions .
+    virtual bool uiActionReceived( const UIAction &action) = 0;
+    
+};
+
+
+/* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
+
+
+class GXButton; // Forwards
 
 
 class GXUI : public GXScene
@@ -43,16 +99,24 @@ public:
     GXUI();
     ~GXUI();
     
+    void setDelegate( UIDelegate *delegate )
+    {
+        _delegate = delegate;
+    }
+    
     bool parseXMLFile( const std::string &file);
     
     /**/
     
+    const UIAction &performClicAtPoint( const GXPoint &pt);
 
     
     
 private:
     // parse an Element Node and return its gemoetry.
     static GXGeometry getGeometryFromElement( const XMLParser::XMLElement *element );
+    
+    static ActionList getActionsFromElement( const XMLParser::XMLElement *element );
     
     // called by parseXMLFile()
     bool addGXImage( const XMLParser::XMLElement *element );
@@ -62,13 +126,22 @@ private:
     // called by each add**()
     bool addUIElement( GXElement *element );
     
+    bool addUIActionList( const ActionList &list );
     
+    GXAsyncPainter _painter;
     
+    struct actionComparator
+    {
+        bool operator() (const UIAction &lhs, const UIAction &rhs) const
+        {
+            return lhs.zone.layer <= rhs.zone.layer;
+        }
+    };
     
-    GXPaintJS _painter;
+    ActionList _actionList;
     
+    UIDelegate *_delegate;
 
-    
 };
 
 

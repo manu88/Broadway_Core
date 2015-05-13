@@ -138,6 +138,11 @@ public:
         
     }
     
+    void SetSpeed(int iSpeed)
+    {
+        
+    }
+    
     float getVolume() const
     {
         return m_volumeAudio;

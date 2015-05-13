@@ -43,11 +43,11 @@
  */
 /* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
 
-class GXPaintJS : public GXElement
+class GXAsyncPainter : public GXElement
 {
 public:
-    GXPaintJS();
-    ~GXPaintJS();
+    GXAsyncPainter();
+    ~GXAsyncPainter();
     
     void setFillColor( const GXColor &fillColor);
     void setStrokeColor( const GXColor &strokeColor);

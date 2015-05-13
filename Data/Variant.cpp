@@ -5,16 +5,29 @@
 //  Created by Manuel Deneu on 22/03/15.
 //  Copyright (c) 2015 Manuel Deneu. All rights reserved.
 //
-
-#include "Value.h"
+#include "../Config.h"
+#include "../Log/Log.h"
+#include "Variant.h"
 #include "ValueImpl.h"
 
-#include "ArgumentsArray.h"
 
 #ifdef USE_JAVA_INTERPRETER
 #include "../JSMachine/JSMachine.h"
 #endif
+
+#ifdef USE_NETWORK
+#include <oscpack/osc/OscReceivedElements.h>
+#endif
+
+
 /* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
+
+Variant::Variant():
+_variant ( new Value< void* >(  nullptr  ,ValueImpl::T_NULL ) )
+{
+    
+}
+
 
 Variant::Variant( int val):
 _variant ( new Value< int >( val ,ValueImpl::T_INT ) )
@@ -40,18 +53,30 @@ _variant ( new Value< bool >( val ,ValueImpl::T_BOOL ) )
     
 }
 
-/*
-Variant::Variant( VariantList_ val):
-_variant ( new Value< ArgumentArray >( val ,ValueImpl::T_LIST ) )
+
+
+
+
+Variant::Variant( std::initializer_list< Variant > args) :
+_variant ( new Value< VariantList >( args ,ValueImpl::T_LIST ) )
 {
-    
+    /*
+    for (const Variant &val : args )
+    {
+        
+    }
+    */
 }
-*/
+
+/* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
+
+
 /* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
 
 #ifdef USE_JAVA_INTERPRETER
 Variant::Variant ( CScriptVar* var )
 {
+
     if ( var->isInt() )
         Variant ( var->getInt() );
     
@@ -114,25 +139,50 @@ _variant( new Value<std::string> ( std::string( val ) , ValueImpl::T_STRING  ) )
 
 Variant::Variant ( const Variant &val ):
 _variant ( val._variant)
-{
+{    
     _variant->retain();
 }
 
 Variant& Variant::operator=(Variant const& copy)
 {
+    _variant->release();
+
+    if (_variant->refCount() <=0 )
+    {
+        delete _variant;
+        _variant = nullptr;
+    }
+
     _variant = copy._variant;
     
     _variant->retain();
     
     return *this;
 }
+/*
+const Variant& Variant::operator=(Variant const& copy) const
+{
+    printf("\n REF = %i" , _variant->release() );
+    
+    if (_variant->getType() != copy._variant->getType() )
+    {
+        printf("\n assign type differ! %i" , _variant->getId() );
 
+    }
+    
+    _variant = copy._variant;
+    
+    _variant->retain();
+    
+    return *this;
+}
+*/
 /* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
 
 
 Variant::~Variant()
 {
-    if (_variant->release() <=0 )
+    if (_variant->release() ==0 )
     {
         delete _variant;
     }
@@ -163,6 +213,18 @@ const std::string Variant::getString() const
 {
     return _variant->getString();
 }
+
+const VariantList& Variant::getList() const
+{
+    return _variant->getList();
+}
+
+
+const std::vector< uint8_t > Variant::getByteArray() const
+{
+    return _variant->getByteArray();
+}
+
 
 
 /* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
@@ -212,6 +274,27 @@ bool Variant::isString() const
 bool Variant::isList() const
 {
     return _variant->isList();
+}
+
+bool Variant::isNull() const
+{
+    return _variant->isNull();
+}
+
+bool Variant::isByteArray() const
+{
+    return _variant->isByteArray();
+}
+
+/* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
+bool Variant::operator==( const Variant& rhs) const
+{
+    return _variant == rhs._variant;
+}
+
+bool Variant::operator==( const void* ptr) const
+{
+    return getValue<void*>() == ptr;
 }
 
 /* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */

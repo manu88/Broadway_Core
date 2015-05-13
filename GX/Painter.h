@@ -51,7 +51,7 @@ typedef enum
 
 class Painter : public Object
 {
-    friend class GXPaintJS;    
+    friend class GXAsyncPainter;    
 public:
 
     virtual ~Painter();
@@ -325,7 +325,7 @@ private:
 /* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
 class PainterStrokeColor : public Painter
 {
-    friend class GXPaintJS;    
+    friend class GXAsyncPainter;    
 public:
     PainterStrokeColor( const GXColor &color);
     ~PainterStrokeColor();
@@ -339,7 +339,7 @@ private:
 
 class PainterFillColor : public Painter
 {
-    friend class GXPaintJS;    
+    friend class GXAsyncPainter;
 public:
     PainterFillColor( const GXColor &color);
     ~PainterFillColor();

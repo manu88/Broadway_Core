@@ -9,11 +9,13 @@
 #ifndef __Broadway_core__SerialInterface__
 #define __Broadway_core__SerialInterface__
 
+#include <termios.h> // for speed_t def
 #include <iostream>
 #include "InterfaceEvent.h"
 
 typedef enum
 {
+    Serial_0, // unspecified
     Serial_1200,
     Serial_2400,
     Serial_4800,
@@ -28,13 +30,13 @@ typedef enum
 class SerialEvent : public InterfaceEvent
 {
 public:
+    
+    static const std::vector<std::string> getSerialDevicesList();
+    
     SerialEvent( const std::string port );
     ~SerialEvent();
-    
-    bool openPort();
-    bool closePort();
-    
-    void setSpeed ( const SerialSpeed speed );
+
+    bool setSpeed ( const SerialSpeed speed );
     
     SerialSpeed getSpeed() const
     {
@@ -47,9 +49,17 @@ public:
     }
     
     bool changed();
-    const std::string readDatas();
+    const Variant read() const;
     
-    static const std::vector<std::string> getSerialDevicesList();
+    unsigned int getBytesToRead() const
+    {
+        return _bytesToRead;
+    }
+    
+    void setBytesToRead( unsigned int num )
+    {
+        _bytesToRead = num;
+    }
     
     bool send( const char* datas);
     
@@ -61,10 +71,22 @@ public:
         closePort();
     }
     
+    bool openPort();
+    bool closePort();
+    
+protected:
+
+    static speed_t getInternalSpeed( const SerialSpeed speed );
+    static SerialSpeed getSerialSpeed( speed_t internalSpeed );
+    
 private:
-    bool        _isOpen;
-    std::string _port;
-    int         _fd;
+    bool          _isOpen;
+    std::string   _port;
+    int           _fd;
+    
+    unsigned int _bytesToRead;
+    
+    mutable int   _numBytes;
     
     bool _hasChanged;
     

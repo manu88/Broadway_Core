@@ -20,16 +20,23 @@
 
 /**/
 
+// for ip stuffs
 #include <sys/types.h>
+#include <ifaddrs.h>
+
+#include <arpa/inet.h>
+
 #include <sys/param.h>
 #include <sys/socket.h>
 #include <sys/file.h>
 #include <sys/time.h>
-#include <netinet/in_systm.h>
+
 #include <netinet/in.h>
+#include <netinet/in_systm.h>
 #include <netinet/ip.h>
 #include <netinet/ip_icmp.h>
 #include <netdb.h>
+
 #include <unistd.h>
 #include <stdio.h>
 #include <ctype.h>
@@ -44,7 +51,7 @@
 
 #include "NetworkController.h"
 
-#include <oscpack/osc/OscOutboundPacketStream.h>
+
 #include <oscpack/osc/OscTypes.h>
 
 #include <oscpack/osc/OscException.h>
@@ -223,7 +230,7 @@ SocketUdpIn* NetworkController::getSocketForPort( int port )
 bool NetworkController::sendOSC( const std::string &ip ,
                                  const int port ,
                                  const std::string &address ,
-                                 const ArgumentsArray &vars ,
+                                const VariantList &vars /*= {}*/ ,
                                 bool broadcast /*false*/)
 {
     // try catch runtime error
@@ -241,33 +248,9 @@ bool NetworkController::sendOSC( const std::string &ip ,
         
         p << osc::BeginMessage( address.c_str() );
     
-
-        for ( const Variant& val : vars ) 
-        {
-            if ( val.isInt())
-                p << val.getInt();
-            
-            else if ( val.isString() )
-                p << val.getString().c_str();
-            
-            else if ( val.isFloat() )
-                p << val.getFloat();
-            
-            else if ( val.isDouble() )
-                p << val.getDouble();
-            
-
-            else if ( val.isBool() )
-            {
-                p << val.getBool();
-            }
-
-            
-            else
-                Log::log("error while parsing ArgumentsArray -> OSCMessage, type not handled");
-            
-        }
-
+        for ( const Variant &v : vars)
+            p << v;
+        
 
 
         p<< osc::EndMessage;
@@ -303,7 +286,7 @@ void NetworkController::ProcessMessage( const osc::ReceivedMessage& m, const IpE
 //    ArgumentsArray *array =  ;
     
     if ( _delegate->delegateReadyForController( this ))
-        _delegate->oscReceived( ip, remoteEndpoint.port , m.AddressPattern(), *NetworkTools::getArrayFromOSCMessage(m) );
+        _delegate->oscReceived( ip, remoteEndpoint.port , m.AddressPattern(), getVariantListFromOSCMsg( m ) );
     
 
 }
@@ -377,6 +360,94 @@ bool NetworkTools::changeIpAddressTo(const std::string ip , const std::string ne
 
 /* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
 
+const std::set< std::string > NetworkTools::getInterfacesList()
+{
+    std::set< std::string> ret;
+    
+    struct ifaddrs * ifAddrStruct = NULL;
+    struct ifaddrs * ifa          = NULL;
+
+    
+    getifaddrs( &ifAddrStruct );
+    
+    for (ifa = ifAddrStruct; ifa != NULL; ifa = ifa->ifa_next)
+    {
+        if (!ifa->ifa_addr)
+            continue;
+        
+        // check it is IP4 of IPV6
+//        if ( 1) //ifa->ifa_addr->sa_family == AF_INET )// || (ifa->ifa_addr->sa_family == AF_INET6) )
+        ret.insert( ifa->ifa_name );
+
+
+
+    }
+    if ( ifAddrStruct != NULL )
+        freeifaddrs(ifAddrStruct);
+    
+    return ret;
+}
+
+/* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
+
+const std::string NetworkTools::getIpAddress( const std::string &interfaceName , bool ipV6)
+{
+    std::string ret = "";
+    
+    struct ifaddrs * ifAddrStruct = NULL;
+    struct ifaddrs * ifa          = NULL;
+    void * tmpAddrPtr             = NULL;
+    
+    getifaddrs( &ifAddrStruct );
+    
+    for (ifa = ifAddrStruct; ifa != NULL; ifa = ifa->ifa_next)
+    {
+        if (!ifa->ifa_addr)
+        {
+            continue;
+        }
+        
+        // check it is IP4
+        if ( (ifa->ifa_addr->sa_family == AF_INET) && !ipV6)
+        {
+            // is a valid IP4 Address
+            tmpAddrPtr= &( ( struct sockaddr_in * ) ifa->ifa_addr )->sin_addr;
+            
+            char addressBuffer[INET_ADDRSTRLEN];
+            
+            inet_ntop(AF_INET, tmpAddrPtr, addressBuffer, INET_ADDRSTRLEN);
+            
+            if (strcmp(ifa->ifa_name, interfaceName.c_str() ) == 0)
+            {
+                ret = addressBuffer ;
+            }
+
+        }
+        
+        // check it is IP6
+        else if ( ( ifa->ifa_addr->sa_family == AF_INET6) && ipV6)
+        {
+            // is a valid IP6 Address
+            tmpAddrPtr= &( ( struct sockaddr_in6 * ) ifa->ifa_addr )->sin6_addr;
+            
+            char addressBuffer[INET6_ADDRSTRLEN];
+            inet_ntop(AF_INET6, tmpAddrPtr, addressBuffer, INET6_ADDRSTRLEN);
+            
+            if (strcmp(ifa->ifa_name, interfaceName.c_str() ) == 0)
+            {
+                ret = addressBuffer ;
+            }
+            
+        }
+    }
+    if ( ifAddrStruct != NULL )
+        freeifaddrs(ifAddrStruct);
+    
+    return ret;
+}
+
+/* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
+
 bool NetworkTools::isConnected()
 {
 
@@ -386,7 +457,7 @@ bool NetworkTools::isConnected()
 }
 
 /* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
-
+/*
 const std::unique_ptr< ArgumentsArray > NetworkTools::getArrayFromOSCMessage(const osc::ReceivedMessage& m)
 {
     
@@ -424,7 +495,7 @@ const std::unique_ptr< ArgumentsArray > NetworkTools::getArrayFromOSCMessage(con
             }
             else
             {
-                /* No parsing method for this type, to be added ...*/
+                // No parsing method for this type, to be added ...
                 DEBUG_ASSERT( false );
             }
             
@@ -442,6 +513,7 @@ const std::unique_ptr< ArgumentsArray > NetworkTools::getArrayFromOSCMessage(con
     return std::unique_ptr< ArgumentsArray > ( array );
     
 }
+ */
 
 
 

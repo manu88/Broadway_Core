@@ -24,6 +24,13 @@
 #include "Plateforms/Plateform.h"
 
 /* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
+/**/
+
+#ifndef ENABLE_ELEMENT_SELECTOR
+#define ENABLE_ELEMENT_SELECTOR
+#endif
+
+/* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
 /*
  
  -  If you're using Broadway's Makefile, simply edit and use the one in Core folder and set
@@ -54,20 +61,6 @@
 /* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
 /* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
 
-/* Core Headers */
-
-
-#include "Data/ArgumentsArray.h"
-#include "Data/Database.h"
-
-#include "Internal/FileSystem.h"
-#include "Internal/Utils.h"
-
-#include "Scheduler/Scheduler.h"
-
-#include "Log/Log.h"
-
-#include "Application/ApplicationBase.h"
 
 
 /* JSON Parser*/
@@ -147,7 +140,7 @@
     #include "GX/GXPath.h"
     #include "GX/GXImage.h"
     #include "GX/GXScene.h"
-    #include "GX/GXPaintJS.h"
+    #include "GX/GXAsyncPainter.h"
     #include "GX/GXTextRenderer.h"
     #include "GX/GXFont.h"
 #endif
@@ -155,25 +148,35 @@
 
 #ifdef USE_GRAPHIC_UI
 
-#ifndef USE_XML_PARSER
-#define USE_XML_PARSER
-#endif
+    #ifndef USE_XML_PARSER
+    #define USE_XML_PARSER
+    #endif
 
-#ifndef USE_GRAPHICS
-#define USE_GRAPHICS
-#endif
+    #ifndef USE_GRAPHICS
+    #define USE_GRAPHICS
+    #endif
 
     #include "GXExtra/UI/GXUI.h"
 #endif
 
+/* Core Headers */
+
+#include "Data/Variant.h"
+
+#include "Data/Database.h"
+
+#include "Internal/FileSystem.h"
+#include "Internal/Utils.h"
+
+#include "Scheduler/Scheduler.h"
+
+#include "Log/Log.h"
+
+#include "Application/ApplicationBase.h"
 
 
-/* Exteral Libs loader & management */
-/*
-#ifdef USE_EXTERNALS
-#include "Externals/ExternalLoader.h"
-#endif
-*/
+
+
 
 
 /* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */

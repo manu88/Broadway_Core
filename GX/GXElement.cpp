@@ -14,7 +14,6 @@
 
 
 
-
 /* **** **** **** **** **** **** **** **** **** **** **** */
 
 GXElement::GXElement() :
@@ -344,6 +343,105 @@ void GXElement::setBackgroundColor( const GXColor &color)
     GXPath::clearRect( _bounds , _backgroundColor);
 }
 
+/* **** **** **** **** **** **** **** **** **** **** **** */
+/* **** **** **** **** **** **** **** **** **** **** **** */
+
+const Variant GXElement::performSelectorWithArguments( const std::string &selector , const Variant  &arguments)
+{
+    if ( selector == "setNeedsDisplay")
+    {
+        setNeedsDisplay();
+        return Variant();
+    }
+    
+    else if ( selector == "setLayer")
+    {
+        setLayer( arguments.getList().at(0).getInt() );
+        return Variant();
+    }
+    else if ( selector == "setBounds" )
+    {
+        setBounds( arguments.getList().at(0).getInt(),
+                   arguments.getList().at(1).getInt(),
+                   arguments.getList().at(2).getInt(),
+                   arguments.getList().at(3).getInt()
+                  );
+        return Variant();
+    }
+    else if ( selector == "moveOf" )
+    {
+        moveOf(arguments.getList().at(0).getInt(), arguments.getList().at(1).getInt() );
+        return Variant();
+    }
+    else if ( selector == "moveTo" )
+    {
+        moveTo(arguments.getList().at(0).getInt(), arguments.getList().at(1).getInt() );
+        return Variant();
+    }
+    
+    else if ( selector == "flipVisibility")
+        return flipVisibility();
+    
+    else if ( selector == "setVisible")
+    {
+        setVisible( arguments.getList().at(0).getBool() );
+        return Variant();
+    }
+    
+    else if ( selector == "setBackgroundColor")
+    {
+        const GXColor col = makeColor( arguments.getList().at(0).getInt(),
+                                       arguments.getList().at(1).getInt(),
+                                       arguments.getList().at(2).getInt(),
+                                       arguments.getList().at(3).getInt()
+                                      );
+        setBackgroundColor( col );
+        return Variant();
+    }
+
+    else if ( selector == "setTransparency")
+    {
+        setTransparency( arguments.getList().at(0).getBool() );
+        return Variant();
+    }
+    
+    
+    /*
+     void setHidden(  bool hidden);
+     void setSize( int width , int height);
+     void setOpacity( bool opaque );
+     */
+    return Element::Object::performSelectorWithArguments(selector, arguments);
+}
+
+/* **** **** **** **** **** **** **** **** **** **** **** */
+
+const Variant GXElement::performSelectorWithArguments( const std::string &selector , const Variant  &arguments) const
+{
+    if ( selector == "getElementName")
+        return getName();
+    
+    else if ( selector == "isVisible" )
+        return isVisible();
+    
+    else if ( selector == "needsDisplay" )
+        return needsDisplay();
+    
+
+    else if ( selector == "getBounds" )
+        return Variant{ getBounds().origin.x ,getBounds().origin.y , getBounds().size.width , getBounds().size.height  };
+
+
+    /*
+    GXRect getBounds() const;
+    int getLayer() const;
+    GXColor getBackgroundColor() const
+    bool isTransparent() const
+    bool isOpaque() const
+
+    */
+    return Element::Object::performSelectorWithArguments(selector, arguments);
+}
 
 
 

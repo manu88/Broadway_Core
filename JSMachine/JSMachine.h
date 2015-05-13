@@ -18,8 +18,10 @@
 #include <vector>
 
 
+
 #include "../Internal/Object.h"
-#include "../Data/ArgumentsArray.h"
+#include "../Internal/Element.h"
+
 #include "../Data/Database.h"
 
 
@@ -108,6 +110,7 @@ public:
         _allowSystemCall = shouldI;
     }
     
+    void test();
 
     
     //! Sets the delegate that will be called
@@ -168,18 +171,18 @@ public:
     bool executeBuffer(  const std::string &buffer);
     
     // without ";" !!!!
-//    CScriptVarLink evaluate( const std::string &buffer);
+    CScriptVarLink evaluate( const std::string &buffer);
     std::string    evaluateAsString(const std::string &buffer);
 
     void reset();
     
     
-    static std::unique_ptr<ArgumentsArray> getArgumentsFromJSArray( CScriptVar *vars);
+    static VariantList getArgumentsFromJSArray( CScriptVar *vars);
     
-    static CScriptVar* getArgumentsAsJSArray( const ArgumentsArray &array );
+    static CScriptVar* getArgumentsAsJSArray( const VariantList &list );
     
-    static std::string getArgumentsAsJSArrayString( const ArgumentsArray &array );
-    static std::string getArgumentsAsStringList( const ArgumentsArray &array );
+    static std::string getArgumentsAsJSArrayString( const VariantList &list );
+    static std::string getArgumentsAsStringList( const VariantList &list );
     
     template<typename Type>
     static CScriptVar* getJSArrayFromVector( const std::vector<Type> &vect)
@@ -288,9 +291,8 @@ protected:
      */
     static void js_nativeFunctWithID(CScriptVar *v, void *userdata);
     
-    static void js_getIP( CScriptVar *v, void *userdata );
     static void js_readDataFile( CScriptVar *v, void *userdata );
-    static void js_readDir( CScriptVar *v, void *userdata );
+//    static void js_readDir( CScriptVar *v, void *userdata );
     static void js_system( CScriptVar *v, void *userdata );
     static void js_getTime( CScriptVar *v, void *userdata );
     
@@ -314,10 +316,13 @@ private:
     std::vector< Selector* > _registeredSelectors;
     
     std::vector< std::string > _importedHeaders;
+    
+    
+    
+    
 
 };
 
-// usefull for extensions check
-bool has_suffix(const std::string &str, const std::string &suffix);
+
 
 #endif /* defined(__JSMachine__JSMachine__) */

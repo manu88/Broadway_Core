@@ -9,28 +9,32 @@
 #ifndef __Value__
 #define __Value__
 
-#include "../Internal/Object.h"
+#include <vector>
 
 
-/* This is the public part of Variant/Value implementation */
-
-class ValueImpl;
-class ArgumentArray;
 
 class Variant;
-typedef std::vector<Variant> VariantList;
-typedef ArgumentArray VariantList_;
+class ValueImpl;
+
+typedef std::vector< Variant > VariantList;
+
+
+
+/* **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
 
 class Variant
 {
 public:
     
-    Variant( int val );
-
+    static Variant null()
+    {
+        return Variant();
+    }
     
+    Variant();
+    Variant( int val );
     Variant( float val );
     Variant( double val );
-
     Variant( const std::string &val );
 
     // Added to prevent litterals c—strings from being implicitly converted to bool
@@ -38,7 +42,12 @@ public:
     
     Variant( bool val );
     
-    Variant( VariantList_ val);
+    
+
+    
+
+    Variant( std::initializer_list< Variant > args);
+
     
 #ifdef USE_JAVA_INTERPRETER
     class CScriptVar;
@@ -46,12 +55,17 @@ public:
     Variant ( const CScriptVar* var );
 #endif
     
+
     /* **** **** */
     
     /* copy & assignment ctors */
     
     Variant ( const Variant &val );
     Variant& operator=(Variant const& copy);
+
+    
+    
+
     
     ~Variant();
     
@@ -65,9 +79,9 @@ public:
     bool   getBool() const;
     const  std::string getString() const;
     
-    const VariantList_ &getList() const;
+    const VariantList &getList() const;
 
-    
+    const std::vector< uint8_t > getByteArray() const;
     
     //! careful! The type will not be checked, and reinterpret_cast may fail!
     template <typename T> T getValue() const;
@@ -82,12 +96,21 @@ public:
     bool isBool() const;
     bool isString() const;
     bool isList() const;
-
+    bool isNull() const;
     
+    bool isByteArray() const;
+    
+    /**/
+
+    /* Relationals Operators */
+    
+    bool operator==( const Variant& rhs) const;
+    bool operator==( const void* ptr) const; // use this to test against nullptr
 
 protected:
+
     
-    ValueImpl* _variant;
+    mutable ValueImpl* _variant;
 };
 
 std::ostream& operator<<( std::ostream& os, const Variant& val);

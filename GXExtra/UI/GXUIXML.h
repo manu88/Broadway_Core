@@ -33,6 +33,10 @@
 #define BACKGROUND_COLOR_NODE_NAME "backgroundColor"
 #endif
 
+#ifndef ACTIONCLIC_NODE_NAME
+#define ACTIONCLIC_NODE_NAME "actionClic"
+#endif
+
 
 #ifndef SOURCE_NODE_NAME
 #define SOURCE_NODE_NAME "source"
@@ -87,6 +91,18 @@
 #ifndef ATTR_NAME
 #define ATTR_NAME "name"
 #endif
+
+///// Actions
+
+#ifndef ATTR_ACTION_TARGET
+#define ATTR_ACTION_TARGET "target"
+#endif
+
+#ifndef ATTR_ACTION_SELECTOR
+#define ATTR_ACTION_SELECTOR "selector"
+#endif
+
+
 
 
 /* Elements nodes */

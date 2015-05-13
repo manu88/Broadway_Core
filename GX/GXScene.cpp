@@ -112,7 +112,7 @@ GXElement* GXScene::getElementByID( int _id) const
 
 /* **** **** **** **** **** **** **** **** **** **** **** */
 
-GXElement* GXScene::getElementByName( const std::string &name ) const
+const GXElement* GXScene::getElementByName( const std::string &name ) const
 {
     ThreadLock l( DisplayController::getController() );
     

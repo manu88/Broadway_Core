@@ -114,6 +114,29 @@ AbstractController::~AbstractController()
 
 /* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
 
+/*static*/ bool waitForControllerToFinish( AbstractController*controller , int timeOut /*= 10 SECS*/)
+{
+    clock_t start = clock();
+    double time = 0;
+    
+    
+    
+    while ( (time <= timeOut)  )
+    {
+        if ( controller->isReady() || controller->isInactive() )
+        {
+            return true;
+        }
+        
+        
+        time = ( clock() - start)/(double)CLOCKS_PER_SEC;
+    }
+    
+    return false;
+}
+
+/* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
+
 /*static*/ bool AbstractController::waitForAllControllersToFinish(int timeOut /*SECS*/)
 {
     clock_t start = clock();

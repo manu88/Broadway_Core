@@ -1,5 +1,5 @@
 //
-//  GXPaintJS.cpp
+//  GXAsyncPainter.cpp
 //  Broadway_test
 //
 //  Created by Manuel Deneu on 08/10/14.
@@ -7,7 +7,7 @@
 //
 #include <assert.h>
 
-#include "GXPaintJS.h"
+#include "GXAsyncPainter.h"
 #include "GXPath.h"
 
 #include "../Config.h"
@@ -18,74 +18,74 @@
 
 
 
-GXPaintJS::GXPaintJS() 
+GXAsyncPainter::GXAsyncPainter()
 {
-    className = "GXPaintJS";
+    className = "GXAsyncPainter";
 }
 
-GXPaintJS::~GXPaintJS()
+GXAsyncPainter::~GXAsyncPainter()
 {
     clear();
 }
 
 /* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
 
-void GXPaintJS::setFillColor( const GXColor &fillColor)
+void GXAsyncPainter::setFillColor( const GXColor &fillColor)
 {
     addPainter( new PainterFillColor( fillColor) );
 }
 
-void GXPaintJS::setStrokeColor( const GXColor &strokeColor)
+void GXAsyncPainter::setStrokeColor( const GXColor &strokeColor)
 {
     addPainter( new PainterStrokeColor( strokeColor) );
 }
 
-void GXPaintJS::setStrokeWidth( float width )
+void GXAsyncPainter::setStrokeWidth( float width )
 {
     addPainter( new PainterStrokeWidth( width ) );
 }
 
-void GXPaintJS::setCapStyle ( GXCapStyle style )
+void GXAsyncPainter::setCapStyle ( GXCapStyle style )
 {
     addPainter( new PainterCapStyle( style ) );
 }
 
-void GXPaintJS::setJoinStyle( GXJoinStyle style )
+void GXAsyncPainter::setJoinStyle( GXJoinStyle style )
 {
     addPainter( new PainterJoinStyle( style ) );
 }
 
 /* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
 
-void GXPaintJS::addRect( const GXRect &rect )
+void GXAsyncPainter::addRect( const GXRect &rect )
 {
     addPainter( new PainterRect( rect ) );
 }
 
 /* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
 
-void GXPaintJS::addRoundedRect( const GXRect &rect, float arcW , float arcH )
+void GXAsyncPainter::addRoundedRect( const GXRect &rect, float arcW , float arcH )
 {
     addPainter( new PainterRoundedRect( rect , arcW , arcH ) );
 }
 
 /* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
 
-void GXPaintJS::addEllipse( const GXRect &rect )
+void GXAsyncPainter::addEllipse( const GXRect &rect )
 {
     addPainter( new PainterEllipse( rect ) );
 }
 
 /* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
 
-void GXPaintJS::addArc( const GXPoint &center , const GXSize &size , float startAngle /* rads*/ , float angleExtent /* rads*/ ,GXArcType type )
+void GXAsyncPainter::addArc( const GXPoint &center , const GXSize &size , float startAngle /* rads*/ , float angleExtent /* rads*/ ,GXArcType type )
 {
     addPainter( new PainterArc( center , size , startAngle , angleExtent , type ) );
 }
 
 /* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
 
-void GXPaintJS::addLine( const GXLine &line  )
+void GXAsyncPainter::addLine( const GXLine &line  )
 {
     addPainter( new PainterLine( line ) );
 }
@@ -95,49 +95,49 @@ void GXPaintJS::addLine( const GXLine &line  )
 
 
 
-void GXPaintJS::moveToPoint( const GXPoint &point)
+void GXAsyncPainter::moveToPoint( const GXPoint &point)
 {
     addPainter( new PainterMoveTo( point ) );
 }
 
 /* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
 
-void GXPaintJS::addLineToPoint( const GXPoint &point)
+void GXAsyncPainter::addLineToPoint( const GXPoint &point)
 {
     addPainter( new PainterLineTo( point ) );
 }
 
 /* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
 
-void GXPaintJS::addCubicCurveToPoint( const GXPoint &controlPoint0 , const GXPoint &controlPoint1 , const GXPoint &endPoint )
+void GXAsyncPainter::addCubicCurveToPoint( const GXPoint &controlPoint0 , const GXPoint &controlPoint1 , const GXPoint &endPoint )
 {
     addPainter( new PainterCubicCurveTo( controlPoint0 , controlPoint1 , endPoint  ) );
 }
 
 /* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
 
-void GXPaintJS::addQuadCurveToPoint( const GXPoint &controlPoint , const GXPoint &endPoint  )
+void GXAsyncPainter::addQuadCurveToPoint( const GXPoint &controlPoint , const GXPoint &endPoint  )
 {
     addPainter( new PainterQuadCurveTo( controlPoint , endPoint ) );
 }
 
 /* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
 
-void GXPaintJS::close()
+void GXAsyncPainter::close()
 {
     addPainter( new PainterClose() );
 }
 
 /* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
 
-void GXPaintJS::stroke()
+void GXAsyncPainter::stroke()
 {
     addPainter( new PainterStroke() );
 }
 
 /* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
 
-void GXPaintJS::fill()
+void GXAsyncPainter::fill()
 {
     addPainter( new PainterFill() );    
 }
@@ -145,14 +145,14 @@ void GXPaintJS::fill()
 /* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
 /* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
 
-void GXPaintJS::addPainter( Painter *painter  )
+void GXAsyncPainter::addPainter( Painter *painter  )
 {
         m_paintOperations.push_back( painter );
 }
 
 /* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
 
-void GXPaintJS::clear()
+void GXAsyncPainter::clear()
 {
 
     for( auto i : m_paintOperations )
@@ -173,24 +173,24 @@ void GXPaintJS::clear()
  */
 /* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
 
-void GXPaintJS::changed()
+void GXAsyncPainter::changed()
 {
     
 }
 
-void GXPaintJS::prepareRessources()
+void GXAsyncPainter::prepareRessources()
 {
     
 }
 
-void GXPaintJS::deleteRessources()
+void GXAsyncPainter::deleteRessources()
 {
     
 }
 
 
 
-void GXPaintJS::paint( const GXRect &rect , GXAnimation* anim )
+void GXAsyncPainter::paint( const GXRect &rect , GXAnimation* anim )
 {
     
     GXPath path( getBounds() );

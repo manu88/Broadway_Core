@@ -102,13 +102,16 @@ void Scheduler::removeAllEvents()
 
 bool Scheduler::start()
 {
-
+    _otherThread = true;
     
     return startThread();
 }
 
 void Scheduler::startFromThisThread()
 {
+    _otherThread = false;
+    
+    Thread::setThreadID();
     run();
 }
 
@@ -116,12 +119,23 @@ void Scheduler::startFromThisThread()
 
 bool Scheduler::stop()
 {
+//    ScopedLock lock( getControllerMutex() );
 
     wakeUpThread();
     
     removeAllEvents();
     
-    return stopThread();
+    if ( _otherThread )
+        return stopThread();
+
+    else
+    {
+        sendAsyncStop();
+//        Controllers::waitForControllerToFinish( this );
+        
+
+        return true;
+    }
 }
 
 /* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
@@ -138,10 +152,13 @@ void Scheduler::run()
         {
             // Wait (forever) for work
 
-            wait( lock );
-            
+            waitUntil( lock , Clock::now() + Duration( 1000 ) );
+            //wait( lock );
+            if ( threadShouldStop() )
+                break;
         }
-
+        
+        
         if ( !queue.empty() )
         {
          
@@ -248,7 +265,8 @@ bool Scheduler::destroy( int id)
 
 bool Scheduler::destroyAll()
 {
-    ScopedLock lock( getControllerMutex() );
+    if (!calledFromThisThread())
+        ScopedLock lock( getControllerMutex() );
     
     for ( auto &i : active )
     {
