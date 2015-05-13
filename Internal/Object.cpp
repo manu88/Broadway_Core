@@ -80,7 +80,7 @@ Object::~Object()
 
 /* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
 /* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
-
+/*
 const Variant Object::performSelectorWithArguments( const std::string &selector ,const Variant  &arguments)
 {
 
@@ -100,3 +100,4 @@ const Variant Object::performSelectorWithArguments( const std::string &selector 
     
     return Variant();
 }
+*/

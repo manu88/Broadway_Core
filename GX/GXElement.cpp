@@ -345,7 +345,7 @@ void GXElement::setBackgroundColor( const GXColor &color)
 
 /* **** **** **** **** **** **** **** **** **** **** **** */
 /* **** **** **** **** **** **** **** **** **** **** **** */
-
+#ifdef ENABLE_ELEMENT_SELECTOR
 const Variant GXElement::performSelectorWithArguments( const std::string &selector , const Variant  &arguments)
 {
     if ( selector == "setNeedsDisplay")
@@ -405,20 +405,7 @@ const Variant GXElement::performSelectorWithArguments( const std::string &select
         return Variant();
     }
     
-    
-    /*
-     void setHidden(  bool hidden);
-     void setSize( int width , int height);
-     void setOpacity( bool opaque );
-     */
-    return Element::Object::performSelectorWithArguments(selector, arguments);
-}
-
-/* **** **** **** **** **** **** **** **** **** **** **** */
-
-const Variant GXElement::performSelectorWithArguments( const std::string &selector , const Variant  &arguments) const
-{
-    if ( selector == "getElementName")
+    else if ( selector == "getElementName")
         return getName();
     
     else if ( selector == "isVisible" )
@@ -427,22 +414,21 @@ const Variant GXElement::performSelectorWithArguments( const std::string &select
     else if ( selector == "needsDisplay" )
         return needsDisplay();
     
-
+    
     else if ( selector == "getBounds" )
         return Variant{ getBounds().origin.x ,getBounds().origin.y , getBounds().size.width , getBounds().size.height  };
 
-
+    
+    
     /*
-    GXRect getBounds() const;
-    int getLayer() const;
-    GXColor getBackgroundColor() const
-    bool isTransparent() const
-    bool isOpaque() const
-
-    */
-    return Element::Object::performSelectorWithArguments(selector, arguments);
+     void setHidden(  bool hidden);
+     void setSize( int width , int height);
+     void setOpacity( bool opaque );
+     */
+    return Element::performSelectorWithArguments(selector, arguments);
 }
 
+#endif /*ENABLE_ELEMENT_SELECTOR*/
 
 
 

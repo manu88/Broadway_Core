@@ -298,7 +298,7 @@ public:
     }
     
 private:
-    inline const std::vector<Variant> breakInList( const ValueImpl* val) const
+    inline const std::vector<Variant> breakInList(/* const ValueImpl* val*/) const
     {
         std::vector< Variant > list;
         

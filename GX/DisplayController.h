@@ -129,7 +129,7 @@ public:
 
     void setSaveOnFile( bool save)
     {
-        _shouldSaveConfigOnFile = true;
+        _shouldSaveConfigOnFile = save;
     }
     
     bool saveActivated() const

@@ -109,6 +109,8 @@ public:
         
     }
     
+
+    
     void setLooped(bool loop )
     {
         m_player.setLooped( loop );
@@ -239,6 +241,10 @@ public:
     /* Revisited interface */
     
     bool changeVideoFileTo( const std::string &file );
+    
+#ifdef ENABLE_ELEMENT_SELECTOR
+    const Variant performSelectorWithArguments( const std::string &selector , const Variant  &arguments) ;
+#endif
     
 protected:
     

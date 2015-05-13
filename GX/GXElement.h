@@ -175,9 +175,9 @@ public:
         _elementName = name;
     }
     
-    
+#ifdef ENABLE_ELEMENT_SELECTOR
     const Variant performSelectorWithArguments( const std::string &selector , const Variant  &arguments) ;
-    const Variant performSelectorWithArguments( const std::string &selector , const Variant  &arguments) const;
+#endif
     
     
 protected:

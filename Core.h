@@ -3,6 +3,10 @@
 
 #include "Config.h"
 
+#ifndef CORE_VERSION
+#define CORE_VERSION "0.3.0"
+#endif
+
 /*
  The following modules are cross-plateform and dont need any plateform-specific defs:
  
@@ -26,10 +30,11 @@
 /* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
 /**/
 
+/*
 #ifndef ENABLE_ELEMENT_SELECTOR
 #define ENABLE_ELEMENT_SELECTOR
 #endif
-
+*/
 /* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
 /*
  

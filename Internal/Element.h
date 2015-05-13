@@ -50,8 +50,51 @@ public:
     }
     
 #ifdef ENABLE_ELEMENT_SELECTOR
+    void setElementName(const std::string &name)
+    {
+        _elementName = name;
+    }
+    
+    const std::string &getElementName() const
+    {
+        return _elementName;
+    }
+    
     virtual const Variant performSelectorWithArguments( const std::string &selector , const Variant  &arguments) ;
-    virtual const Variant performSelectorWithArguments( const std::string &selector , const Variant  &arguments) const;
+    
+    static Element* getElementByName(const std::string &elementName )
+    {
+        const auto it = std::find_if(s_elementsList.begin(), s_elementsList.end(), FindElementByName( elementName ));
+        
+        if( it != s_elementsList.end())
+            return *it;
+        
+        return nullptr;
+    }
+    
+    struct FindElementByName
+    {
+        std::string elementName;
+        FindElementByName( const std::string &name) : elementName( name)
+        {}
+        bool operator()(Element *element) const
+        {
+            return elementName == element->_elementName;
+        }
+    };
+    static const Variant performSelectorOnElement( const std::string &elementName , const std::string &selector , const Variant  &arguments)
+    {
+        auto* element = getElementByName( elementName);
+        if( element != nullptr )
+            return element->performSelectorWithArguments( selector , arguments);
+
+        return Variant::null();
+    }
+
+    static long getElementsCount()
+    {
+        return s_elementsList.size();
+    }
 #endif
     
 protected:
@@ -62,6 +105,12 @@ private:
     
     static int s_elementsCount;
     static int s_elementIDCounter;
+    
+    #ifdef ENABLE_ELEMENT_SELECTOR
+    
+    std::string _elementName;
+    static std::vector< Element*> s_elementsList;
+    #endif
     
 };
 

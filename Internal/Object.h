@@ -65,10 +65,10 @@ public:
     {
         return className;
     }
-    
+    /*
     const Variant performSelectorWithArguments( const std::string &selector , const Variant  &arguments) ;
     const Variant performSelectorWithArguments( const std::string &selector , const Variant  &arguments) const;
-    
+    */
     
 protected:
     Object();

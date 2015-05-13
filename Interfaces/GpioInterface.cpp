@@ -52,7 +52,7 @@ bool GpioEvent::changed()
     
     if (newState != _lastState)
     {
-        _lastDebounceTime = Scheduler::getTimeInMs();
+        _lastDebounceTime = static_cast<long>( Scheduler::getTimeInMs() );
     }
     
     if ( ( Scheduler::getTimeInMs() - _lastDebounceTime) > _debounceDelay)

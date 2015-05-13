@@ -244,6 +244,39 @@ void GXVideo::sig_didReachTC( unsigned long millis)
         _schedulerDelegate->scheduledEventReceived( *this);
 }
 
+#ifdef ENABLE_ELEMENT_SELECTOR
+const Variant GXVideo::performSelectorWithArguments( const std::string &selector , const Variant  &arguments)
+{
+    if( selector == "getCurrentTC")
+        return (double) getCurrentTC().getInMs();
+    
+    else if( selector == "setVideoFileSource")
+        return setVideoFileSource( arguments.getString() );
+    
+    else if( selector == "setLooped")
+        setLooped( arguments.getBool() );
+    
+    else if( selector == "start")
+        return start();
+    
+    else if( selector == "pause")
+        pause();
+    
+    else if( selector == "stop")
+        stop();
+    
+    else if( selector == "isStarted")
+        return isStarted();
+    
+    else if( selector == "isPaused")
+        return isPaused();
+    
+    
+    return Element::performSelectorWithArguments(selector, arguments);
+}
+
+#endif
+
 /* **** **** **** **** **** **** **** **** **** **** **** **** **** */
 /*
     Geometry related
