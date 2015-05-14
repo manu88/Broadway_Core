@@ -45,19 +45,19 @@ bool GXUI::parseXMLFile( const std::string &file)
     const int w = std::stoi( p.getAttributeForTag( GEOMETRY_NODE_NAME, ATTR_W ) );
     const int h = std::stoi( p.getAttributeForTag( GEOMETRY_NODE_NAME, ATTR_H ) );
     
-    const GXColor bColor = makeColor( std::stoi( p.getAttributeForTag( BACKGROUND_COLOR_NODE_NAME, "r") ),
-                                      std::stoi( p.getAttributeForTag( BACKGROUND_COLOR_NODE_NAME, "g") ),
-                                      std::stoi( p.getAttributeForTag( BACKGROUND_COLOR_NODE_NAME, "b") ),
-                                      std::stoi( p.getAttributeForTag( BACKGROUND_COLOR_NODE_NAME, "a") )
+    const GXColor bColor = makeColor( ( uint8_t ) std::stoi( p.getAttributeForTag( BACKGROUND_COLOR_NODE_NAME, "r") ),
+                                      ( uint8_t ) std::stoi( p.getAttributeForTag( BACKGROUND_COLOR_NODE_NAME, "g") ),
+                                      ( uint8_t ) std::stoi( p.getAttributeForTag( BACKGROUND_COLOR_NODE_NAME, "b") ),
+                                      ( uint8_t ) std::stoi( p.getAttributeForTag( BACKGROUND_COLOR_NODE_NAME, "a") )
                                      );
     
-    /*
+
     printf("\n title = '%s'" , ui_name.c_str() );
     printf("\n bounds = %i %i %i %i" , x , y , w , h);
     printf("\n background color = %i %i %i %i" , bColor.r , bColor.g , bColor.b , bColor.a);
-    */
 
-    
+
+    setElementName( ui_name );
     setBounds( x, y, w, h);
     setBackgroundColor( bColor );
     

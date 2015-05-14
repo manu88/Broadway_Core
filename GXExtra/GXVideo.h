@@ -243,7 +243,7 @@ public:
     bool changeVideoFileTo( const std::string &file );
     
 #ifdef ENABLE_ELEMENT_SELECTOR
-    const Variant performSelectorWithArguments( const std::string &selector , const VariantList  &arguments) ;
+    const Variant performSelectorWithArguments( const std::string &selector , const VariantList  &arguments , bool *validCall = nullptr) ;
 #endif
     
 protected:

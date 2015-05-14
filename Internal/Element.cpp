@@ -47,18 +47,30 @@ Element::~Element()
 }
 
 #ifdef ENABLE_ELEMENT_SELECTOR
-const Variant Element::performSelectorWithArguments( const std::string &selector , const VariantList  &arguments)
+const Variant Element::performSelectorWithArguments( const std::string &selector , const VariantList  &arguments , bool *validCall /*= nullptr*/)
 {
+    if( validCall )
+        *validCall = true;
+    
     if ( selector == "getElementId")
         return getElementId();
     
     else if ( selector == "getElementName")
         return getElementName();
     
+    else if ( selector == "setElementName")
+    {
+        setElementName( arguments.at(0).getString() );
+    }
+    
     else if ( selector == "getClassName")
         return className;
     
-    return Variant();
+    if( validCall )
+        *validCall = false;
+    
+    
+    return Variant::null();
 }
 
 

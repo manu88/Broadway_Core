@@ -345,8 +345,11 @@ void GXElement::setBackgroundColor( const GXColor &color)
 /* **** **** **** **** **** **** **** **** **** **** **** */
 /* **** **** **** **** **** **** **** **** **** **** **** */
 #ifdef ENABLE_ELEMENT_SELECTOR
-const Variant GXElement::performSelectorWithArguments( const std::string &selector , const VariantList  &arguments)
+const Variant GXElement::performSelectorWithArguments( const std::string &selector , const VariantList  &arguments ,bool *validCall /*= nullptr*/)
 {
+    if( validCall )
+        *validCall = true;
+    /* Setters */
     if ( selector == "setNeedsDisplay")
     {
         setNeedsDisplay();
@@ -389,10 +392,10 @@ const Variant GXElement::performSelectorWithArguments( const std::string &select
     
     else if ( selector == "setBackgroundColor")
     {
-        const GXColor col = makeColor( arguments.at(0).getInt(),
-                                       arguments.at(1).getInt(),
-                                       arguments.at(2).getInt(),
-                                       arguments.at(3).getInt()
+        const GXColor col = makeColor( (uint8_t) arguments.at(0).getInt(),
+                                       (uint8_t) arguments.at(1).getInt(),
+                                       (uint8_t) arguments.at(2).getInt(),
+                                       (uint8_t) arguments.at(3).getInt()
                                       );
         setBackgroundColor( col );
         return Variant();
@@ -404,8 +407,7 @@ const Variant GXElement::performSelectorWithArguments( const std::string &select
         return Variant();
     }
     
-    else if ( selector == "getElementName")
-        return getElementName();
+    /* Getters */
     
     else if ( selector == "isVisible" )
         return isVisible();
@@ -417,14 +419,21 @@ const Variant GXElement::performSelectorWithArguments( const std::string &select
     else if ( selector == "getBounds" )
         return Variant{ getBounds().origin.x ,getBounds().origin.y , getBounds().size.width , getBounds().size.height  };
 
+    else if ( selector == "getBackgroundColor")
+        return Variant{ getBackgroundColor().r ,getBackgroundColor().g , getBackgroundColor().b ,getBackgroundColor().a  };
     
-    
+    else if ( selector == "isOpaque")
+        return isOpaque();
     /*
      void setHidden(  bool hidden);
      void setSize( int width , int height);
      void setOpacity( bool opaque );
      */
-    return Element::performSelectorWithArguments(selector, arguments);
+    
+    if( validCall )
+        *validCall = false;
+    
+    return Element::performSelectorWithArguments(selector, arguments , validCall );
 }
 
 #endif /*ENABLE_ELEMENT_SELECTOR*/

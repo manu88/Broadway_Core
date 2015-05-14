@@ -113,7 +113,7 @@ public:
     
     
 private:
-    // parse an Element Node and return its gemoetry.
+    // parse an Element Node and return its geometry.
     static GXGeometry getGeometryFromElement( const XMLParser::XMLElement *element );
     
     static ActionList getActionsFromElement( const XMLParser::XMLElement *element );

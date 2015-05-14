@@ -204,9 +204,10 @@ SerialEvent* InterfaceController::addSerial( const std::string &port)
     wakeUpThread();
     
     SerialEvent* event = new SerialEvent( port );
-    m_inputs.insert( event );
     
-    event->openPort();
+    if( event->openPort() )
+        m_inputs.insert( event );
+    
     
     return event;
 }

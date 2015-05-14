@@ -245,8 +245,10 @@ void GXVideo::sig_didReachTC( unsigned long millis)
 }
 
 #ifdef ENABLE_ELEMENT_SELECTOR
-const Variant GXVideo::performSelectorWithArguments( const std::string &selector , const VariantList  &arguments)
+const Variant GXVideo::performSelectorWithArguments( const std::string &selector , const VariantList  &arguments , bool *validCall /*= nullptr*/)
 {
+    if ( validCall )
+        *validCall = true;
     if( selector == "getCurrentTC")
         return (double) getCurrentTC().getInMs();
     
@@ -271,8 +273,11 @@ const Variant GXVideo::performSelectorWithArguments( const std::string &selector
     else if( selector == "isPaused")
         return isPaused();
     
+    if ( validCall )
+        *validCall = false;
     
-    return Element::performSelectorWithArguments(selector, arguments);
+    
+    return Element::performSelectorWithArguments(selector, arguments , validCall );
 }
 
 #endif

@@ -167,7 +167,7 @@ public:
 
     
 #ifdef ENABLE_ELEMENT_SELECTOR
-    const Variant performSelectorWithArguments( const std::string &selector , const VariantList  &arguments) ;
+    const Variant performSelectorWithArguments( const std::string &selector , const VariantList  &arguments , bool *validCall = nullptr) ;
 #endif
     
     

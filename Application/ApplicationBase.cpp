@@ -19,6 +19,7 @@ _hasQuit       ( false ),
 _didStartEvent ( -1 )
 {
     _scheduler.setDelegate( this );
+    
 }
 
 ApplicationBase::~ApplicationBase()
