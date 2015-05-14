@@ -194,7 +194,7 @@ bool GXUI::addGXImage( const XMLParser::XMLElement *element )
     img->setLayer ( geometry.layer  );
     img->setBounds( geometry.bounds );
     
-    img->setName( name );
+    img->setElementName( name );
     
     return addUIElement( img );
 }
@@ -242,7 +242,7 @@ bool GXUI::addGXText( const XMLParser::XMLElement *element )
     label->setCarretPosition( carret );
     label->setSizeInPoints( size );
     
-    label->setName( name );
+    label->setElementName( name );
     
     return addUIElement( label );
     
@@ -260,7 +260,7 @@ bool GXUI::addGXPath ( const XMLParser::XMLElement *element )
     
     GXAsyncPainter *painter = new GXAsyncPainter();
     
-    painter->setName( name );
+    painter->setElementName( name );
     painter->setBounds( geometry.bounds );
     painter->setLayer( geometry.layer );
     

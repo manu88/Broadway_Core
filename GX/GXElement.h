@@ -164,16 +164,7 @@ public:
     }
     
     /* **** **** **** **** **** **** **** **** **** */
-    
-    const std::string& getName() const
-    {
-        return _elementName;
-    }
-    
-    void setName( const std::string &name)
-    {
-        _elementName = name;
-    }
+
     
 #ifdef ENABLE_ELEMENT_SELECTOR
     const Variant performSelectorWithArguments( const std::string &selector , const Variant  &arguments) ;
@@ -233,7 +224,7 @@ private:
     
     void elementChanged();
     
-    std::string     _elementName;
+//    std::string     _elementName;
     
     int             _layer;
     

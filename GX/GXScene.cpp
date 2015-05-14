@@ -118,7 +118,7 @@ const GXElement* GXScene::getElementByName( const std::string &name ) const
     
     for ( const auto &i : m_elements )
     {
-        if ( i->getName() == name )
+        if ( i->getElementName() == name )
             return i;
     }
     

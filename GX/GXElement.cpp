@@ -17,7 +17,6 @@
 /* **** **** **** **** **** **** **** **** **** **** **** */
 
 GXElement::GXElement() :
-    _elementName              ( ""      ),
     _layer                    ( 0       ),
     _prepared                 ( false   ),
     _shouldBeRemoved          ( false   ),
@@ -406,7 +405,7 @@ const Variant GXElement::performSelectorWithArguments( const std::string &select
     }
     
     else if ( selector == "getElementName")
-        return getName();
+        return getElementName();
     
     else if ( selector == "isVisible" )
         return isVisible();

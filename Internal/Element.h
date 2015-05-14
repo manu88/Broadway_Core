@@ -9,13 +9,15 @@
 #ifndef ____Element__
 #define ____Element__
 
+#include <algorithm>
 #include "Object.h"
+#include "../Log/Log.h"
 
 //! Element
 /********************************************//**
 *
 *   Base class for any type of Element
-*   It's mainly goal is to provide an _unique_ ID to Elements such as GXElement (GXVideo , GXImage, etc.) so 
+*   Its main goal is to provide an _unique_ ID to Elements such as GXElement (GXVideo , GXImage, etc.) so
 *   that each instance can be retreived easily.
 *
 *                                               
@@ -49,7 +51,7 @@ public:
         return s_elementIDCounter;
     }
     
-#ifdef ENABLE_ELEMENT_SELECTOR
+
     void setElementName(const std::string &name)
     {
         _elementName = name;
@@ -59,6 +61,10 @@ public:
     {
         return _elementName;
     }
+    
+/* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
+    
+#ifdef ENABLE_ELEMENT_SELECTOR    
     
     virtual const Variant performSelectorWithArguments( const std::string &selector , const Variant  &arguments) ;
     
@@ -75,13 +81,15 @@ public:
     struct FindElementByName
     {
         std::string elementName;
-        FindElementByName( const std::string &name) : elementName( name)
-        {}
+        
+        FindElementByName( const std::string &name) : elementName( name){}
+        
         bool operator()(Element *element) const
         {
             return elementName == element->_elementName;
         }
     };
+    
     static const Variant performSelectorOnElement( const std::string &elementName , const std::string &selector , const Variant  &arguments)
     {
         auto* element = getElementByName( elementName);
@@ -95,21 +103,41 @@ public:
     {
         return s_elementsList.size();
     }
+    
+    static std::vector< Element*> &getElementList()
+    {
+        return s_elementsList;
+    }
+    
+    
+    static void dumpElement()
+    {
+        for (const Element *e : Element::getElementList() )
+        {
+            
+            Log::log("Element Id %i", e->getElementId() );
+            Log::log("\tName '%s'",e->getElementName().c_str() );
+            Log::log("\tClass '%s' ", e->className.c_str() );
+            
+            
+        }
+    }
 #endif
+    
+/* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
     
 protected:
     Element();    
     
 private:
     int _id;
+    std::string _elementName;
     
     static int s_elementsCount;
     static int s_elementIDCounter;
     
     #ifdef ENABLE_ELEMENT_SELECTOR
-    
-    std::string _elementName;
-    static std::vector< Element*> s_elementsList;
+        static std::vector< Element*> s_elementsList;
     #endif
     
 };

@@ -54,6 +54,10 @@ const Variant Element::performSelectorWithArguments( const std::string &selector
     
     else if ( selector == "getElementName")
         return getElementName();
+    
+    else if ( selector == "getClassName")
+        return className;
+    
     return Variant();
 }
 
