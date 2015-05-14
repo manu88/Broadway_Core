@@ -66,7 +66,7 @@ public:
     
 #ifdef ENABLE_ELEMENT_SELECTOR    
     
-    virtual const Variant performSelectorWithArguments( const std::string &selector , const Variant  &arguments) ;
+    virtual const Variant performSelectorWithArguments( const std::string &selector , const VariantList  &arguments) ;
     
     static Element* getElementByName(const std::string &elementName )
     {
@@ -90,7 +90,7 @@ public:
         }
     };
     
-    static const Variant performSelectorOnElement( const std::string &elementName , const std::string &selector , const Variant  &arguments)
+    static const Variant performSelectorOnElement( const std::string &elementName , const std::string &selector , const VariantList  &arguments)
     {
         auto* element = getElementByName( elementName);
         if( element != nullptr )

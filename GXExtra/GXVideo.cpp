@@ -245,16 +245,16 @@ void GXVideo::sig_didReachTC( unsigned long millis)
 }
 
 #ifdef ENABLE_ELEMENT_SELECTOR
-const Variant GXVideo::performSelectorWithArguments( const std::string &selector , const Variant  &arguments)
+const Variant GXVideo::performSelectorWithArguments( const std::string &selector , const VariantList  &arguments)
 {
     if( selector == "getCurrentTC")
         return (double) getCurrentTC().getInMs();
     
     else if( selector == "setVideoFileSource")
-        return setVideoFileSource( arguments.getString() );
+        return setVideoFileSource( arguments.at(0).getString() );
     
     else if( selector == "setLooped")
-        setLooped( arguments.getBool() );
+        setLooped( arguments.at(0).getBool() );
     
     else if( selector == "start")
         return start();

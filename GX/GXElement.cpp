@@ -345,7 +345,7 @@ void GXElement::setBackgroundColor( const GXColor &color)
 /* **** **** **** **** **** **** **** **** **** **** **** */
 /* **** **** **** **** **** **** **** **** **** **** **** */
 #ifdef ENABLE_ELEMENT_SELECTOR
-const Variant GXElement::performSelectorWithArguments( const std::string &selector , const Variant  &arguments)
+const Variant GXElement::performSelectorWithArguments( const std::string &selector , const VariantList  &arguments)
 {
     if ( selector == "setNeedsDisplay")
     {
@@ -355,26 +355,26 @@ const Variant GXElement::performSelectorWithArguments( const std::string &select
     
     else if ( selector == "setLayer")
     {
-        setLayer( arguments.getList().at(0).getInt() );
+        setLayer( arguments.at(0).getInt() );
         return Variant();
     }
     else if ( selector == "setBounds" )
     {
-        setBounds( arguments.getList().at(0).getInt(),
-                   arguments.getList().at(1).getInt(),
-                   arguments.getList().at(2).getInt(),
-                   arguments.getList().at(3).getInt()
+        setBounds( arguments.at(0).getInt(),
+                   arguments.at(1).getInt(),
+                   arguments.at(2).getInt(),
+                   arguments.at(3).getInt()
                   );
         return Variant();
     }
     else if ( selector == "moveOf" )
     {
-        moveOf(arguments.getList().at(0).getInt(), arguments.getList().at(1).getInt() );
+        moveOf(arguments.at(0).getInt(), arguments.at(1).getInt() );
         return Variant();
     }
     else if ( selector == "moveTo" )
     {
-        moveTo(arguments.getList().at(0).getInt(), arguments.getList().at(1).getInt() );
+        moveTo(arguments.at(0).getInt(), arguments.at(1).getInt() );
         return Variant();
     }
     
@@ -383,16 +383,16 @@ const Variant GXElement::performSelectorWithArguments( const std::string &select
     
     else if ( selector == "setVisible")
     {
-        setVisible( arguments.getList().at(0).getBool() );
+        setVisible( arguments.at(0).getBool() );
         return Variant();
     }
     
     else if ( selector == "setBackgroundColor")
     {
-        const GXColor col = makeColor( arguments.getList().at(0).getInt(),
-                                       arguments.getList().at(1).getInt(),
-                                       arguments.getList().at(2).getInt(),
-                                       arguments.getList().at(3).getInt()
+        const GXColor col = makeColor( arguments.at(0).getInt(),
+                                       arguments.at(1).getInt(),
+                                       arguments.at(2).getInt(),
+                                       arguments.at(3).getInt()
                                       );
         setBackgroundColor( col );
         return Variant();
@@ -400,7 +400,7 @@ const Variant GXElement::performSelectorWithArguments( const std::string &select
 
     else if ( selector == "setTransparency")
     {
-        setTransparency( arguments.getList().at(0).getBool() );
+        setTransparency( arguments.at(0).getBool() );
         return Variant();
     }
     

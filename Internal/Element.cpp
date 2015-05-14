@@ -47,7 +47,7 @@ Element::~Element()
 }
 
 #ifdef ENABLE_ELEMENT_SELECTOR
-const Variant Element::performSelectorWithArguments( const std::string &selector , const Variant  &arguments)
+const Variant Element::performSelectorWithArguments( const std::string &selector , const VariantList  &arguments)
 {
     if ( selector == "getElementId")
         return getElementId();
