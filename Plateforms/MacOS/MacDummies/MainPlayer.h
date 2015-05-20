@@ -143,6 +143,11 @@ public:
         
     }
     
+    void setSpeedAsync( int speed )
+    {
+        
+    }
+    
     float getVolume() const
     {
         return m_volumeAudio;

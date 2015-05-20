@@ -65,8 +65,8 @@ typedef enum
     VideoDidStart   = 2, // Sent when demuxer sent first frames.
     VideoPaused     = 3, // Sent when pause command performed.
     VideoDidResume  = 4, // Sent when resume command performed.
-    VideoWillEnd   = 5, // Sent when video demuxer is end-of-stream.
-    VideoDidEnd    = 6, // Sent when player did stop, i.e after flushing last frames.
+    VideoWillEnd    = 5, // Sent when video demuxer is end-of-stream.
+    VideoDidEnd     = 6, // Sent when player did stop, i.e after flushing last frames.
     VideoDidReachTC = 7, // Notif fired when a registered TC is reached.
 } GXVideoNotification;
 

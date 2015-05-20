@@ -16,6 +16,7 @@
 #include <iostream>
 #include <unordered_set>
 #include <set>
+#include <algorithm>
 
 #include "../Log/Log.h"
 #include "../Config.h"
@@ -314,6 +315,56 @@ private:
     NetworkController* _controller;
 };
 
+
+/* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
+/* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
+
+class OscLogger : public Log
+{
+public:
+    
+    OscLogger( NetworkController *controller,  const std::string &ip , unsigned int port):
+    _controller ( controller ),
+    _ip         ( ip   ),
+    _port       ( port )
+    {
+        
+    }
+    
+    ~OscLogger()
+    {
+        
+    }
+    
+protected:
+    void print( const char * c  ) const
+    {
+
+        std::string str(c);
+        str.erase( std::remove_if( str.begin(),
+                                   str.end(),
+                                       [](char cc)
+                                        {
+                                           switch( cc )
+                                           {
+                                               case '\t':
+                                               case '\n':
+                                                   return true;
+                                               default:
+                                                   return false;
+                                           }
+                                        }
+                                  ),
+                                    str.end());
+        _controller->sendOSC( _ip, _port, "/log" ,{ str } );
+        
+    }
+    
+private:
+    std::string        _ip;
+    unsigned int       _port;
+    NetworkController *_controller;
+};
 
 
 

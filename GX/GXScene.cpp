@@ -56,6 +56,8 @@ bool GXScene::addElement( GXElement* element )
     
     reorderElements();
     
+    element->setNeedsDisplay();
+    
     return true;
 }
 
@@ -259,6 +261,8 @@ void GXScene::updateElementInRect( GXElement *element , const GXRect &rect )
         }
         
         element->paint( element->_updateRect , element->getParentElement()->_anim );
+        
+        Log::log("Paint element %s %s" , element->getElementName().c_str() , element->className.c_str() );
         element->setUpdated();
         
 //        GXPath::scissorRect( element->getBounds() );

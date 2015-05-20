@@ -122,7 +122,7 @@ void GXVideo::seekToTC( Timecode tc )
 
 void GXVideo::setSpeed( float speed )
 {
-    m_player.SetSpeed( (int ) speed );
+    m_player.setSpeedAsync( (int ) speed );
 }
 
 /* **** **** **** **** **** **** **** **** **** **** **** **** **** */
@@ -257,6 +257,9 @@ const Variant GXVideo::performSelectorWithArguments( const std::string &selector
     
     else if( selector == "setLooped")
         setLooped( arguments.at(0).getBool() );
+    
+    else if ( selector == "setSpeed")
+        setSpeed( arguments.at(0).getFloat() );
     
     else if( selector == "start")
         return start();

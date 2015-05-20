@@ -40,7 +40,11 @@ MainPlayer::MainPlayer( GXVideo *parent) :
     m_latency             ( 0.0f  ),
     m_shouldPause         ( false ),
     m_isRunning           ( false ),
+    _shouldChangeSpeed    ( false ),
+
+    _nextSpeed            ( 0     ),
     _shouldFlipVisibility ( false ),
+
     m_pChannelMap         ( NULL  ),
     m_3d                  ( CONF_FLAGS_FORMAT_NONE ),
     m_passthrough         ( false ),
@@ -175,19 +179,31 @@ void MainPlayer::setLayerNum( int layer )
 
 void MainPlayer::SetSpeed( int iSpeed )
 {
+//    Lock();
+//    iSpeed = getEffectiveSpeed( iSpeed );
     if( !m_av_clock )
         return;
     
+    printf("\n Change speed to %i \n" , iSpeed );
     m_omx_reader.SetSpeed(iSpeed);
     
     // flush when in trickplay mode
+
     if (TRICKPLAY(iSpeed) || TRICKPLAY(m_av_clock->OMXPlaySpeed()))
+    {
+        printf("TrickPLay\n");
+        
         FlushStreams(DVD_NOPTS_VALUE);
+    }
+
     
-    m_av_clock->OMXSetSpeed(iSpeed);
+    m_av_clock->OMXSetSpeed(iSpeed  );
+    
+//    UnLock();
 }
 
 /* **** **** **** **** **** **** **** **** **** **** **** **** **** **** *****/
+
 void MainPlayer::FlushStreams(double pts)
 {
     m_av_clock->OMXStop();
@@ -245,7 +261,7 @@ bool MainPlayer::prepare()
     float threshold      = -1.0f; // amount of audio/video required to come out of buffering
     float timeout        = 10.0f; // amount of time file/network operation can stall for before timing out
     int   orientation      = -1; // unset
-    float fps            = 0.0f; // unset
+    float fps            =  0.0f; // unset
     
     
     enum PCMLayout m_layout = PCM_LAYOUT_2_0;
@@ -492,6 +508,16 @@ void MainPlayer::pauseStream()
 
 }
 
+void MainPlayer::setSpeedAsync( int newSpeed )
+{
+    if( _nextSpeed == 0 )
+    {
+        printf("\n change async speed to %i \n" , newSpeed);
+        _nextSpeed = newSpeed;
+        _shouldChangeSpeed = true;
+    }
+}
+
 void MainPlayer::flipVisibilityTo( bool visible)
 {
     if ( m_has_video != visible )
@@ -537,20 +563,28 @@ void MainPlayer::update()
     //m_player_subtitles.DisplayText( strprintf("%ld", now) , 10 /*time to display in MS*/);
     
     /* **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
-    
+    if( _shouldChangeSpeed )
+    {
+        if( _nextSpeed != 0 )//&& _nextSpeed != m_pl)
+        {
+            SetSpeed( _nextSpeed );
+        }
+        _nextSpeed = 0;
+        _shouldChangeSpeed = false;
+    }
     if ( m_shouldPause )
     {
         m_Pause = !m_Pause;
         
         if (m_av_clock->OMXPlaySpeed() != DVD_PLAYSPEED_NORMAL && m_av_clock->OMXPlaySpeed() != DVD_PLAYSPEED_PAUSE)
         {
-
-            m_playspeed_current = playspeed_normal;
+            m_playspeed_current = playspeed_ff_max;
             SetSpeed( getEffectiveSpeed( m_playspeed_current ) );
             
             m_seek_flush = true; //
         }
         
+        /* Pause requested */
         if( m_Pause )
         {
             /*
@@ -560,17 +594,19 @@ void MainPlayer::update()
             auto t = (unsigned) (m_av_clock->OMXMediaTime()*1e-6);
             auto dur = m_omx_reader.GetStreamLength() / 1000;
             
-            /*
+            printf("\n Pause \n");
             if ( _showInfosOnScreen )
                 DISPLAY_TEXT_LONG(strprintf("Pause\n%02d:%02d:%02d / %02d:%02d:%02d",
                                             (t/3600), (t/60)%60, t%60, (dur/3600), (dur/60)%60, dur%60));
-             */
+
             _parent->sig_didPause();
             
         }
-        
+        /* Resume requested */
         else
         {
+
+            printf("\n Resume \n");
             /*
             if( m_has_subtitle )
                 m_player_subtitles.Resume();
@@ -578,11 +614,11 @@ void MainPlayer::update()
             auto t = (unsigned) (m_av_clock->OMXMediaTime()*1e-6);
             auto dur = m_omx_reader.GetStreamLength() / 1000;
 
-            /*
+
             if ( _showInfosOnScreen )
                 DISPLAY_TEXT_SHORT(strprintf("Play\n%02d:%02d:%02d / %02d:%02d:%02d",
                                              (t/3600), (t/60)%60, t%60, (dur/3600), (dur/60)%60, dur%60));
-            */
+
             _parent->sig_didResume();
         }
         
@@ -671,7 +707,7 @@ bool MainPlayer::run()
     m_av_clock->OMXStateExecute();
 
     
-    m_playspeed_current = playspeed_normal;
+    m_playspeed_current = playspeed_ff_max/* playspeed_normal*/;
     
     m_isRunning = true;
     
@@ -1005,10 +1041,13 @@ bool MainPlayer::run()
         {
             //printf("COMXPlayer::HandleMessages - player started RESET");
             m_av_clock->OMXReset(m_has_video, m_has_audio);
+            
+//            SetSpeed( 4000 );
+            
             sentStarted = true;
         }
         
-        // paquet NULL, on lit
+        // paquet non NULL, on lit
         if(!m_omx_pkt)
         {
             m_omx_pkt = m_omx_reader.Read();

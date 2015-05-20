@@ -167,6 +167,10 @@ public:
 
     
     void SetSpeed(int iSpeed);
+    
+    // def method here
+    void setSpeedAsync( int newSpeed );
+    
     void FlushStreams(double pts);
     
     enum {  playspeed_slow_min = 0 ,
@@ -309,6 +313,9 @@ private:
     // flags
     bool    m_shouldPause;
     bool    m_isRunning;
+    
+    bool _shouldChangeSpeed;
+    int  _nextSpeed;
     
     bool _firstPacket;
     

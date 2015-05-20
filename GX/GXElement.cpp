@@ -350,10 +350,21 @@ const Variant GXElement::performSelectorWithArguments( const std::string &select
     if( validCall )
         *validCall = true;
     /* Setters */
+    
     if ( selector == "setNeedsDisplay")
     {
         setNeedsDisplay();
         return Variant();
+    }
+    
+    else if ( selector == "startContinuousRendering")
+    {
+        return startContinuousRendering();
+    }
+    
+    else if ( selector == "stopContinuousRendering")
+    {
+        return stopContinuousRendering();
     }
     
     else if ( selector == "setLayer")

@@ -62,11 +62,8 @@ public:
 
     /* TODO : C++ style logging, with streams */
 
-
-    
     static void cleanupLogger();
-    
-    
+        
     /*
      Conveniencies function to use predefined loggers. 
      To pass a spectific one, use  addLogger() below.

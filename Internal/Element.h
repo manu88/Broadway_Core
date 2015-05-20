@@ -99,7 +99,11 @@ public:
     {
         auto* element = getElementByName( elementName);
         if( element != nullptr )
+        {
+            if (validElement)
+                *validElement = true;
             return element->performSelectorWithArguments( selector , arguments , validCall);
+        }
         
         else if (validElement)
             *validElement = false;
