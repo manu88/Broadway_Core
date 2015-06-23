@@ -89,6 +89,11 @@ public:
     /* Can connections */
     
     CanEvent *addCanConnexion( const std::string &interface);
+    
+    /* SPI */
+    
+    SpiEvent *addSpi( SpiChipSelect cs);
+
 
     
     void listActivesInput();

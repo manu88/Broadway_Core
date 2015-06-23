@@ -214,6 +214,23 @@ SerialEvent* InterfaceController::addSerial( const std::string &port)
 
 /* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
 
+SpiEvent* InterfaceController::addSpi( SpiChipSelect cs)
+{
+    ThreadLock lock(this);
+    
+    wakeUpThread();
+    
+    SpiEvent *event = new SpiEvent( cs );
+    
+    m_inputs.insert( event );
+    
+    
+    return event;
+    
+}
+
+/* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
+
 SerialEvent* InterfaceController::getSerialEventByPort( const std::string &port)
 {
     for ( auto i : m_inputs)

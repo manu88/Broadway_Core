@@ -16,8 +16,60 @@
 #include "Impl/GpioPlateformImpl.h"
 
 
-typedef unsigned int GPioPin;
 
+
+
+
+/* **** **** **** **** **** **** **** **** **** **** **** */
+
+class SpiEvent : public InterfaceEvent
+{
+public:
+    
+    SpiEvent( SpiChipSelect cs );
+    ~SpiEvent();
+    
+    void setCsPolarity( GpioState state)
+    {
+        _impl.setCsPolarity( state );
+    }
+    
+    static void setBitOrder     ( SpiBitOrder order)
+    {
+        SpiPlateformImplementation::setBitOrder( order );
+    }
+    
+    static void setDataMode     ( SpiDataMode mode)
+    {
+        SpiPlateformImplementation::setDataMode( mode );
+    }
+    
+    static void setClockDivider ( SpiClockDivider divider)
+    {
+        SpiPlateformImplementation::setClockDivider( divider );
+    }
+    
+    bool changed();
+    void cleanup();
+    
+    inline uint8_t writeRead( const uint8_t &data )
+    {
+        return _impl.writeRead( data );
+    }
+    
+    inline void writeReadMult( const uint8_t *send , uint8_t *rec , uint32_t length)
+    {
+        return _impl.writeReadMult( send , rec , length);
+    }
+    
+    
+private:
+    
+    SpiPlateformImplementation _impl;
+
+};
+
+/* **** **** **** **** **** **** **** **** **** **** **** */
 
 class GpioEvent :  public InterfaceEvent
 {
@@ -25,6 +77,9 @@ public :
     GpioEvent(int pinToUse , GPioInputType typeOfInput);
     
     ~GpioEvent();
+    
+
+    
     
     static bool init()
     {
@@ -36,7 +91,7 @@ public :
         GpioPlateformImplementation::deInit();
     }
     
-    
+
     
     bool changed();
     GpioState read();

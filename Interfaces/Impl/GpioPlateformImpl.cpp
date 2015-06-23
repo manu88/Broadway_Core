@@ -74,7 +74,8 @@ GpioState GpioPlateformImplementation::read()
 
 #ifdef TARGET_RASPBERRY_PI
 /*static*/ bool GpioPlateformImplementation::init()
-{    
+{
+    printf("\n INIT BCM2835");
     return bcm2835_init();
 }
 
@@ -425,5 +426,135 @@ GpioState GpioPlateformImplementation::internalRead()
 #endif
 
 
+/* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
+/* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
+
+int SpiPlateformImplementation::s_count  = 0;
+
+SpiBitOrder     SpiPlateformImplementation::s_order   = SpiMSB;
+SpiDataMode     SpiPlateformImplementation::s_mode    = SpiMode_0;
+SpiClockDivider SpiPlateformImplementation::s_divider = SPI_CLOCK_DIVIDER_65536;
+
+SpiPlateformImplementation::SpiPlateformImplementation( SpiChipSelect cs):
+_cs( cs )
+{
+    if( s_count++ == 0)
+    {
+        printf("\n SPI INIT");
+#ifdef TARGET_RASPBERRY_PI
+        bcm2835_spi_begin();
+        
+        bcm2835_spi_setBitOrder(BCM2835_SPI_BIT_ORDER_MSBFIRST);
+        bcm2835_spi_setDataMode(BCM2835_SPI_MODE0);
+        bcm2835_spi_setClockDivider(BCM2835_SPI_CLOCK_DIVIDER_4096);
+        bcm2835_spi_chipSelect(BCM2835_SPI_CS0);
+        bcm2835_spi_setChipSelectPolarity(BCM2835_SPI_CS0, LOW);
+#endif
+        /*
+        setBitOrder( SpiMSB );
+        setDataMode( SpiMode_0);
+        setClockDivider( SPI_CLOCK_DIVIDER_4096);
+        setChipSelect( _cs );
+        setCsPolarity( low );
+         */
+    }
+
+
+}
+
+SpiPlateformImplementation::~SpiPlateformImplementation()
+{
+    if( --s_count <=0 )
+    {
+        s_count = 0;
+        printf("\n SPI DEINIT");
+#ifdef TARGET_RASPBERRY_PI
+        bcm2835_spi_end();
+#endif
+        
+    }
+}
+
+/* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
+
+uint8_t SpiPlateformImplementation::writeRead(const uint8_t &data )
+{
+
+#ifdef TARGET_RASPBERRY_PI
+    return bcm2835_spi_transfer( data);
+
+    
+#elif defined __APPLE__
+    return 0;
+#endif
+}
+
+void SpiPlateformImplementation::writeReadMult( const uint8_t *send , uint8_t *rec , uint32_t length)
+{
+#ifdef TARGET_RASPBERRY_PI
+    bcm2835_spi_transfernb( (char*) send ,(char*) rec , length);
+#endif
+}
+
+/* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
+
+void SpiPlateformImplementation::setCsPolarity( GpioState state)
+{
+
+#ifdef TARGET_RASPBERRY_PI
+        bcm2835_spi_setChipSelectPolarity( _cs, state );
+#endif
+}
+
+/* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
+
+void SpiPlateformImplementation::setChipSelect( SpiChipSelect cs)
+{
+
+#ifdef TARGET_RASPBERRY_PI
+
+    bcm2835_spi_chipSelect( _cs );
+    
+#endif
+}
+
+/* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
+
+void SpiPlateformImplementation::setBitOrder     ( SpiBitOrder order)
+{
+//    if (order != s_order)
+    {
+        s_order = order;
+#ifdef TARGET_RASPBERRY_PI
+        bcm2835_spi_setBitOrder( s_order);
+#endif
+    }
+}
+
+/* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
+
+void SpiPlateformImplementation::setDataMode     ( SpiDataMode mode)
+{
+//    if( mode != s_mode)
+    {
+        s_mode = mode;
+#ifdef TARGET_RASPBERRY_PI
+        bcm2835_spi_setDataMode(  s_mode);
+#endif
+    }
+}
+
+/* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
+
+void SpiPlateformImplementation::setClockDivider ( SpiClockDivider divider)
+{
+//    if( divider != s_divider )
+    {
+        s_divider = divider;
+#ifdef TARGET_RASPBERRY_PI
+        bcm2835_spi_setClockDivider( s_divider );
+#endif
+    }
+}
 
 

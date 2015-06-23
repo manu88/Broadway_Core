@@ -11,8 +11,32 @@
 #include "GpioInterface.h"
 #include "../Scheduler/Scheduler.h"
 
+/* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
+
+SpiEvent::SpiEvent( SpiChipSelect cs ):
+InterfaceEvent( Event_SPI ),
+_impl( cs )
+{
+    
+}
+
+SpiEvent::~SpiEvent()
+{
+    
+}
+
+bool SpiEvent::changed()
+{
+    return false;
+}
+
+void SpiEvent::cleanup()
+{
+    
+}
 
 
+/* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
 
 GpioEvent::GpioEvent(int pinToUse , GPioInputType typeOfInput) :
 InterfaceEvent( Event_Gpio ),

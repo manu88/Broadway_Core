@@ -78,17 +78,7 @@ public:
         return nullptr;
     }
     
-    struct FindElementByName
-    {
-        std::string elementName;
-        
-        FindElementByName( const std::string &name) : elementName( name){}
-        
-        bool operator()(Element *element) const
-        {
-            return elementName == element->_elementName;
-        }
-    };
+
     
     static const Variant performSelectorOnElement( const std::string &elementName ,
                                                    const std::string &selector ,
@@ -149,7 +139,21 @@ private:
     static int s_elementIDCounter;
     
     #ifdef ENABLE_ELEMENT_SELECTOR
+    
         static std::vector< Element*> s_elementsList;
+    
+        struct FindElementByName
+        {
+            std::string elementName;
+            
+            FindElementByName( const std::string &name) : elementName( name){}
+            
+            bool operator()(Element *element) const
+            {
+                return elementName == element->_elementName;
+            }
+        };
+    
     #endif
     
 };

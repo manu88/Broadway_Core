@@ -198,6 +198,7 @@ void MainPlayer::SetSpeed( int iSpeed )
 
     
     m_av_clock->OMXSetSpeed(iSpeed  );
+    m_seek_flush = true;
     
 //    UnLock();
 }
@@ -578,9 +579,10 @@ void MainPlayer::update()
         
         if (m_av_clock->OMXPlaySpeed() != DVD_PLAYSPEED_NORMAL && m_av_clock->OMXPlaySpeed() != DVD_PLAYSPEED_PAUSE)
         {
+            /*
             m_playspeed_current = playspeed_ff_max;
             SetSpeed( getEffectiveSpeed( m_playspeed_current ) );
-            
+            */
             m_seek_flush = true; //
         }
         
@@ -595,10 +597,11 @@ void MainPlayer::update()
             auto dur = m_omx_reader.GetStreamLength() / 1000;
             
             printf("\n Pause \n");
+            /*
             if ( _showInfosOnScreen )
                 DISPLAY_TEXT_LONG(strprintf("Pause\n%02d:%02d:%02d / %02d:%02d:%02d",
                                             (t/3600), (t/60)%60, t%60, (dur/3600), (dur/60)%60, dur%60));
-
+             */
             _parent->sig_didPause();
             
         }
@@ -614,11 +617,11 @@ void MainPlayer::update()
             auto t = (unsigned) (m_av_clock->OMXMediaTime()*1e-6);
             auto dur = m_omx_reader.GetStreamLength() / 1000;
 
-
+            /*
             if ( _showInfosOnScreen )
                 DISPLAY_TEXT_SHORT(strprintf("Play\n%02d:%02d:%02d / %02d:%02d:%02d",
                                              (t/3600), (t/60)%60, t%60, (dur/3600), (dur/60)%60, dur%60));
-
+             */
             _parent->sig_didResume();
         }
         
@@ -713,6 +716,7 @@ bool MainPlayer::run()
     
     _parent->sig_willStart();
     
+    SetSpeed( 4000 );
     while( !m_bStop && !m_stop )
     {
         std::unique_lock<std::mutex> lock( _sync );

@@ -41,10 +41,7 @@ public:
     Variant( const char* val );
     
     Variant( bool val );
-    
-    
 
-    
 
     Variant( std::initializer_list< Variant > args);
 
