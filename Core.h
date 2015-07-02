@@ -112,7 +112,7 @@
  */
 #ifdef USE_NETWORK
 #include "Network/NetworkController.h"
-#include "Network/IPCSocket.h"
+#include "Network/IPC.h"
 #endif
 
 /* Gpio management */

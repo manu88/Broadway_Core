@@ -10,19 +10,12 @@
 #define ____Scheduler__
 
 #include <iostream>
-#include <unordered_set>
 #include <unordered_map>
-#include <set>
 
-#include <sys/time.h>
-#include <chrono>
-#include <mutex>
-#include <condition_variable>
-#include <algorithm>
-#include <functional>
-
-
-#include <cstdint>
+//#include <sys/time.h>
+//#include <chrono>
+//#include <mutex>
+//#include <condition_variable>
 
 #include "Event.h"
 #include "../Internal/Object.h"
@@ -34,9 +27,6 @@
 #include "Event.h"
 #include "TimeDefs.h"
 
-
-
-
 /* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
 
 
@@ -45,8 +35,6 @@
 typedef std::chrono::steady_clock       Clock;
 typedef std::chrono::time_point<Clock>  Timestamp;
 typedef std::chrono::milliseconds       Duration;
-
-
 
 
 class TimedEvent : public Event
@@ -158,11 +146,6 @@ public:
 protected:
     SchedulerDelegate() {}
     
-
-//    virtual void mouseEventReceived( const MouseEvent &event);
-
-    
-    
 };
 
 /* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
@@ -180,12 +163,11 @@ public:
     {
         m_delegate = delegate;
     }
-    
-    // events handle
-    bool listenForMouseInput();
-    
+
     // timers handle
     int registerTimedEvent( Timecode start , Timecode period , bool oneShot );
+    TimedEvent* addTimer(  Timecode start , Timecode period , bool oneShot );
+    
     bool isAlreadyRegistered( TimedEvent* eventToFind );
     
     
@@ -195,7 +177,6 @@ public:
     bool removeEvent( TimedEvent* event );
     void removeAllEvents();
     
-
 
     /* Globals functions */
     static double getTimeInMs()

@@ -34,13 +34,6 @@ Scheduler::~Scheduler()
 
 }
 
-bool Scheduler::listenForMouseInput()
-{
-
-    
-    return true;
-}
-
 /* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
 
 int Scheduler::registerTimedEvent( Timecode start , Timecode period , bool oneShot )
@@ -49,14 +42,23 @@ int Scheduler::registerTimedEvent( Timecode start , Timecode period , bool oneSh
     return createImpl( TimedEvent( Clock::now() + Duration( start.getInMs() ), Duration( period.getInMs() )  ));
 }
 
+TimedEvent* Scheduler::addTimer(  Timecode start , Timecode period , bool oneShot )
+{
+    const int t = createImpl( TimedEvent( Clock::now() + Duration( start.getInMs() ), Duration( period.getInMs() )  ));
+    
+    return getEventByID( t);
+}
+
 /* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
 
 bool Scheduler::isAlreadyRegistered( TimedEvent* eventToFind )  
 {
     
     return exists( eventToFind->getElementId() );
-    
+
 }
+
+/* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
 
 bool Scheduler::exists(int id) 
 {
