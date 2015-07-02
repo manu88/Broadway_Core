@@ -40,9 +40,11 @@ void InterfaceControllerDelegate::inputChanged( const InterfaceEvent *event )
 InterfaceController::InterfaceController():
     AbstractController ( "Interface controller" ),
     Thread             ( "Interface Thread"),
-    m_delegate         ( nullptr )
+    _delegate          ( nullptr ),
+    _waitTime          ( 1000 )
 {
     className = "Interface controller";
+    
     if (! init())
     {
         Log::log("\n error while initializing gpio interface");
@@ -98,7 +100,7 @@ GpioEvent* InterfaceController::addGpioInput(const int pinNumber  , GPioInputTyp
     if ( !getGpioEventByPin( pinNumber ) )
     {
         GpioEvent *event = new GpioEvent(pinNumber , typeOfInput);
-        m_inputs.insert( event );
+        _inputs.insert( event );
 
         return event;
     }
@@ -111,7 +113,7 @@ GpioEvent* InterfaceController::addGpioInput(const int pinNumber  , GPioInputTyp
 
 GpioEvent* InterfaceController::getGpioEventByID( int _id)
 {
-    for ( auto i : m_inputs )
+    for ( auto i : _inputs )
     {        
         if ( i->isGpioEvent() && ( i->getElementId() == _id) )
         {
@@ -138,7 +140,7 @@ bool InterfaceController::removeGpioInput(const int pinNumber)
         ScopedLock ctlLock(getControllerMutex() );
         delete eventToRemove;
         
-        m_inputs.erase( eventToRemove );
+        _inputs.erase( eventToRemove );
         
         return true;
     }
@@ -152,20 +154,20 @@ void InterfaceController::removeAllInputs()
     
     wakeUpThread();
     
-    for ( auto i : m_inputs )
+    for ( auto i : _inputs )
     {
         i->cleanup();
         delete i;
     }
     
-    m_inputs.clear();
+    _inputs.clear();
 }
 
 /* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
 
 GpioEvent* InterfaceController::getGpioEventByPin( const unsigned int pin)
 {
-    for ( auto i : m_inputs )
+    for ( auto i : _inputs )
     {
         if ( i->isGpioEvent() )
         {
@@ -206,7 +208,7 @@ SerialEvent* InterfaceController::addSerial( const std::string &port)
     SerialEvent* event = new SerialEvent( port );
     
     if( event->openPort() )
-        m_inputs.insert( event );
+        _inputs.insert( event );
     
     
     return event;
@@ -222,7 +224,7 @@ SpiEvent* InterfaceController::addSpi( SpiChipSelect cs)
     
     SpiEvent *event = new SpiEvent( cs );
     
-    m_inputs.insert( event );
+    _inputs.insert( event );
     
     
     return event;
@@ -233,7 +235,7 @@ SpiEvent* InterfaceController::addSpi( SpiChipSelect cs)
 
 SerialEvent* InterfaceController::getSerialEventByPort( const std::string &port)
 {
-    for ( auto i : m_inputs)
+    for ( auto i : _inputs)
     {
         if (i->isSerialEvent() )
         {
@@ -256,7 +258,7 @@ CanEvent* InterfaceController::addCanConnexion( const std::string &interface)
     wakeUpThread();
     
     CanEvent* event = new CanEvent( interface );
-    m_inputs.insert( event );
+    _inputs.insert( event );
     
     event->connect();
     
@@ -278,20 +280,22 @@ void InterfaceController::mainLoop()
     {
         ScopedLock lock( getControllerMutex()  );
         
-        if ( m_inputs.empty() )
+        if ( _inputs.empty() )
         {
             wait( lock );
         }
 
 
-        for ( auto i : m_inputs )
+        for ( auto i : _inputs )
         {
             
-            if ( i->changed() &&  m_delegate->delegateReadyForController( this )  )
+            if ( i->changed() &&  _delegate->delegateReadyForController( this )  )
             {
-                m_delegate->inputChanged ( i );
+                _delegate->inputChanged ( i );
             }
         }
+        
+        Thread::sleepForMicros( _waitTime );
     }
 
 }

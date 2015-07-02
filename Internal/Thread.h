@@ -59,8 +59,19 @@ public:
         return s_threadCount;
     }
     
-    static void sleepFor( const Timecode &tc);
-    static void sleepForMs( const unsigned long ms);
+    static inline void sleepFor( const Timecode &tc)
+    {
+        sleepForMs( tc.getInMs() );
+    }
+    
+    static inline void sleepForMs( const unsigned long ms)
+    {
+        std::this_thread::sleep_for (std::chrono::milliseconds( ms ) );
+    }
+    static inline void sleepForMicros( const unsigned long micros )
+    {
+        std::this_thread::sleep_for (std::chrono::microseconds( micros ) );
+    }
     
 protected:
     // user defined main() thread

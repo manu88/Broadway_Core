@@ -54,7 +54,7 @@ public:
     
     void setDelegate( InterfaceControllerDelegate* delegate)
     {
-        m_delegate = delegate;
+        _delegate = delegate;
     }
     
     bool init();
@@ -62,6 +62,16 @@ public:
     
     bool start();
     bool stop();
+    
+    unsigned long getPollingTimeInterval() const
+    {
+        return _waitTime;
+    }
+    
+    void setPollingTimeInterval( unsigned long time) // in micros
+    {
+        _waitTime = time;
+    }
     
     /* GPIO part */
     
@@ -107,11 +117,9 @@ private:
 
     void mainLoop();
 
-    InterfaceControllerDelegate *m_delegate;
-    
-    std::unordered_set< InterfaceEvent* > m_inputs;
-    
-
+    InterfaceControllerDelegate           *_delegate;
+    std::unordered_set< InterfaceEvent* >  _inputs;
+    unsigned long                          _waitTime; // in microseconds
     
 
 };

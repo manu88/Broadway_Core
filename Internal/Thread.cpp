@@ -170,15 +170,3 @@ bool Thread::calledFromThisThread() const noexcept
 
 /* **** **** **** **** **** **** **** **** **** **** **** **** */
 
-/*static*/ void Thread::sleepFor( const Timecode &tc)
-{
-    std::this_thread::sleep_for (std::chrono::milliseconds( tc.getInMs() ) );
-}
-
-void Thread::sleepForMs( const unsigned long ms)
-{
-    std::this_thread::sleep_for (std::chrono::milliseconds( ms ) );
-}
-
-/* **** **** **** **** **** **** **** **** **** **** **** **** */
-
